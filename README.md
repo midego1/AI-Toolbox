@@ -2,13 +2,27 @@
 
 A comprehensive AI platform where users can access multiple AI-powered tools including translation, OCR, image generation, professional headshots, and LinkedIn content generation. Built with Next.js 16, TypeScript, and Tailwind CSS.
 
-## 🚀 Automatic Deployments with Vercel
+## ⚡ Quick Deploy (Recommended)
 
-This project is configured for **automatic deployments** to Vercel. Every commit to GitHub automatically creates a new preview environment.
+**Deploy in 10 minutes with Supabase + Vercel:**
 
-- **Main branch** → Production deployment
-- **Other branches** → Preview deployments with unique URLs
-- See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete setup guide
+1. **[Create Supabase Project](https://supabase.com)** - Database + Auth (Free tier)
+2. **[Deploy to Vercel](https://vercel.com)** - Hosting + Auto-deployments (Free tier)
+3. **Done!** Your AI SaaS is live 🎉
+
+→ **[Follow the 10-Minute Guide](./QUICK_DEPLOY.md)**
+
+### Alternative Deployment Options:
+- **Full Control:** [Self-Hosting Guide](./SELF_HOSTING.md) - Host on your own servers ($10-100/month)
+- **Just Vercel:** [Vercel + External DB](./DEPLOYMENT.md) - Use Vercel with any database
+
+---
+
+## 🚀 Features
+
+- ✅ **Supabase + Vercel** setup (recommended)
+- ✅ Automatic deployments on every commit
+- ✅ Preview environments for all branches
 
 ## Features
 
