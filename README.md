@@ -4,44 +4,48 @@ A comprehensive AI platform where users can access multiple AI-powered tools inc
 
 ## ⚡ Quick Start
 
-**Deploy in 15 minutes with Convex + Vercel:**
+**Get your Convex URL in 2 minutes:**
 
-1. **Clone & Install**
-   ```bash
-   git clone <your-repo-url>
-   cd AI-Toolbox
-   npm install
-   ```
+### Fastest Method (Recommended)
+```bash
+# Option 1: Use the setup script
+./setup-convex.sh
 
-2. **Set up Convex Backend**
-   ```bash
-   npx convex dev
-   ```
-   - Creates your Convex backend
-   - Generates your database schema
-   - Provides your `NEXT_PUBLIC_CONVEX_URL`
+# Option 2: Manual setup
+npx convex dev
+```
 
-3. **Configure Environment**
-   ```bash
-   cp .env.example .env
-   ```
-   - Add your `NEXT_PUBLIC_CONVEX_URL` from step 2
-   - Add Stripe keys (optional for dev)
-   - Add AI service API keys (optional for dev - uses mocks)
+This will:
+- ✅ Create your Convex backend (free)
+- ✅ Deploy your database schema  
+- ✅ **Give you your `NEXT_PUBLIC_CONVEX_URL`**
 
-4. **Run Development Server**
-   ```bash
-   npm run dev
-   ```
+### Then Create .env.local
 
-5. **Deploy to Production**
-   ```bash
-   npx convex deploy    # Deploy backend
-   npm run build        # Build frontend
-   # Deploy to Vercel or any hosting platform
-   ```
+```bash
+# Create the file
+touch .env.local
 
-→ **[See Complete Setup Guide](./CONVEX_SETUP.md)**
+# Add your Convex URL
+echo 'NEXT_PUBLIC_CONVEX_URL="https://your-url.convex.cloud"' >> .env.local
+```
+
+Replace `https://your-url.convex.cloud` with the actual URL from the previous step.
+
+### Start Development
+
+```bash
+# Terminal 1: Keep running
+npx convex dev
+
+# Terminal 2: Frontend
+npm run dev
+
+# Visit http://localhost:3000
+```
+
+→ **[Full Quick Start Guide](./QUICK_START.md)**
+→ **[Complete Setup Guide](./CONVEX_SETUP.md)**
 
 ---
 

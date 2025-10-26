@@ -10,7 +10,7 @@ export const translate = action({
     sourceLang: v.string(),
     targetLang: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<any> => {
     // Verify session and get user
     const user = await ctx.runQuery(api.auth.getCurrentUser, { token: args.token });
     if (!user) {

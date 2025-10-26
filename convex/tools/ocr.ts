@@ -8,7 +8,7 @@ export const performOCR = action({
     token: v.string(),
     fileId: v.id("_storage"),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<any> => {
     // Verify session and get user
     const user = await ctx.runQuery(api.auth.getCurrentUser, { token: args.token });
     if (!user) {

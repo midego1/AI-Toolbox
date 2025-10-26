@@ -10,7 +10,7 @@ export const generateImage = action({
     size: v.optional(v.string()), // "1024x1024", "1792x1024", "1024x1792"
     quality: v.optional(v.string()), // "standard" or "hd"
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<any> => {
     // Verify session and get user
     const user = await ctx.runQuery(api.auth.getCurrentUser, { token: args.token });
     if (!user) {
