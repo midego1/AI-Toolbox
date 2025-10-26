@@ -1,45 +1,68 @@
 # AI Toolbox - All-in-One AI SaaS Platform
 
-A comprehensive AI platform where users can access multiple AI-powered tools including translation, OCR, image generation, professional headshots, and LinkedIn content generation. Built with Next.js 16, TypeScript, and Tailwind CSS.
+A comprehensive AI platform where users can access multiple AI-powered tools including translation, OCR, image generation, professional headshots, and LinkedIn content generation. Built with Next.js 16, TypeScript, Tailwind CSS, and **Convex**.
 
-## ⚡ Quick Deploy (Recommended)
+## ⚡ Quick Start
 
-**Deploy in 10 minutes with Supabase + Vercel:**
+**Deploy in 15 minutes with Convex + Vercel:**
 
-1. **[Create Supabase Project](https://supabase.com)** - Database + Auth (Free tier)
-2. **[Deploy to Vercel](https://vercel.com)** - Hosting + Auto-deployments (Free tier)
-3. **Done!** Your AI SaaS is live 🎉
+1. **Clone & Install**
+   ```bash
+   git clone <your-repo-url>
+   cd AI-Toolbox
+   npm install
+   ```
 
-→ **[Follow the 10-Minute Guide](./QUICK_DEPLOY.md)**
+2. **Set up Convex Backend**
+   ```bash
+   npx convex dev
+   ```
+   - Creates your Convex backend
+   - Generates your database schema
+   - Provides your `NEXT_PUBLIC_CONVEX_URL`
 
-### Alternative Deployment Options:
-- **Full Control:** [Self-Hosting Guide](./SELF_HOSTING.md) - Host on your own servers ($10-100/month)
-- **Just Vercel:** [Vercel + External DB](./DEPLOYMENT.md) - Use Vercel with any database
+3. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   ```
+   - Add your `NEXT_PUBLIC_CONVEX_URL` from step 2
+   - Add Stripe keys (optional for dev)
+   - Add AI service API keys (optional for dev - uses mocks)
+
+4. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Deploy to Production**
+   ```bash
+   npx convex deploy    # Deploy backend
+   npm run build        # Build frontend
+   # Deploy to Vercel or any hosting platform
+   ```
+
+→ **[See Complete Setup Guide](./CONVEX_SETUP.md)**
 
 ---
 
 ## 🚀 Features
 
-- ✅ **Supabase + Vercel** setup (recommended)
-- ✅ Automatic deployments on every commit
-- ✅ Preview environments for all branches
-
-## Features
-
 ### 🎯 Core Features
-- **User Authentication** - Secure signup/login with NextAuth.js
+- **User Authentication** - Secure signup/login with Convex Auth
 - **Multiple AI Tools**
-  - 🌐 Translation - Translate text between 100+ languages
-  - 📄 OCR - Extract text from images and documents
-  - 🎨 Image Generation - Create AI-generated images
-  - 📸 Professional Headshots - Transform photos into professional headshots
-  - 💼 LinkedIn Content - Generate professional recommendations and content
+  - 🌐 Translation - Translate text between 100+ languages (DeepL)
+  - 📄 OCR - Extract text from images (Google Cloud Vision)
+  - 🎨 Image Generation - Create AI-generated images (DALL-E 3)
+  - 📸 Professional Headshots - Transform photos (Coming soon)
+  - 💼 LinkedIn Content - Generate recommendations (Coming soon)
 - **Flexible Pricing**
   - Monthly subscription plans (Free, Pro, Enterprise)
   - Pay-per-use credit system
   - Additional credit packages
-- **Credit Management** - Track usage and purchase credits
+- **Credit Management** - Real-time credit tracking and transactions
+- **File Storage** - Built-in file upload/storage for OCR and images
 - **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
+- **Real-time Updates** - Instant UI updates powered by Convex
 
 ### 🎨 UI/UX Features
 - Modern, clean interface built with Shadcn/ui
@@ -55,73 +78,41 @@ A comprehensive AI platform where users can access multiple AI-powered tools inc
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **UI Components:** Shadcn/ui (Radix UI primitives)
-- **Authentication:** NextAuth.js v5
-- **Database:** PostgreSQL with Prisma ORM
+- **Backend:** Convex (Database + Auth + Storage + Actions)
 - **Payment Processing:** Stripe
 - **State Management:** Zustand
 - **AI Services:**
-  - OpenAI (Image generation, GPT)
-  - Anthropic Claude (Text generation)
+  - OpenAI (Image generation with DALL-E 3)
   - Google Cloud Vision (OCR)
   - DeepL (Translation)
-  - Replicate (Headshots)
+  - Replicate (Headshots - coming soon)
 
-## Getting Started
+## Why Convex?
 
-### Prerequisites
+Convex is the perfect backend for AI SaaS platforms:
 
-- Node.js 18+ and npm
-- PostgreSQL database
-- Stripe account (for payments)
-- AI service API keys (OpenAI, Anthropic, etc.)
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd AI-Toolbox
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install --legacy-peer-deps
-   ```
-
-3. **Set up environment variables**
-
-   Copy `.env.example` to `.env` and fill in your credentials:
-   ```bash
-   cp .env.example .env
-   ```
-
-   Required environment variables:
-   - `DATABASE_URL` - PostgreSQL connection string
-   - `NEXTAUTH_URL` - Your app URL (http://localhost:3000 for dev)
-   - `NEXTAUTH_SECRET` - Generate with `openssl rand -base64 32`
-   - `STRIPE_SECRET_KEY` - Stripe secret key
-   - `STRIPE_PUBLISHABLE_KEY` - Stripe publishable key
-   - AI service API keys (OpenAI, Anthropic, etc.)
-
-4. **Set up the database**
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   ```
-
-5. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-6. **Open your browser**
-
-   Navigate to [http://localhost:3000](http://localhost:3000)
+- ✅ **Built for AI Workloads** - Actions designed for external API calls
+- ✅ **Real-time by Default** - Credits update instantly across all devices
+- ✅ **TypeScript-First** - End-to-end type safety
+- ✅ **Built-in File Storage** - 5GB free for images and documents
+- ✅ **Scheduled Functions** - Cron jobs for subscriptions and credits
+- ✅ **Serverless** - Scales automatically, pay only for what you use
+- ✅ **Free Tier** - Generous free tier for development
 
 ## Project Structure
 
 ```
 /AI-Toolbox
+├── /convex                     # Convex backend
+│   ├── schema.ts              # Database schema
+│   ├── auth.ts                # Authentication functions
+│   ├── users.ts               # User & credit management
+│   ├── aiJobs.ts              # Job tracking
+│   ├── files.ts               # File storage functions
+│   └── /tools                 # AI tool actions
+│       ├── translation.ts
+│       ├── ocr.ts
+│       └── imageGeneration.ts
 ├── /src
 │   ├── /app                    # Next.js app directory
 │   │   ├── /(auth)            # Authentication pages
@@ -138,24 +129,19 @@ A comprehensive AI platform where users can access multiple AI-powered tools inc
 │   │   │   ├── /billing
 │   │   │   ├── /usage
 │   │   │   └── /settings
-│   │   ├── /api               # API routes
-│   │   │   ├── /auth
-│   │   │   └── /tools
-│   │   ├── layout.tsx
+│   │   ├── layout.tsx         # Root layout with ConvexProvider
 │   │   ├── page.tsx           # Landing page
 │   │   └── globals.css
 │   ├── /components
 │   │   ├── /ui                # Shadcn UI components
 │   │   ├── /layout            # Layout components
-│   │   └── /providers         # Context providers
+│   │   └── /providers         # ConvexProvider
 │   ├── /lib
-│   │   ├── auth.ts            # NextAuth configuration
-│   │   ├── db.ts              # Prisma client
+│   │   ├── auth-client.ts     # Client-side auth utilities
 │   │   └── utils.ts
 │   └── /types                 # TypeScript types
-├── /prisma
-│   └── schema.prisma          # Database schema
 ├── .env.example               # Environment variables template
+├── convex.json                # Convex configuration
 ├── package.json
 ├── tailwind.config.ts
 ├── tsconfig.json
@@ -164,15 +150,18 @@ A comprehensive AI platform where users can access multiple AI-powered tools inc
 
 ## Database Schema
 
-The platform uses PostgreSQL with the following main tables:
+The platform uses Convex with the following tables:
 
-- **Users** - User accounts and authentication
-- **Subscriptions** - Stripe subscription management
-- **CreditTransactions** - Credit purchases and usage tracking
-- **AIJobs** - AI tool job history and results
-- **UsageLogs** - Detailed usage analytics
+- **users** - User accounts, credits, subscriptions
+- **sessions** - Authentication sessions
+- **subscriptions** - Stripe subscription management
+- **creditTransactions** - Credit purchases and usage tracking
+- **aiJobs** - AI tool job history and results with file references
+- **usageLogs** - Detailed usage analytics
 
-See `prisma/schema.prisma` for the complete schema.
+All tables include file storage references via Convex's built-in `_storage` system.
+
+See `convex/schema.ts` for the complete schema.
 
 ## Pricing Plans
 
@@ -182,9 +171,9 @@ See `prisma/schema.prisma` for the complete schema.
 - **Enterprise:** $99/month - 5,000 credits
 
 ### Credit Costs per Tool
-- Translation: 1 credit per 1,000 characters
-- OCR: 2 credits per image
-- Image Generation: 10 credits per image
+- Translation: 1 credit per 100 characters
+- OCR: 5 credits per image
+- Image Generation: 10-20 credits per image (based on size/quality)
 - Headshot: 20 credits per photo
 - LinkedIn Content: 5 credits per generation
 
@@ -198,64 +187,113 @@ See `prisma/schema.prisma` for the complete schema.
 ### Available Scripts
 
 ```bash
-npm run dev      # Start development server
+npm run dev      # Start Next.js dev server (run after convex dev)
 npm run build    # Build for production
 npm run start    # Start production server
 npm run lint     # Run ESLint
+
+# Convex commands
+npx convex dev      # Start Convex backend (run first!)
+npx convex deploy   # Deploy Convex backend to production
+npx convex dashboard # Open Convex dashboard
 ```
+
+### Development Workflow
+
+1. **Start Convex backend** (do this first!)
+   ```bash
+   npx convex dev
+   ```
+
+2. **In a new terminal, start Next.js**
+   ```bash
+   npm run dev
+   ```
+
+3. **Open your browser**
+   - Frontend: http://localhost:3000
+   - Convex Dashboard: https://dashboard.convex.dev
 
 ### Adding New AI Tools
 
-1. Create a new page in `/src/app/(dashboard)/tools/[tool-name]/page.tsx`
-2. Add the tool to sidebar navigation in `/src/components/layout/sidebar.tsx`
-3. Create API route in `/src/app/api/tools/[tool-name]/route.ts`
-4. Update the database schema if needed
+1. Create action in `/convex/tools/[tool-name].ts`
+   ```typescript
+   import { action } from "../_generated/server";
+   import { api } from "../_generated/api";
+
+   export const myTool = action({
+     args: { token: v.string(), /* your args */ },
+     handler: async (ctx, args) => {
+       // Call external AI API
+       // Deduct credits
+       // Store results
+     }
+   });
+   ```
+
+2. Create UI in `/src/app/(dashboard)/tools/[tool-name]/page.tsx`
+   ```typescript
+   import { useAction } from "convex/react";
+   import { api } from "../../../../convex/_generated/api";
+
+   const myTool = useAction(api.tools.myTool.myTool);
+   ```
+
+3. Add to sidebar in `/src/components/layout/sidebar.tsx`
 
 ## Deployment
 
-### Vercel (Recommended) - Auto-Deploy Enabled ✅
+### Production Deployment
 
-This project is pre-configured for Vercel with automatic deployments:
+1. **Deploy Convex Backend**
+   ```bash
+   npx convex deploy
+   ```
+   - Note the production URL provided
 
-1. **Connect GitHub Repository**
-   - Go to [vercel.com](https://vercel.com)
-   - Import your `midego1/AI-Toolbox` repository
-   - Vercel auto-detects Next.js configuration
+2. **Deploy to Vercel**
+   - Connect your GitHub repository
+   - Add environment variables:
+     - `NEXT_PUBLIC_CONVEX_URL` (from step 1)
+     - Stripe keys
+     - AI service API keys
+   - Deploy!
 
-2. **Add Environment Variables**
-   - See `.env.example` for required variables
-   - Add to Vercel Dashboard → Settings → Environment Variables
+3. **Configure Stripe Webhooks**
+   - Point webhook to `https://your-app.vercel.app/api/webhooks/stripe`
 
-3. **Deploy Automatically**
-   - Every push to `main` → Production
-   - Every push to other branches → Preview environment
-   - Get unique URLs for each deployment
+### Environment Variables
 
-4. **Complete Guide**
-   - See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions
-   - Database setup, Stripe webhooks, troubleshooting, and more
+Required for production:
+- `NEXT_PUBLIC_CONVEX_URL` - From `npx convex deploy`
+- `STRIPE_SECRET_KEY` - Stripe secret key
+- `STRIPE_PUBLISHABLE_KEY` - Stripe publishable key
+- `STRIPE_WEBHOOK_SECRET` - Stripe webhook signing secret
+- `OPENAI_API_KEY` - OpenAI API key (for image generation)
+- `GOOGLE_CLOUD_VISION_API_KEY` - Google Vision API key (for OCR)
+- `DEEPL_API_KEY` - DeepL API key (for translation)
 
-### Build Configuration
+Optional:
+- `REPLICATE_API_TOKEN` - Replicate API token (for headshots)
 
-The project includes `vercel.json` with optimized settings:
-- Build command includes Prisma generation
-- Automatic preview deployments
-- Environment variable injection
-- Regional deployment configuration
+## Security
 
-### Other Platforms
+- Passwords hashed with SHA-256 (upgrade to bcrypt in production via Convex actions)
+- Token-based authentication with Convex sessions
+- Environment variables for sensitive data
+- Row-level security via Convex queries
+- CORS protection enabled
+- Automatic XSS protection
 
-The app can be deployed to any platform that supports Next.js:
-- AWS Amplify
-- Railway
-- Render
-- DigitalOcean App Platform
-- Netlify
+## Scaling Architecture
 
-**Note:** You may need to adjust build commands for non-Vercel platforms:
-```bash
-npm install --legacy-peer-deps && prisma generate && next build
-```
+The platform is designed to scale to 50+ AI tools using the **Tool Registry Pattern**.
+
+See `SCALING_ARCHITECTURE.md` for details on:
+- Universal Tool Executor
+- Dynamic tool loading
+- Modular handler pattern
+- Database optimization strategies
 
 ## Stripe Integration
 
@@ -265,34 +303,14 @@ npm install --legacy-peer-deps && prisma generate && next build
 2. Create products and prices for each subscription tier
 3. Add price IDs to environment variables
 4. Set up webhooks for subscription events
-5. Configure Stripe webhook endpoint at `/api/webhooks/stripe`
+5. Create webhook handler at `/api/webhooks/stripe`
 
-### Webhook Events Handled
+### Webhook Events to Handle
 - `checkout.session.completed`
 - `customer.subscription.updated`
 - `customer.subscription.deleted`
 - `invoice.payment_succeeded`
 - `invoice.payment_failed`
-
-## AI Service Integration
-
-The platform is designed to integrate with multiple AI services:
-
-- **Translation:** DeepL API or Google Translate API
-- **OCR:** Google Cloud Vision API
-- **Image Generation:** OpenAI DALL-E or Stable Diffusion via Replicate
-- **Headshots:** Replicate with specialized models
-- **Content Generation:** OpenAI GPT or Anthropic Claude
-
-See `.env.example` for required API keys.
-
-## Security
-
-- All passwords are hashed with bcrypt
-- NextAuth.js handles authentication
-- Environment variables for sensitive data
-- CSRF protection enabled
-- Rate limiting on API routes (recommended to add)
 
 ## Contributing
 
@@ -301,7 +319,8 @@ Contributions are welcome! Please follow these steps:
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Submit a pull request
+4. Test with `npx convex dev` + `npm run dev`
+5. Submit a pull request
 
 ## License
 
@@ -311,17 +330,25 @@ MIT License - feel free to use this project for your own purposes.
 
 For questions or issues:
 - Open an issue on GitHub
-- Contact support (coming soon)
+- Check Convex docs: https://docs.convex.dev
+- Join Convex Discord: https://convex.dev/community
 
 ## Roadmap
 
-- [ ] Complete AI service integrations
-- [ ] Add usage analytics dashboard
-- [ ] Implement API access for Pro/Enterprise users
-- [ ] Add more AI tools
-- [ ] Mobile app (React Native)
+- [x] Complete Convex migration
+- [x] Authentication with Convex
+- [x] File storage integration
+- [x] Translation tool (DeepL)
+- [x] OCR tool (Google Vision)
+- [x] Image generation (DALL-E 3)
+- [ ] Headshot generation (Replicate)
+- [ ] LinkedIn content generation
+- [ ] Stripe integration
+- [ ] Usage analytics dashboard
+- [ ] API access for Pro/Enterprise users
+- [ ] Mobile app (React Native with Convex)
 - [ ] White-label options for Enterprise
 
 ---
 
-Built with ❤️ using Next.js 16 and modern web technologies.
+Built with Next.js 16, Convex, and modern web technologies.

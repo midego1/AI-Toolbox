@@ -4,15 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "prisma generate",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "^16.0.0",
@@ -29,10 +23,8 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "lucide-react": "^0.468.0",
-    "next-auth": "^5.0.0-beta.20",
-    "@prisma/client": "^5.18.0",
-    "bcryptjs": "^2.4.3",
     "zod": "^3.22.4",
+    "convex": "^1.18.0",
     "stripe": "^14.17.0",
     "zustand": "^4.5.0"
   },
@@ -40,13 +32,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/bcryptjs": "^2.4.6",
     "autoprefixer": "^10.4.20",
-    "eslint": "^8",
+    "eslint": "^9",
     "eslint-config-next": "16.0.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5",
-    "prisma": "^5.18.0"
+    "typescript": "^5"
   }
 }

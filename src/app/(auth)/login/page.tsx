@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { setAuthToken } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,26 +18,23 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const login = useMutation(api.auth.login);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
+      const result = await login({ email, password });
 
-      if (result?.error) {
-        setError("Invalid email or password");
-      } else {
-        router.push("/dashboard");
-        router.refresh();
-      }
-    } catch (error) {
-      setError("An error occurred. Please try again.");
+      // Store token in localStorage
+      setAuthToken(result.token);
+
+      // Redirect to dashboard
+      router.push("/dashboard");
+    } catch (error: any) {
+      setError(error.message || "Invalid email or password");
     } finally {
       setIsLoading(false);
     }

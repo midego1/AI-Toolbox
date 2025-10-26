@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { getAuthToken } from "@/lib/auth-client";
 import { Sidebar } from "@/components/layout/sidebar";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -12,10 +14,36 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session, status } = useSession();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
-  if (status === "loading") {
+  // Get token from localStorage on mount
+  useEffect(() => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      router.push("/login");
+    } else {
+      setToken(authToken);
+    }
+  }, [router]);
+
+  // Get current user
+  const user = useQuery(
+    api.auth.getCurrentUser,
+    token ? { token } : "skip"
+  );
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (token && user === null) {
+      // Session is invalid
+      router.push("/login");
+    }
+  }, [user, token, router]);
+
+  // Loading state
+  if (!token || user === undefined) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
@@ -26,12 +54,10 @@ export default function DashboardLayout({
     );
   }
 
-  if (status === "unauthenticated") {
-    redirect("/login");
+  // User not found (session invalid)
+  if (user === null) {
+    return null; // Will redirect in useEffect
   }
-
-  // Mock credits - in production, fetch from API
-  const credits = 450;
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -51,9 +77,9 @@ export default function DashboardLayout({
       <div className="flex flex-col flex-1 overflow-hidden">
         <DashboardHeader
           onMenuClick={() => setSidebarOpen(true)}
-          credits={credits}
-          userName={session?.user?.name}
-          userEmail={session?.user?.email}
+          credits={user.creditsBalance}
+          userName={user.name}
+          userEmail={user.email}
         />
         <main className="flex-1 overflow-y-auto bg-muted/10">
           {children}

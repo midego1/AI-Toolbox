@@ -1,6 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Menu, Gem, Bell, LogOut, User, Settings } from "lucide-react";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { getAuthToken, removeAuthToken } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,7 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { signOut } from "next-auth/react";
 
 interface DashboardHeaderProps {
   onMenuClick: () => void;
@@ -25,8 +28,20 @@ export function DashboardHeader({
   userName,
   userEmail,
 }: DashboardHeaderProps) {
+  const router = useRouter();
+  const logout = useMutation(api.auth.logout);
+
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" });
+    const token = getAuthToken();
+    if (token) {
+      try {
+        await logout({ token });
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
+    }
+    removeAuthToken();
+    router.push("/");
   };
 
   return (
