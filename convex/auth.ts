@@ -55,7 +55,7 @@ export const signup = mutation({
       passwordHash,
       name: args.name,
       subscriptionTier: "free",
-      creditsBalance: 100, // Free tier starting credits
+      creditsBalance: 10000, // Starting credits (effectively unlimited for testing)
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });
@@ -63,7 +63,7 @@ export const signup = mutation({
     // Add initial credit transaction
     await ctx.db.insert("creditTransactions", {
       userId,
-      amount: 100,
+      amount: 10000,
       type: "subscription",
       description: "Welcome bonus credits",
       createdAt: Date.now(),
@@ -86,7 +86,7 @@ export const signup = mutation({
       email: args.email,
       name: args.name,
       subscriptionTier: "free",
-      creditsBalance: 100,
+      creditsBalance: 10000,
     };
   },
 });

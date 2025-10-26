@@ -15,6 +15,7 @@ import {
   Settings,
   BookOpen,
   HelpCircle,
+  Shirt,
 } from "lucide-react";
 
 const navigation = [
@@ -26,6 +27,7 @@ const navigation = [
       { name: "Translation", href: "/tools/translation", icon: Languages },
       { name: "OCR", href: "/tools/ocr", icon: FileText },
       { name: "Image Generation", href: "/tools/image-generation", icon: Image },
+      { name: "Digital Wardrobe", href: "/tools/wardrobe", icon: Shirt },
       { name: "Headshot", href: "/tools/headshot", icon: Camera },
       { name: "LinkedIn", href: "/tools/linkedin", icon: Linkedin },
     ],

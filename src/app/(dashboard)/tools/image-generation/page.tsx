@@ -8,8 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Image as ImageIcon, Download, Sparkles } from "lucide-react";
 import { useAction } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
-import { useAuth } from "@/lib/auth";
-import { toast } from "sonner";
+import { getAuthToken } from "@/lib/auth-client";
 
 export default function ImageGenerationPage() {
   const [prompt, setPrompt] = useState("");
@@ -17,22 +16,26 @@ export default function ImageGenerationPage() {
   const [size, setSize] = useState("1024x1024");
   const [generatedImage, setGeneratedImage] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const { token } = useAuth();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const generateImageTool = useAction(api.tools.imageGeneration.generateImageTool);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
-      toast.error("Please enter a prompt");
+      setError("Please enter a prompt");
       return;
     }
 
+    const token = getAuthToken();
     if (!token) {
-      toast.error("Please log in to generate images");
+      setError("Please log in to generate images");
       return;
     }
 
     setIsGenerating(true);
+    setError("");
+    setSuccess("");
 
     try {
       // Enhance prompt with style if specified
@@ -50,13 +53,13 @@ export default function ImageGenerationPage() {
 
       if (result.success && result.imageUrl) {
         setGeneratedImage(result.imageUrl);
-        toast.success(`Image generated! (${result.creditsUsed} credits used)`);
+        setSuccess(`Image generated! (${result.creditsUsed} credits used)`);
       } else {
         throw new Error("Failed to generate image");
       }
     } catch (error: any) {
       console.error("Image generation error:", error);
-      toast.error(error.message || "Failed to generate image");
+      setError(error.message || "Failed to generate image");
     } finally {
       setIsGenerating(false);
     }
@@ -132,7 +135,7 @@ export default function ImageGenerationPage() {
         </Card>
 
         {/* Generate Button */}
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-4">
           <Button
             size="lg"
             onClick={handleGenerate}
@@ -151,6 +154,20 @@ export default function ImageGenerationPage() {
               </>
             )}
           </Button>
+          
+          {/* Error Message */}
+          {error && (
+            <div className="text-red-500 text-sm text-center max-w-md">
+              {error}
+            </div>
+          )}
+          
+          {/* Success Message */}
+          {success && (
+            <div className="text-green-500 text-sm text-center max-w-md">
+              {success}
+            </div>
+          )}
         </div>
 
         {/* Generated Image */}

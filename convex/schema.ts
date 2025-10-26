@@ -43,7 +43,7 @@ export default defineSchema({
 
   aiJobs: defineTable({
     userId: v.id("users"),
-    toolType: v.string(), // "translation", "ocr", "image_generation", "headshot", "linkedin"
+    toolType: v.string(), // "translation", "ocr", "image_generation", "headshot", "linkedin", "virtual_tryon"
     status: v.string(), // "pending", "processing", "completed", "failed"
     inputData: v.any(), // flexible JSON data for different tool inputs
     outputData: v.optional(v.any()), // flexible JSON data for different tool outputs
