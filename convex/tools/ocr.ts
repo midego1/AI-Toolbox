@@ -56,7 +56,17 @@ export const performOCR = action({
       // Download file
       const fileResponse = await fetch(fileUrl);
       const fileBuffer = await fileResponse.arrayBuffer();
-      const base64Image = Buffer.from(fileBuffer).toString("base64");
+      
+      // Convert ArrayBuffer to base64 using Uint8Array (Web API, works in Convex)
+      // Using chunked approach to handle large files
+      const uint8Array = new Uint8Array(fileBuffer);
+      const chunks: string[] = [];
+      const chunkSize = 0x8000; // 32KB chunks to avoid stack overflow
+      for (let i = 0; i < uint8Array.length; i += chunkSize) {
+        const chunk = uint8Array.subarray(i, i + chunkSize);
+        chunks.push(String.fromCharCode(...chunk));
+      }
+      const base64Image = btoa(chunks.join(''));
 
       // Call Google Cloud Vision API
       const googleApiKey = process.env.GOOGLE_CLOUD_VISION_API_KEY;
