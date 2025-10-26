@@ -7,7 +7,7 @@
  * Models used:
  * - Gemini 2.5 Flash: Translation, text processing, content generation
  * - Gemini 2.5 Flash Lite: Fast tasks, low-cost operations
- * - Gemini 2.5 Flash Image: Image generation
+ * - Gemini 2.5 Flash Image: Image generation and editing
  *
  * Get API key: https://openrouter.ai/keys
  */
@@ -34,6 +34,7 @@ export interface OpenRouterOptions {
   temperature?: number;
   maxTokens?: number;
   topP?: number;
+  modalities?: string[]; // For image generation
 }
 
 /**
@@ -54,24 +55,32 @@ export async function callOpenRouter(
     temperature = 0.7,
     maxTokens = 2000,
     topP = 1,
+    modalities,
   } = options;
 
   try {
+    const body: any = {
+      model,
+      messages,
+      temperature,
+      max_tokens: maxTokens,
+      top_p: topP,
+    };
+
+    // Add modalities for image generation
+    if (modalities) {
+      body.modalities = modalities;
+    }
+
     const response = await fetch(OPENROUTER_API_URL, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://ai-toolbox.app", // Optional: Your site URL
-        "X-Title": "AI Toolbox", // Optional: Your app name
+        "HTTP-Referer": "https://ai-toolbox.app",
+        "X-Title": "AI Toolbox",
       },
-      body: JSON.stringify({
-        model,
-        messages,
-        temperature,
-        max_tokens: maxTokens,
-        top_p: topP,
-      }),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
@@ -94,7 +103,68 @@ export async function callOpenRouter(
 }
 
 /**
- * Translate text using Gemini 2.5 Flash
+ * Generate image using Gemini 2.5 Flash Image
+ * Returns base64 data URL of generated image
+ */
+export async function generateImage(prompt: string): Promise<string> {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("OPENROUTER_API_KEY not configured");
+  }
+
+  try {
+    const response = await fetch(OPENROUTER_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://ai-toolbox.app",
+        "X-Title": "AI Toolbox",
+      },
+      body: JSON.stringify({
+        model: MODELS.GEMINI_FLASH_IMAGE,
+        messages: [
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        modalities: ["image", "text"], // Required for image generation
+        temperature: 0.8, // Higher creativity for images
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`OpenRouter API error: ${error.error?.message || response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    // Extract image from response
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      const message = data.choices[0].message;
+
+      // Images are returned in the images array as base64 data URLs
+      if (message.images && message.images.length > 0) {
+        const imageUrl = message.images[0].image_url?.url;
+        if (imageUrl) {
+          return imageUrl; // Returns data:image/png;base64,...
+        }
+      }
+    }
+
+    throw new Error("No image generated in response");
+
+  } catch (error: any) {
+    console.error("OpenRouter image generation error:", error);
+    throw new Error(`Failed to generate image: ${error.message}`);
+  }
+}
+
+/**
+ * Translate text using Gemini 2.5 Flash Lite
  */
 export async function translateText(
   text: string,
@@ -176,14 +246,13 @@ export async function generateLinkedInContent(
 }
 
 /**
- * Generate image description/prompt enhancement
- * (Actual image generation would use a different endpoint)
+ * Enhance image generation prompt
  */
 export async function enhanceImagePrompt(userPrompt: string): Promise<string> {
   const messages: OpenRouterMessage[] = [
     {
       role: "system",
-      content: "You are an AI image prompt expert. Enhance the user's image description to create a detailed, vivid prompt that will produce high-quality AI-generated images. Focus on visual details, style, lighting, composition, and mood.",
+      content: "You are an AI image prompt expert. Enhance the user's image description to create a detailed, vivid prompt that will produce high-quality AI-generated images. Focus on visual details, style, lighting, composition, and mood. Keep it under 100 words.",
     },
     {
       role: "user",
@@ -194,7 +263,7 @@ export async function enhanceImagePrompt(userPrompt: string): Promise<string> {
   return await callOpenRouter(messages, {
     model: MODELS.GEMINI_FLASH,
     temperature: 0.7,
-    maxTokens: 500,
+    maxTokens: 300,
   });
 }
 
@@ -217,9 +286,17 @@ export function estimateCost(
   const pricing: Record<string, { input: number; output: number }> = {
     [MODELS.GEMINI_FLASH]: { input: 0.30 / 1_000_000, output: 2.50 / 1_000_000 },
     [MODELS.GEMINI_FLASH_LITE]: { input: 0.10 / 1_000_000, output: 0.40 / 1_000_000 },
-    [MODELS.GEMINI_FLASH_IMAGE]: { input: 0.30 / 1_000_000, output: 2.50 / 1_000_000 },
+    [MODELS.GEMINI_FLASH_IMAGE]: { input: 0.30 / 1_000_000, output: 30.00 / 1_000_000 }, // Each image = 1290 tokens = ~$0.039
   };
 
   const modelPricing = pricing[model] || pricing[MODELS.GEMINI_FLASH];
   return (inputTokens * modelPricing.input) + (outputTokens * modelPricing.output);
+}
+
+/**
+ * Estimate image generation cost
+ * Gemini Flash Image: ~1290 tokens per image = $0.039/image
+ */
+export function estimateImageCost(): number {
+  return 0.039; // ~4 cents per image
 }
