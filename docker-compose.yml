@@ -1,0 +1,122 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: ai-toolbox-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-ai_toolbox_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-ai_toolbox}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-ai_toolbox_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ai-toolbox-network
+
+  # Redis (for caching and rate limiting)
+  redis:
+    image: redis:7-alpine
+    container_name: ai-toolbox-redis
+    restart: always
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ai-toolbox-network
+
+  # Next.js Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-toolbox-app
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Database
+      - DATABASE_URL=postgresql://${DB_USER:-ai_toolbox_user}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-ai_toolbox}?schema=public
+
+      # Redis
+      - REDIS_URL=redis://redis:6379
+
+      # NextAuth
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+
+      # Stripe
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - STRIPE_PRICE_ID_PRO_MONTHLY=${STRIPE_PRICE_ID_PRO_MONTHLY}
+      - STRIPE_PRICE_ID_PRO_YEARLY=${STRIPE_PRICE_ID_PRO_YEARLY}
+      - STRIPE_PRICE_ID_ENTERPRISE_MONTHLY=${STRIPE_PRICE_ID_ENTERPRISE_MONTHLY}
+      - STRIPE_PRICE_ID_ENTERPRISE_YEARLY=${STRIPE_PRICE_ID_ENTERPRISE_YEARLY}
+
+      # AI Service Keys
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_CLOUD_VISION_API_KEY=${GOOGLE_CLOUD_VISION_API_KEY}
+      - DEEPL_API_KEY=${DEEPL_API_KEY}
+      - REPLICATE_API_TOKEN=${REPLICATE_API_TOKEN}
+
+      # Optional: File Storage
+      - STORAGE_BUCKET_NAME=${STORAGE_BUCKET_NAME}
+      - STORAGE_ACCESS_KEY=${STORAGE_ACCESS_KEY}
+      - STORAGE_SECRET_KEY=${STORAGE_SECRET_KEY}
+      - STORAGE_REGION=${STORAGE_REGION}
+      - STORAGE_ENDPOINT=${STORAGE_ENDPOINT}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - ai-toolbox-network
+
+  # Nginx Reverse Proxy (optional - for SSL/load balancing)
+  nginx:
+    image: nginx:alpine
+    container_name: ai-toolbox-nginx
+    restart: always
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - certbot_data:/var/www/certbot:ro
+    networks:
+      - ai-toolbox-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  certbot_data:
+    driver: local
+
+networks:
+  ai-toolbox-network:
+    driver: bridge
