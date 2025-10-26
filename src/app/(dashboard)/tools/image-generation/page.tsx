@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Image as ImageIcon, Download, Sparkles } from "lucide-react";
+import { useAction } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
 
 export default function ImageGenerationPage() {
   const [prompt, setPrompt] = useState("");
@@ -13,16 +17,49 @@ export default function ImageGenerationPage() {
   const [size, setSize] = useState("1024x1024");
   const [generatedImage, setGeneratedImage] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const { token } = useAuth();
+
+  const generateImageTool = useAction(api.tools.imageGeneration.generateImageTool);
 
   const handleGenerate = async () => {
-    if (!prompt.trim()) return;
+    if (!prompt.trim()) {
+      toast.error("Please enter a prompt");
+      return;
+    }
+
+    if (!token) {
+      toast.error("Please log in to generate images");
+      return;
+    }
 
     setIsGenerating(true);
-    // Simulate API call - replace with actual image generation service
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    // Using a placeholder image service for demo
-    setGeneratedImage(`https://picsum.photos/seed/${Date.now()}/1024/1024`);
-    setIsGenerating(false);
+
+    try {
+      // Enhance prompt with style if specified
+      let enhancedPrompt = prompt;
+      if (style !== "realistic") {
+        enhancedPrompt = `${prompt} in ${style} style`;
+      }
+
+      const result = await generateImageTool({
+        token,
+        prompt: enhancedPrompt,
+        size,
+        quality: "standard",
+      });
+
+      if (result.success && result.imageUrl) {
+        setGeneratedImage(result.imageUrl);
+        toast.success(`Image generated! (${result.creditsUsed} credits used)`);
+      } else {
+        throw new Error("Failed to generate image");
+      }
+    } catch (error: any) {
+      console.error("Image generation error:", error);
+      toast.error(error.message || "Failed to generate image");
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -132,7 +169,16 @@ export default function ImageGenerationPage() {
                 />
               </div>
               <div className="flex gap-2">
-                <Button>
+                <Button
+                  onClick={() => {
+                    const link = document.createElement("a");
+                    link.href = generatedImage;
+                    link.download = `ai-generated-${Date.now()}.png`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                >
                   <Download className="h-4 w-4 mr-2" />
                   Download Image
                 </Button>
