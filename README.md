@@ -2,6 +2,14 @@
 
 A comprehensive AI platform where users can access multiple AI-powered tools including translation, OCR, image generation, professional headshots, and LinkedIn content generation. Built with Next.js 16, TypeScript, and Tailwind CSS.
 
+## 🚀 Automatic Deployments with Vercel
+
+This project is configured for **automatic deployments** to Vercel. Every commit to GitHub automatically creates a new preview environment.
+
+- **Main branch** → Production deployment
+- **Other branches** → Preview deployments with unique URLs
+- See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete setup guide
+
 ## Features
 
 ### 🎯 Core Features
@@ -191,12 +199,35 @@ npm run lint     # Run ESLint
 
 ## Deployment
 
-### Vercel (Recommended)
+### Vercel (Recommended) - Auto-Deploy Enabled ✅
 
-1. Push your code to GitHub
-2. Import project in Vercel
-3. Add environment variables
-4. Deploy
+This project is pre-configured for Vercel with automatic deployments:
+
+1. **Connect GitHub Repository**
+   - Go to [vercel.com](https://vercel.com)
+   - Import your `midego1/AI-Toolbox` repository
+   - Vercel auto-detects Next.js configuration
+
+2. **Add Environment Variables**
+   - See `.env.example` for required variables
+   - Add to Vercel Dashboard → Settings → Environment Variables
+
+3. **Deploy Automatically**
+   - Every push to `main` → Production
+   - Every push to other branches → Preview environment
+   - Get unique URLs for each deployment
+
+4. **Complete Guide**
+   - See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions
+   - Database setup, Stripe webhooks, troubleshooting, and more
+
+### Build Configuration
+
+The project includes `vercel.json` with optimized settings:
+- Build command includes Prisma generation
+- Automatic preview deployments
+- Environment variable injection
+- Regional deployment configuration
 
 ### Other Platforms
 
@@ -205,6 +236,12 @@ The app can be deployed to any platform that supports Next.js:
 - Railway
 - Render
 - DigitalOcean App Platform
+- Netlify
+
+**Note:** You may need to adjust build commands for non-Vercel platforms:
+```bash
+npm install --legacy-peer-deps && prisma generate && next build
+```
 
 ## Stripe Integration
 
