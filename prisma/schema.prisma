@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String
+  emailVerified DateTime?
+  image         String?
+
+  subscriptionTier String @default("free") // free, pro, enterprise
+  creditsBalance   Int    @default(100)    // Free tier starts with 100 credits
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptions      Subscription[]
+  creditTransactions CreditTransaction[]
+  aiJobs             AIJob[]
+  usageLogs          UsageLog[]
+
+  @@map("users")
+}
+
+model Subscription {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  stripeSubscriptionId String  @unique
+  stripeCustomerId     String
+  stripePriceId        String
+
+  planType String // monthly, yearly
+  status   String // active, canceled, past_due, incomplete
+
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("subscriptions")
+  @@index([userId])
+  @@index([stripeSubscriptionId])
+}
+
+model CreditTransaction {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  amount      Int    // Positive for credits added, negative for credits used
+  type        String // purchase, usage, refund, monthly_allocation
+  description String
+
+  stripePaymentIntentId String? // For credit purchases
+  aiJobId               String? // For usage credits
+
+  createdAt DateTime @default(now())
+
+  @@map("credit_transactions")
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model AIJob {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  jobType String // translation, ocr, image_generation, headshot, linkedin_recommendation
+  status  String // pending, processing, completed, failed
+
+  inputData  Json // Store input parameters as JSON
+  outputData Json? // Store results as JSON
+
+  creditsUsed Int
+  errorMessage String?
+
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  @@map("ai_jobs")
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model UsageLog {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  toolType        String // translation, ocr, image_generation, etc.
+  creditsConsumed Int
+
+  metadata Json? // Additional metadata about the usage
+
+  timestamp DateTime @default(now())
+
+  @@map("usage_logs")
+  @@index([userId])
+  @@index([timestamp])
+}
