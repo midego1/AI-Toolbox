@@ -1,8 +1,17 @@
 import { action } from "../_generated/server";
 import { v } from "convex/values";
 import { api } from "../_generated/api";
+import { translateText, isOpenRouterConfigured, MODELS } from "../lib/openrouter";
 
-// Translation tool using DeepL API
+/**
+ * Translation tool using OpenRouter (Gemini 2.5 Flash Lite)
+ *
+ * Uses Gemini 2.5 Flash Lite for ultra-fast, cost-effective translation:
+ * - $0.10/M input tokens, $0.40/M output tokens
+ * - Supports 100+ languages
+ * - High-quality translation
+ * - Much cheaper than DeepL or Google Translate
+ */
 export const translate = action({
   args: {
     token: v.string(),
@@ -48,34 +57,27 @@ export const translate = action({
         throw new Error("Insufficient credits");
       }
 
-      // Call DeepL API (or mock for now)
-      const deeplApiKey = process.env.DEEPL_API_KEY;
-
       let translatedText: string;
 
-      if (deeplApiKey) {
-        const response = await fetch("https://api-free.deepl.com/v2/translate", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            auth_key: deeplApiKey,
-            text: args.text,
-            source_lang: args.sourceLang.toUpperCase(),
-            target_lang: args.targetLang.toUpperCase(),
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`DeepL API error: ${response.statusText}`);
+      // Use OpenRouter with Gemini 2.5 Flash Lite
+      if (isOpenRouterConfigured()) {
+        try {
+          translatedText = await translateText(
+            args.text,
+            args.sourceLang,
+            args.targetLang
+          );
+          console.log(`✅ Translation completed using ${MODELS.GEMINI_FLASH_LITE}`);
+        } catch (error: any) {
+          console.error("OpenRouter translation error:", error);
+          // Fall back to mock
+          translatedText = `[${args.targetLang.toUpperCase()}] ${args.text}`;
+          console.log("⚠️ Fell back to mock translation");
         }
-
-        const data = await response.json();
-        translatedText = data.translations[0].text;
       } else {
         // Mock translation for development
         translatedText = `[${args.targetLang.toUpperCase()}] ${args.text}`;
+        console.log("ℹ️ Using mock translation (no OpenRouter API key)");
       }
 
       // Deduct credits
@@ -95,6 +97,7 @@ export const translate = action({
           translatedText,
           sourceLang: args.sourceLang,
           targetLang: args.targetLang,
+          model: isOpenRouterConfigured() ? MODELS.GEMINI_FLASH_LITE : "mock",
         },
         creditsUsed: creditsNeeded,
       });
