@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Phone, Play, Pause, Volume2, Copy, Download, Loader2, Sparkles, Square, ChevronDown, ChevronUp } from "lucide-react";
 
 const TONES = [
@@ -26,6 +27,7 @@ export default function SinterklaasVoicemailPage() {
   const [achievements, setAchievements] = useState("");
   const [behaviorNotes, setBehaviorNotes] = useState("");
   const [tone, setTone] = useState<string>("liefdevol");
+  const [rhyming, setRhyming] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -68,6 +70,7 @@ export default function SinterklaasVoicemailPage() {
         achievements: achievements || undefined,
         behavior_notes: behaviorNotes || undefined,
         tone: tone as any,
+        rhyming: rhyming,
       });
 
       console.log("🎤 Voicemail result:", result);
@@ -284,10 +287,28 @@ export default function SinterklaasVoicemailPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Toon van de Voicemail</CardTitle>
+              <CardTitle>Toon & Stijl van de Voicemail</CardTitle>
               <CardDescription>Kies de stijl die bij je kind past</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Rhyming Toggle */}
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-yellow-50 rounded-lg border border-red-200">
+                <div className="flex-1">
+                  <Label htmlFor="rhyming" className="flex items-center gap-2 cursor-pointer">
+                    <span className="text-lg">🎵</span>
+                    <span className="font-semibold">Rijmd Voicemail</span>
+                  </Label>
+                  <p className="text-xs text-muted-foreground mt-1 ml-8">
+                    Maak de voicemail rijmd zoals een Sinterklaas gedicht (extra leuk voor kinderen!)
+                  </p>
+                </div>
+                <Switch
+                  id="rhyming"
+                  checked={rhyming}
+                  onCheckedChange={setRhyming}
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-2">
                 {TONES.map(t => (
                   <Button
@@ -330,6 +351,17 @@ export default function SinterklaasVoicemailPage() {
                 <br />
                 <span className="text-xs">Inclusief AI script en professionele text-to-speech</span>
               </div>
+
+              {rhyming && (
+                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-3 rounded-lg border border-yellow-200">
+                  <p className="text-xs font-semibold text-orange-800 mb-1 flex items-center gap-1">
+                    🎵 Rijmd modus actief
+                  </p>
+                  <p className="text-xs text-orange-700">
+                    Je voicemail wordt gemaakt als een rijmd gedicht - super speciaal en leuk voor kinderen!
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -425,7 +457,14 @@ export default function SinterklaasVoicemailPage() {
                   {/* Script Display */}
                   <div className="bg-white border border-gray-200 p-4 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
-                      <Label className="text-sm font-semibold">📝 Script</Label>
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm font-semibold">📝 Script</Label>
+                        {rhyming && (
+                          <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">
+                            🎵 Rijmd
+                          </span>
+                        )}
+                      </div>
                       <Button
                         size="sm"
                         variant="ghost"

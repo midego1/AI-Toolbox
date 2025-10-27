@@ -29,6 +29,7 @@ export const generateSinterklaasVoicemail = action({
       v.literal("grappig"),
       v.literal("bemoedigend")
     )),
+    rhyming: v.optional(v.boolean()),
   },
   handler: async (ctx, args): Promise<any> => {
     console.log(`\n${"#".repeat(80)}`);
@@ -92,6 +93,7 @@ Maak een kort overzicht (3-4 punten) met:
 4. Afsluiting (zachte, liefdevolle manier)
 
 Toon: ${args.tone || "liefdevol"} (in Bram van der Vlught's stijl)
+Rijmd: ${args.rhyming ? "JA" : "NEE"}
 ${args.achievements ? `Prestaties: ${args.achievements}` : ""}
 ${args.behavior_notes ? `Gedrag: ${args.behavior_notes}` : ""}`;
 
@@ -126,12 +128,23 @@ ${args.behavior_notes ? `Gedrag: ${args.behavior_notes}` : ""}`;
           toneInstruction = "- Tonen: LIEFDEVOL - warme, persoonlijke benadering met veel genegenheid";
       }
 
+      // Add rhyming instructions if requested
+      const rhymingInstructions = args.rhyming ? `BELANGRIJK - RIJMD STRUCTUUR:
+- Deze voicemail MOET rijmen in het a-a-b-b patroon (zoals een Sinterklaas gedicht)
+- Voorbeeld: "Lieve [naam], wat heb je het goed gedaan / Ik ben zo trots op je sinds ik 't wist / Bij Piet wordt je vandaag gehuldigd, in stilte / Want van jou wordt er gezegd: die is goud, geen mist"
+- Maak het RIJMD maar ook NATUURLIJK te spreken
+- Niet te veel stijf - laat het vloeiend zijn
+- Gebruik rijmd woorden die goed te spreken zijn in spraak
+` : "BELANGRIJK - NATUURLIJKE SPRAK:\n- Deze voicemail is GEWONE spraak, GEEN rijm\n- Spreek natuurlijk en vloeiend\n- Alsof je echt aan de telefoon praat\n";
+
       const scriptPrompt = `Je bent Sinterklaas, en je imiteert PRECIES de stijl van Bram van der Vlught - de legendarische Nederlandse Sinterklaas.
 
 Gebruik dit storyboard om een warme, persoonlijke voice boodschap te schrijven:
 
 STORYBOARD:
 ${storyboard}
+
+${rhymingInstructions}
 
 Bram van der Vlught's kenmerkende stijl:
 - Rustige, kalme stem - geen haast of druk

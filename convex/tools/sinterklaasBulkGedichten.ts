@@ -54,15 +54,26 @@ ${person.gift ? `Cadeau: ${person.gift}` : ""}
 ${person.personal_notes ? `Persoonlijke notities: ${person.personal_notes}` : ""}
 Tone: ${args.tone || "traditioneel"}
 
+BELANGRIJK: Het gedicht MOET PERFECT RIJMEN in het traditionele a-a-b-b patroon!
+
+Voorbeeld van het rijmstructuur:
+Regel 1: eindigt op woord A (bijv. "schoen")
+Regel 2: eindigt op woord B (bijv. "mijn")
+Regel 3: eindigt op woord B (bijv. "zijn")
+Regel 4: eindigt op woord A (bijv. "regen")
+
+Dit patroon herhaalt zich voor elk couplet.
+
 Het gedicht moet:
 - Minimaal 4 coupletten hebben
-- Traditioneel rijmend zijn (a-a-b-b)
+- PERFECT rijmend zijn (a-a-b-b patroon)
+- Elke regel moet echt rijmen - controleer dit!
 - Op een positieve en vriendelijke toon zijn
 - Refereren aan Sinterklaas tradities
 - Persoonlijk en specifiek zijn
 - Eindigen met "Piet" als laatste woord
 
-Maak het gedicht in het Nederlands.`;
+Maak het gedicht in het Nederlands. Zorg dat het PERFECT rijmt!`;
 
         const rawPoem = await callOpenRouter(
           [{ role: "user", content: prompt }],
