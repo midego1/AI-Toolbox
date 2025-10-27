@@ -1,0 +1,78 @@
+🔥 IMMEDIATE FIX NEEDED - FOLLOW THESE STEPS IN ORDER
+
+The issue is that your Clerk publishable key is hardcoded to .nl domain.
+
+================================================================================
+STEP 1: GET NEW CLERK KEYS FOR .COM DOMAIN
+================================================================================
+
+1. Go to https://dashboard.clerk.com
+2. Select your application
+3. Go to "Instances" or "Applications" in left menu
+4. You might see TWO instances:
+   - One for .nl domain
+   - One for .com domain
+   
+5. Select the instance that uses .com domain
+6. Go to "API Keys"
+7. Copy the NEW publishable key (pk_live_...)
+8. Copy the NEW secret key (sk_live_...)
+
+IF YOU DON'T HAVE A .COM INSTANCE:
+- You need to add sinterklaasgpt.com to your Clerk domain settings
+- OR create a new Clerk application with .com domain
+
+================================================================================
+STEP 2: UPDATE VERCEL ENVIRONMENT VARIABLES
+================================================================================
+
+1. Go to https://vercel.com/dashboard
+2. Select your project
+3. Go to: Settings → Environment Variables
+4. DELETE the old CLERK keys
+5. ADD the NEW keys from Step 1
+
+UPDATE THESE:
+- NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = [NEW KEY FROM STEP 1]
+- CLERK_SECRET_KEY = [NEW KEY FROM STEP 1]
+- NEXT_PUBLIC_APP_URL = https://sinterklaasgpt.com
+- NEXT_PUBLIC_CONVEX_URL = https://sensible-tiger-956.convex.cloud
+
+================================================================================
+STEP 3: UPDATE CONVEX
+================================================================================
+
+Run this command:
+npx convex env set APP_URL https://sinterklaasgpt.com
+
+================================================================================
+STEP 4: REDEPLOY
+================================================================================
+
+1. Go to Vercel → Deployments
+2. Click the "..." on latest deployment
+3. Click "Redeploy"
+4. Wait for it to complete
+
+================================================================================
+ALTERNATIVE: KEEP USING .NL DOMAIN
+================================================================================
+
+If getting new Clerk keys is taking too long:
+
+1. Revert code back to .nl
+2. Make sure Vercel env vars use the existing .nl keys
+3. Work with .nl domain until .com keys are ready
+
+To revert:
+- Change code back to sinterklaasgpt.nl
+- Keep existing Clerk keys
+
+================================================================================
+TESTING
+================================================================================
+
+After Step 4, test:
+1. https://sinterklaasgpt.com/login - should show full form
+2. https://sinterklaasgpt.com/tools/wardrobe - should load without spinning
+

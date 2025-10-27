@@ -144,17 +144,19 @@ De voicemail moet:
 - Natuurlijke Nederlandse spraak gebruiken (zoals Bram van der Vlught spreekt)
 - Rustig en kalm zijn - geen gejaagdheid
 - Warme, zachte toon hebben - liefdevol en toegewijd
-- Kort zijn: 20-30 seconden (50-75 woorden MAXIMAAL)
+- Passende lengte hebben: 35-50 seconden (90-130 woorden)
 - Klassieke Sinterklaas elementen bevatten (schoorsteen, pakjes, de Pieten)
 - Geen moderne taal - gebruik traditionele Nederlandse woorden
 ${toneInstruction}
 
 BELANGRIJK: 
-- Houd het KORT: Maximaal 75 woorden
+- Neem de tijd om dieper in te gaan op de persoonlijke details
 - Imiteer Bram van der Vlught's rustige, warme toon
 - Gebruik kalme zinnen zonder haast
 - Wees authentiek Sinterklaas, niet modern
 - Pas de toon aan volgens: ${args.tone || "liefdevol"}
+${args.achievements ? `\n- NOEM SPECIFIEK deze prestaties: ${args.achievements}` : ""}
+${args.behavior_notes ? `\n- VERRWIJS NAAR dit gedrag: ${args.behavior_notes}` : ""}
 
 Schrijf de exacte tekst die gesproken wordt. Geen markdown, alleen gewone tekst.`;
 
@@ -163,7 +165,7 @@ Schrijf de exacte tekst die gesproken wordt. Geen markdown, alleen gewone tekst.
         {
           model: MODELS.GEMINI_FLASH,
           temperature: 0.85, // Higher creativity for natural speech
-          maxTokens: 500,
+          maxTokens: 800, // Increased for longer, more detailed poems
         }
       );
 
