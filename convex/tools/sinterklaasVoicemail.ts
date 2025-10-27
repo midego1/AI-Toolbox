@@ -398,7 +398,10 @@ async function generateAndStoreAudio(
     console.log(`✅ Audio stored with ID: ${audioFileId}`);
     
     // Get permanent URL
-    const audioUrl = await ctx.storage.getUrl(audioFileId);
+    const audioUrl = await ctx.runQuery(api.files.getFileUrl, {
+      token,
+      storageId: audioFileId,
+    });
     
     if (!audioUrl) {
       throw new Error("Failed to get audio URL after upload");
