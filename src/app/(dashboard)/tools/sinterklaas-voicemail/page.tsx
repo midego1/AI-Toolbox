@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Phone, Play, Pause, Volume2, Copy, Download, Loader2, Sparkles, Square, ChevronDown, ChevronUp } from "lucide-react";
+import { Phone, Play, Pause, Volume2, Copy, Download, Loader2, Sparkles, Square, ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const TONES = [
   { value: "traditioneel", label: "Traditioneel", emoji: "🎅", description: "Klassieke Sinterklaas stijl" },
@@ -36,6 +37,10 @@ export default function SinterklaasVoicemailPage() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
+  
+  // Collapsible states
+  const [showAchievements, setShowAchievements] = useState(false);
+  const [showBehavior, setShowBehavior] = useState(false);
 
   const generateVoicemail = useAction((api as any).tools.sinterklaasVoicemail.generateSinterklaasVoicemail);
 
@@ -297,14 +302,13 @@ export default function SinterklaasVoicemailPage() {
             /* Full Form */
             <div className="space-y-4 lg:space-y-6">
           <Card className="border-2 border-red-100">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Volume2 className="h-5 w-5 text-red-600" />
-                Details voor de Voicemail
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Volume2 className="h-4 w-4 text-red-600" />
+                Kind Gegevens
               </CardTitle>
-              <CardDescription>Vertel ons over je kind voor een persoonlijke boodschap</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">
               <div>
                 <Label htmlFor="childName">Naam van je kind *</Label>
                 <Input
@@ -330,47 +334,51 @@ export default function SinterklaasVoicemailPage() {
                 />
               </div>
 
-              <div>
-                <Label htmlFor="achievements">Prestaties (optioneel)</Label>
-                <textarea
-                  id="achievements"
-                  value={achievements}
-                  onChange={(e) => setAchievements(e.target.value)}
-                  placeholder="Wat heeft je kind dit jaar gedaan? (bijv. goed geholpen thuis, goed leren lezen)"
-                  className="w-full mt-1 p-2 border rounded-md min-h-[80px]"
-                />
-              </div>
+              <Collapsible open={showAchievements} onOpenChange={setShowAchievements}>
+                <CollapsibleTrigger className="flex items-center justify-between w-full text-left p-2 hover:bg-gray-50 rounded-lg">
+                  <Label className="text-sm font-medium">✨ Prestaties (optioneel)</Label>
+                  {showAchievements ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-2">
+                  <textarea
+                    id="achievements"
+                    value={achievements}
+                    onChange={(e) => setAchievements(e.target.value)}
+                    placeholder="Bijv. goed geholpen thuis, goed leren lezen"
+                    className="w-full p-2 border rounded-md text-sm min-h-[50px]"
+                  />
+                </CollapsibleContent>
+              </Collapsible>
 
-              <div>
-                <Label htmlFor="behavior">Gedrag (optioneel)</Label>
-                <textarea
-                  id="behavior"
-                  value={behaviorNotes}
-                  onChange={(e) => setBehaviorNotes(e.target.value)}
-                  placeholder="Positief gedrag om te noemen in de voicemail"
-                  className="w-full mt-1 p-2 border rounded-md min-h-[80px]"
-                />
-              </div>
+              <Collapsible open={showBehavior} onOpenChange={setShowBehavior}>
+                <CollapsibleTrigger className="flex items-center justify-between w-full text-left p-2 hover:bg-gray-50 rounded-lg">
+                  <Label className="text-sm font-medium">💙 Gedrag (optioneel)</Label>
+                  {showBehavior ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-2">
+                  <textarea
+                    id="behavior"
+                    value={behaviorNotes}
+                    onChange={(e) => setBehaviorNotes(e.target.value)}
+                    placeholder="Positief gedrag om te noemen"
+                    className="w-full p-2 border rounded-md text-sm min-h-[50px]"
+                  />
+                </CollapsibleContent>
+              </Collapsible>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle>Toon & Stijl van de Voicemail</CardTitle>
-              <CardDescription>Kies de stijl die bij je kind past</CardDescription>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Stijl & Toon</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">
               {/* Rhyming Toggle */}
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-yellow-50 rounded-lg border border-red-200">
-                <div className="flex-1">
-                  <Label htmlFor="rhyming" className="flex items-center gap-2 cursor-pointer">
-                    <span className="text-lg">🎵</span>
-                    <span className="font-semibold">Rijmd Voicemail</span>
-                  </Label>
-                  <p className="text-xs text-muted-foreground mt-1 ml-8">
-                    Maak de voicemail rijmd zoals een Sinterklaas gedicht (extra leuk voor kinderen!)
-                  </p>
-                </div>
+              <div className="flex items-center justify-between p-3 bg-gradient-to-r from-red-50 to-yellow-50 rounded-lg border border-red-200">
+                <Label htmlFor="rhyming" className="flex items-center gap-2 cursor-pointer">
+                  <span className="text-base">🎵</span>
+                  <span className="font-medium text-sm">Rijmd Voicemail</span>
+                </Label>
                 <Switch
                   id="rhyming"
                   checked={rhyming}
@@ -379,16 +387,11 @@ export default function SinterklaasVoicemailPage() {
               </div>
 
               {/* Explicit Mode Toggle */}
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border-2 border-red-300">
-                <div className="flex-1">
-                  <Label htmlFor="explicit" className="flex items-center gap-2 cursor-pointer">
-                    <span className="text-lg">🎭</span>
-                    <span className="font-bold text-red-700">Explicit Mode (18+)</span>
-                  </Label>
-                  <p className="text-xs text-red-600 mt-1 ml-8 font-medium">
-                    ⚠️ Grof taalgebruik - Sinterklaas kan echt schelden! Niet lief, maar wel grappig. Alleen voor volwassenen/oudere kinderen.
-                  </p>
-                </div>
+              <div className="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border-2 border-red-300">
+                <Label htmlFor="explicit" className="flex items-center gap-2 cursor-pointer">
+                  <span className="text-base">🎭</span>
+                  <span className="font-bold text-red-700 text-sm">Explicit (18+)</span>
+                </Label>
                 <Switch
                   id="explicit"
                   checked={explicit}
@@ -397,20 +400,17 @@ export default function SinterklaasVoicemailPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2">
                 {TONES.map(t => (
                   <Button
                     key={t.value}
                     size="sm"
                     variant={tone === t.value ? "default" : "outline"}
                     onClick={() => setTone(t.value)}
-                    className="h-auto py-3 flex-col items-start"
+                    className="h-8 px-3 text-xs"
                   >
-                    <div className="flex items-center gap-2 w-full">
-                      <span className="text-lg">{t.emoji}</span>
-                      <span className="font-semibold">{t.label}</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground mt-1">{t.description}</span>
+                    <span className="mr-1">{t.emoji}</span>
+                    {t.label}
                   </Button>
                 ))}
               </div>
