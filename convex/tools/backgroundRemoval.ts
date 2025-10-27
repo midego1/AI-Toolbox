@@ -97,8 +97,8 @@ export const removeBackground = action({
         headers: {
           "Authorization": `Bearer ${apiKey}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "https://ai-toolbox.app",
-          "X-Title": "AI Toolbox - Background Removal",
+          "HTTP-Referer": "https://sinterklaasgpt.com",
+          "X-Title": "SinterklaasGPT - Background Removal",
         },
         body: JSON.stringify({
           model: MODELS.GEMINI_FLASH_IMAGE,
