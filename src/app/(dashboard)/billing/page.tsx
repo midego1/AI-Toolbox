@@ -25,7 +25,7 @@ import {
   RefreshCw,
   Receipt
 } from "lucide-react";
-import { getAuthToken } from "@/lib/auth-client";
+import { useAuthToken } from "@/hooks/useAuthToken";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 
@@ -110,20 +110,16 @@ const creditPackages = [
 ];
 
 export default function BillingPage() {
-  const [token, setToken] = useState<string | null>(null);
+  // Get auth token using the hook (from Clerk)
+  const token = useAuthToken();
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const [cancelLoading, setCancelLoading] = useState(false);
   const [stripeConfigured, setStripeConfigured] = useState(true);
 
-  // Get auth token from localStorage
+  // Debug logging for token state
   useEffect(() => {
-    const storedToken = getAuthToken();
-    console.log("🔑 Token from localStorage:", storedToken ? `Present (${storedToken.length} chars)` : "Missing");
-    setToken(storedToken);
-    
-    // Check if Stripe is configured by attempting to create a test checkout
-    // This will be checked when user tries to purchase
-  }, []);
+    console.log("🔑 Billing page - Token:", token ? `Present (${token.length} chars)` : "Missing");
+  }, [token]);
 
   // Get user data
   const user = useQuery(
@@ -1111,7 +1107,7 @@ export default function BillingPage() {
                   )}
                 </>
               )}
-              <p>LocalStorage Token: {typeof window !== 'undefined' ? (getAuthToken() ? '✅ Present' : '❌ Missing') : 'N/A'}</p>
+              <p>Auth Method: Clerk via useAuthToken hook</p>
             </div>
           </CardContent>
         </Card>
