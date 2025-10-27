@@ -245,40 +245,61 @@ npx convex dashboard # Open Convex dashboard
 
 3. Add to sidebar in `/src/components/layout/sidebar.tsx`
 
-## Deployment
+## 🚀 Deployment
 
-### Production Deployment
+### Vercel Deployment (Recommended)
 
-1. **Deploy Convex Backend**
-   ```bash
-   npx convex deploy
-   ```
-   - Note the production URL provided
+Deploy to Vercel with automatic builds after every GitHub push:
 
-2. **Deploy to Vercel**
-   - Connect your GitHub repository
-   - Add environment variables:
-     - `NEXT_PUBLIC_CONVEX_URL` (from step 1)
-     - Stripe keys
-     - AI service API keys
-   - Deploy!
+📚 **[Quick Start Guide](./VERCEL_QUICK_START.md)** - Deploy in 15 minutes  
+📖 **[Complete Guide](./VERCEL_DEPLOYMENT_GUIDE.md)** - Full deployment instructions  
+🌿 **[Branch Strategy](./BRANCH_STRATEGY_GUIDE.md)** - Multi-environment workflow (dev/staging/prod)  
+⚡ **[Git Workflow](./GIT_WORKFLOW_QUICK_REFERENCE.md)** - Daily commands & workflow
 
-3. **Configure Stripe Webhooks**
-   - Point webhook to `https://your-app.vercel.app/api/webhooks/stripe`
+**Quick Overview:**
+1. Deploy Convex backend: `npx convex deploy --prod`
+2. Get API keys from [Clerk](https://clerk.com) and [Stripe](https://stripe.com)
+3. Connect GitHub repo to [Vercel](https://vercel.com)
+4. Add environment variables
+5. Deploy!
 
-### Environment Variables
+### Environment Variables Required
 
-Required for production:
-- `NEXT_PUBLIC_CONVEX_URL` - From `npx convex deploy`
-- `STRIPE_SECRET_KEY` - Stripe secret key
-- `STRIPE_PUBLISHABLE_KEY` - Stripe publishable key
-- `STRIPE_WEBHOOK_SECRET` - Stripe webhook signing secret
-- `OPENAI_API_KEY` - OpenAI API key (for image generation)
-- `GOOGLE_CLOUD_VISION_API_KEY` - Google Vision API key (for OCR)
-- `DEEPL_API_KEY` - DeepL API key (for translation)
+**Vercel Environment Variables:**
 
-Optional:
-- `REPLICATE_API_TOKEN` - Replicate API token (for headshots)
+```bash
+# Convex Backend
+NEXT_PUBLIC_CONVEX_URL=https://your-url.convex.cloud
+
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+
+# Stripe Payments
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRO_PRICE_ID=price_...
+STRIPE_ENTERPRISE_PRICE_ID=price_...
+
+# App URL
+NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
+```
+
+**Convex Environment Variables** (set in Convex dashboard):
+
+```bash
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PRO_PRICE_ID=price_...
+STRIPE_ENTERPRISE_PRICE_ID=price_...
+```
+
+### AI Service API Keys (Optional)
+
+- `OPENAI_API_KEY` - For image generation (DALL-E 3)
+- `GOOGLE_CLOUD_VISION_API_KEY` - For OCR
+- `DEEPL_API_KEY` - For translation
+- `REPLICATE_API_TOKEN` - For headshots
 
 ## Security
 

@@ -229,3 +229,4 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 5. **Check both Stripe and Convex logs** when debugging issues
 
 
+
