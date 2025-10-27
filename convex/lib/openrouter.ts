@@ -107,6 +107,138 @@ export async function callOpenRouter(
 }
 
 /**
+ * Generate image with image inputs (image-to-image)
+ * Takes actual images as input and generates based on them
+ */
+export async function generateImageFromImages(
+  personImageUrl: string,
+  itemImageUrl: string,
+  instructions: string
+): Promise<string> {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("OPENROUTER_API_KEY not configured");
+  }
+
+  try {
+    console.log(`\n${"=".repeat(80)}`);
+    console.log(`🎨 IMAGE-TO-IMAGE GENERATION STARTING`);
+    console.log(`${"=".repeat(80)}`);
+    console.log(`📝 Instructions: "${instructions}"`);
+    console.log(`🔧 Model: ${MODELS.GEMINI_FLASH_IMAGE}`);
+    
+    const requestBody = {
+      model: MODELS.GEMINI_FLASH_IMAGE,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: instructions,
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: personImageUrl,
+              },
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: itemImageUrl,
+              },
+            },
+          ],
+        },
+      ],
+      modalities: ["image", "text"],
+      temperature: 0.8,
+    };
+    
+    console.log(`📤 Request with 2 input images`);
+    
+    const response = await fetch(OPENROUTER_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://ai-toolbox.app",
+        "X-Title": "AI Toolbox",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    console.log(`📥 Response status: ${response.status} ${response.statusText}`);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`❌ OPENROUTER API ERROR:`, errorText);
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log(`✅ Got successful response from OpenRouter`);
+    
+    // Extract image from response (same logic as generateImage)
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error("Invalid response structure from OpenRouter");
+    }
+
+    const message = data.choices[0].message;
+
+    // Check for images array
+    if (message.images && Array.isArray(message.images) && message.images.length > 0) {
+      const image = message.images[0];
+      
+      if (image.encoded_image) {
+        const dataUrl = `data:image/png;base64,${image.encoded_image}`;
+        console.log(`🎉 Got image from encoded_image field`);
+        return dataUrl;
+      }
+      
+      const imageUrl = image.image_url?.url || image.url || image.data_url || image.data;
+      if (imageUrl) {
+        console.log(`🎉 Got image URL`);
+        return imageUrl;
+      }
+      
+      if (typeof image === 'string') {
+        console.log(`🎉 Image is a string`);
+        return image;
+      }
+    }
+
+    // Check content field
+    if (message.content) {
+      if (Array.isArray(message.content)) {
+        for (const part of message.content) {
+          if (part.type === 'image' || part.type === 'image_url') {
+            const url = part.image_url?.url || part.url || part.data;
+            if (url) {
+              console.log(`🎉 Found image in content array`);
+              return url;
+            }
+          }
+        }
+      }
+      
+      if (typeof message.content === 'string' && message.content.startsWith('data:image')) {
+        console.log(`🎉 Found data URL in content string`);
+        return message.content;
+      }
+    }
+
+    throw new Error("No image generated in response");
+
+  } catch (error: any) {
+    console.error("❌ Image-to-image generation error:", error);
+    throw new Error(`Failed to generate image: ${error.message}`);
+  }
+}
+
+/**
  * Generate image using OpenRouter with Gemini 2.5 Flash Image
  * Returns base64 data URL of generated image
  */
@@ -468,4 +600,96 @@ export function estimateCost(
  */
 export function estimateImageCost(): number {
   return 0.039; // ~4 cents per image
+}
+
+/**
+ * Call OpenRouter API with streaming support
+ * Streams tokens as they arrive for real-time display
+ */
+export async function callOpenRouterStreaming(
+  messages: OpenRouterMessage[],
+  options: OpenRouterOptions = {},
+  onToken: (token: string) => void
+): Promise<void> {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("OPENROUTER_API_KEY not configured");
+  }
+
+  const {
+    model = MODELS.GEMINI_FLASH,
+    temperature = 0.7,
+    maxTokens = 2000,
+    topP = 1,
+  } = options;
+
+  try {
+    const response = await fetch(OPENROUTER_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://ai-toolbox.app",
+        "X-Title": "AI Toolbox",
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature,
+        max_tokens: maxTokens,
+        top_p: topP,
+        stream: true, // Enable streaming
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(
+        `OpenRouter API error: ${error.error?.message || response.statusText}`
+      );
+    }
+
+    // Process the stream
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error("No response body");
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+
+      // Keep the last incomplete line in the buffer
+      buffer = lines.pop() || "";
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed === "data: [DONE]") continue;
+
+        if (trimmed.startsWith("data: ")) {
+          try {
+            const json = JSON.parse(trimmed.slice(6));
+            const content = json.choices?.[0]?.delta?.content;
+            if (content) {
+              onToken(content);
+            }
+          } catch (e) {
+            // Skip invalid JSON
+            console.error("Failed to parse SSE data:", e);
+          }
+        }
+      }
+    }
+  } catch (error: any) {
+    console.error("OpenRouter streaming error:", error);
+    throw new Error(`Failed to stream from OpenRouter: ${error.message}`);
+  }
 }

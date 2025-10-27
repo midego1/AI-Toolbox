@@ -8,6 +8,7 @@ import { Shirt, Upload, Download, Sparkles, X } from "lucide-react";
 import { useAction, useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { getAuthToken } from "@/lib/auth-client";
+import { WardrobeHistory } from "@/components/wardrobe/WardrobeHistory";
 
 export default function WardrobePage() {
   const [personImage, setPersonImage] = useState<File | null>(null);
@@ -343,6 +344,9 @@ export default function WardrobePage() {
             </CardContent>
           </Card>
         )}
+
+        {/* History Section */}
+        <WardrobeHistory />
       </div>
     </div>
   );

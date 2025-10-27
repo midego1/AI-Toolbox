@@ -18,3 +18,4 @@ cd "$(dirname "$0")"
 
 npx convex run adminTools:addCredits --args "{\"email\":\"$EMAIL\",\"amount\":$AMOUNT}"
 
+

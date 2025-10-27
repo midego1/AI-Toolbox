@@ -159,8 +159,31 @@ export const getUserProfile = query({
       subscriptionTier: user.subscriptionTier,
       creditsBalance: user.creditsBalance,
       stripeCustomerId: user.stripeCustomerId,
+      language: user.language || "nl", // Default to Dutch
       createdAt: user.createdAt,
     };
+  },
+});
+
+// Update user language preference
+export const updateUserLanguage = mutation({
+  args: {
+    token: v.string(),
+    language: v.string(), // "nl" or "en"
+  },
+  handler: async (ctx, args) => {
+    const userId = await verifySession(ctx, args.token);
+    
+    if (args.language !== "nl" && args.language !== "en") {
+      throw new Error("Invalid language. Must be 'nl' or 'en'");
+    }
+
+    await ctx.db.patch(userId, {
+      language: args.language,
+      updatedAt: Date.now(),
+    });
+
+    return { success: true, language: args.language };
   },
 });
 

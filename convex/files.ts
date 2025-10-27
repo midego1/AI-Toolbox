@@ -31,6 +31,25 @@ export const getFileUrl = query({
   },
 });
 
+// Get multiple file URLs at once
+export const getFileUrls = query({
+  args: {
+    token: v.string(),
+    storageIds: v.array(v.id("_storage")),
+  },
+  handler: async (ctx, args) => {
+    // Verify user is authenticated
+    await verifySession(ctx, args.token);
+
+    // Get file URLs
+    const urls = await Promise.all(
+      args.storageIds.map(id => ctx.storage.getUrl(id))
+    );
+    
+    return urls;
+  },
+});
+
 // Delete a file
 export const deleteFile = mutation({
   args: {

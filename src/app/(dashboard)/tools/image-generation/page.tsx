@@ -9,6 +9,8 @@ import { Image as ImageIcon, Download, Sparkles } from "lucide-react";
 import { useAction } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { getAuthToken } from "@/lib/auth-client";
+import { ImageGenerationHistory } from "@/components/image-generation/ImageGenerationHistory";
+import { PremiumOverlay } from "@/components/layout/premium-overlay";
 
 export default function ImageGenerationPage() {
   const [prompt, setPrompt] = useState("");
@@ -66,6 +68,7 @@ export default function ImageGenerationPage() {
   };
 
   return (
+    <PremiumOverlay toolId="image-generation">
     <div className="container mx-auto p-6 max-w-6xl">
       {/* Page Header */}
       <div className="mb-6">
@@ -206,7 +209,13 @@ export default function ImageGenerationPage() {
             </CardContent>
           </Card>
         )}
+
+        {/* History Section */}
+        <div className="mt-8">
+          <ImageGenerationHistory />
+        </div>
       </div>
     </div>
+    </PremiumOverlay>
   );
 }

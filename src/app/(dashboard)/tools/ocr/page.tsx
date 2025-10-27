@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { FileText, Upload, Copy, Download, Image as ImageIcon, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import { TextToolHistory } from "@/components/shared/TextToolHistory";
 
 export default function OCRPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -385,6 +386,17 @@ export default function OCRPage() {
             </CardContent>
           </Card>
         )}
+
+        {/* History Section */}
+        <div className="mt-8">
+          <TextToolHistory
+            toolName="OCR"
+            queryFunction={api.aiJobs.getOCRHistory}
+            icon={FileText}
+            extractTitle={(job) => "Text Extraction"}
+            extractPreview={(job) => job.outputData?.extractedText || "OCR completed"}
+          />
+        </div>
       </div>
     </div>
   );

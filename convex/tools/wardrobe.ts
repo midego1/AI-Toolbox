@@ -19,6 +19,7 @@ export const virtualTryOnTool = action({
     token: v.string(),
     personImageId: v.id("_storage"),
     clothingImageId: v.id("_storage"),
+    itemType: v.optional(v.string()),
     style: v.optional(v.string()),
   },
   handler: async (ctx, args): Promise<any> => {
@@ -145,47 +146,34 @@ export const virtualTryOnTool = action({
 
           const specificInstructions = itemTypeInstructions[itemType] || itemTypeInstructions["accessories"];
           
-          console.log(`  - Generating detailed prompt from uploaded images...`);
+          console.log(`  - Using IMAGE-TO-IMAGE generation with actual uploaded images...`);
           
-          // Use OpenRouter to create an enhanced prompt
-          const enhancedPrompt = await callOpenRouter([
-            {
-              role: "system",
-              content: "You are a fashion photography expert specializing in virtual try-on and clothing visualization. You create detailed prompts for AI image generation that produce photorealistic results.",
-            },
-            {
-              role: "user",
-              content: `Create a photorealistic image generation prompt for a virtual try-on scenario.
+          // Create direct instructions for image-to-image generation
+          const imageToImageInstructions = `You are looking at two images:
+1. A person's photo
+2. A fashion item (${itemType})
 
 ${specificInstructions}
 
 Photography Style: ${args.style || "realistic"}
-Item Type: ${itemType}
 
-Generate a detailed, specific prompt that will produce a photorealistic image. Include:
-- Physical description (hair, face, pose, expression)
-- The item being tried on with specific details
-- Lighting, background, and atmosphere
-- Photography quality and style
-- Realistic textures and materials
+CRITICAL: You must analyze the ACTUAL person in image 1 and the ACTUAL item in image 2.
+${itemType === "accessories" ? "Since this is an accessory, preserve the EXACT person from image 1 and only add the accessory item from image 2." : "Maintain the person's identity from image 1 while applying the fashion item from image 2."}
 
-${itemType === "accessories" ? "REMEMBER: This is an accessory - preserve ALL facial features and appearance!" : ""}
+Generate a photorealistic image showing this specific person wearing/using this specific item.
+Match the lighting, perspective, and quality of the original photo.`;
 
-Output ONLY the detailed image generation prompt, nothing else. Be extremely specific and vivid.`,
-            },
-          ], {
-            model: MODELS.GEMINI_FLASH,
-            temperature: 0.7,
-            maxTokens: 500,
-          });
+          console.log(`  ✓ Image-to-image instructions created`);
 
-          console.log(`  ✓ Enhanced prompt created:`, enhancedPrompt.substring(0, 200) + "...");
-
-          console.log(`\n🎨 Step 7: Generating virtual try-on image...`);
+          console.log(`\n🎨 Step 7: Generating virtual try-on with IMAGE-TO-IMAGE...`);
           
-          // Import the generateImage function to create the composite
-          const { generateImage } = await import("../lib/openrouter");
-          imageDataUrl = await generateImage(enhancedPrompt);
+          // Use image-to-image generation with actual images
+          const { generateImageFromImages } = await import("../lib/openrouter");
+          imageDataUrl = await generateImageFromImages(
+            personImageUrl!,
+            clothingImageUrl!,
+            imageToImageInstructions
+          );
 
           console.log(`\n✅ Image generation returned successfully`);
           console.log(`  - Image URL type:`, imageDataUrl.startsWith('data:') ? 'Data URL' : 'External URL');

@@ -1,0 +1,5 @@
+Here's what you'll see in the console:
+
+🔍 Sidebar Debug: {user: Object, isAdmin: false, userIsAdmin: false, userId: "k123...", userEmail: "you@email.com"}
+  └─ Click the arrow ▶ to expand
+  └─ Click on "user: Object" to see the full user data

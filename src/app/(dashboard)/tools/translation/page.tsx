@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Languages, Copy, Download, ArrowRightLeft } from "lucide-react";
+import { api } from "../../../../../convex/_generated/api";
+import { TextToolHistory } from "@/components/shared/TextToolHistory";
 
 const languages = [
   { code: "en", name: "English" },
@@ -184,6 +186,17 @@ export default function TranslationPage() {
           >
             {isTranslating ? "Translating..." : `Translate (${estimatedCredits} credit${estimatedCredits > 1 ? 's' : ''})`}
           </Button>
+        </div>
+
+        {/* History Section */}
+        <div className="mt-8">
+          <TextToolHistory
+            toolName="Translation"
+            queryFunction={api.aiJobs.getTranslationHistory}
+            icon={Languages}
+            extractTitle={(job) => `${job.inputData?.sourceLang || 'Auto'} → ${job.inputData?.targetLang || 'Unknown'}`}
+            extractPreview={(job) => job.outputData?.translatedText || job.inputData?.text || "Translation"}
+          />
         </div>
       </div>
     </div>
