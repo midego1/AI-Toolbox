@@ -174,37 +174,37 @@ BELANGRIJK:
 Gebruik GROF taalgebruik door de hele voicemail heen waar passend. Het hoeft niet lief te zijn!
 ` : "";
 
-      const scriptPrompt = `Je bent Sinterklaas, en je imiteert PRECIES de stijl van Bram van der Vlught - de legendarische Nederlandse Sinterklaas.
-
-Gebruik dit storyboard om een warme, persoonlijke voice boodschap te schrijven:
-
-STORYBOARD:
-${storyboard}
-
-${rhymingInstructions}${explicitInstructions}
-
-${args.explicit ? `
+      // Build the script prompt with proper string concatenation
+      let styleSection = "";
+      if (args.explicit) {
+        styleSection = `
 🎭 EXPLICITE MODE - GROF & GRAPIG:
 - Spreek grappig en grof, NIET lief of warm nodig
 - Over-the-top Sinterklaas die scheldt
 - Grappig en entertainend
-` : `
+`;
+      } else {
+        styleSection = `
 Bram van der Vlught's kenmerkende stijl:
 - Rustige, kalme stem - geen haast of druk
 - Warme en zachte intonatie - als een lieve opa
 - Traditonele, eerbiedige benadering - geen moderne slang
 - Geduldig en begripvol - neem de tijd voor elk woord
 - Authentieke Sinterklaas uitstraling - wijs en liefdevol
-`}
+`;
+      }
 
-De voicemail moet:
-${args.explicit ? `
+      let voicemailMustSection = "";
+      if (args.explicit) {
+        voicemailMustSection = `
 - GROF en GRAPIG zijn - NIET lief nodig!
 - Nederlandse scheldwoorden gebruiken waar passend
 - Grappig, entertainend, over-the-top
 - 35-50 seconden (90-130 woorden)
 - Sinterklaas elementen met GROFHEID combineren
-` : `
+`;
+      } else {
+        voicemailMustSection = `
 - Natuurlijke Nederlandse spraak gebruiken (zoals Bram van der Vlught spreekt)
 - Rustig en kalm zijn - geen gejaagdheid
 - Warme, zachte toon hebben - liefdevol en toegewijd
@@ -212,27 +212,43 @@ ${args.explicit ? `
 - Klassieke Sinterklaas elementen bevatten (schoorsteen, pakjes, de Pieten)
 - Geen moderne taal - gebruik traditionele Nederlandse woorden
 ${toneInstruction}
-`}
+`;
+      }
 
-${args.explicit ? `
+      let importantSection = "";
+      if (args.explicit) {
+        const achievementsText = args.achievements ? `- NOEM: ${args.achievements}\n` : "";
+        const behaviorText = args.behavior_notes ? `- VERWIJS NAAR: ${args.behavior_notes}\n` : "";
+        importantSection = `
 BELANGRIJK - EXPLICITE MODE:
 - Gebruik GROF taalgebruik door de hele voicemail
 - Maak het ENTERTAINEND en GRAPIG
 - NIET warm of lief nodig
 - Scheld met grappige contexten
-- ${args.achievements ? `NOEM: ${args.achievements}` : ""}
-- ${args.behavior_notes ? `VERWIJS NAAR: ${args.behavior_notes}` : ""}
-- Over-the-top en hilarisch
-` : `
+${achievementsText}${behaviorText}- Over-the-top en hilarisch
+`;
+      } else {
+        const achievementsText = args.achievements ? `- NOEM SPECIFIEK deze prestaties: ${args.achievements}\n` : "";
+        const behaviorText = args.behavior_notes ? `- VERRWIJS NAAR dit gedrag: ${args.behavior_notes}\n` : "";
+        importantSection = `
 BELANGRIJK: 
 - Neem de tijd om dieper in te gaan op de persoonlijke details
 - Imiteer Bram van der Vlught's rustige, warme toon
 - Gebruik kalme zinnen zonder haast
 - Wees authentiek Sinterklaas, niet modern
 - Pas de toon aan volgens: ${args.tone || "liefdevol"}
-${args.achievements ? `\n- NOEM SPECIFIEK deze prestaties: ${args.achievements}` : ""}
-${args.behavior_notes ? `\n- VERRWIJS NAAR dit gedrag: ${args.behavior_notes}` : ""}
-`}
+${achievementsText}${behaviorText}`;
+      }
+
+      const scriptPrompt = `Je bent Sinterklaas, en je imiteert PRECIES de stijl van Bram van der Vlught - de legendarische Nederlandse Sinterklaas.
+
+Gebruik dit storyboard om een warme, persoonlijke voice boodschap te schrijven:
+
+STORYBOARD:
+${storyboard}
+
+${rhymingInstructions}${explicitInstructions}${styleSection}
+De voicemail moet:${voicemailMustSection}${importantSection}
 
 Schrijf de exacte tekst die gesproken wordt. Geen markdown, alleen gewone tekst.`;
 
