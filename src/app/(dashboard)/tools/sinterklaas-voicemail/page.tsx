@@ -206,29 +206,96 @@ export default function SinterklaasVoicemailPage() {
     alert("Script gekopieerd!");
   };
 
+  // Determine if we should show compact form
+  const showCompactForm = results !== null;
+
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
-      <div className="mb-6">
-        <div className="flex items-center space-x-3 mb-2">
-          <div className="relative">
-            <Phone className="h-8 w-8 text-red-600" />
-            <Sparkles className="h-4 w-4 text-yellow-500 absolute -top-1 -right-1 animate-pulse" />
+    <div className="container mx-auto p-4 lg:p-6 max-w-7xl">
+      {/* Compact Header */}
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Phone className="h-7 w-7 lg:h-8 lg:w-8 text-red-600" />
+              <Sparkles className="h-3 w-3 lg:h-4 lg:w-4 text-yellow-500 absolute -top-1 -right-1 animate-pulse" />
+            </div>
+            <div>
+              <h1 className="text-2xl lg:text-3xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent">
+                Sinterklaas Voicemail{results && ` - ${childName}`}
+              </h1>
+              <p className="text-xs lg:text-sm text-muted-foreground">
+                {results ? "✨ Voicemail klaar!" : "🎅 Een speciale audio boodschap"}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent">
-              Sinterklaas Voicemail
-            </h1>
-            <p className="text-sm text-muted-foreground">🎅 Een speciale audio boodschap van Sinterklaas</p>
-          </div>
+          {results && (
+            <div className="text-sm bg-green-50 text-green-700 px-3 py-1 rounded-full border border-green-200">
+              ✅ {results.creditsUsed} credits
+            </div>
+          )}
         </div>
-        <p className="text-muted-foreground mt-2">
-          Creëer een magische, persoonlijke voicemail van Sinterklaas voor je kind - met echte stem en authenticiteit!
-        </p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Input Section */}
-        <div className="space-y-6">
+      {/* Adaptive two-column layout */}
+      <div className={`grid gap-4 lg:gap-6 ${showCompactForm ? 'lg:grid-cols-[30%_70%]' : 'lg:grid-cols-[45%_55%]'}`}>
+        {/* Left Column: Form or Compact Summary */}
+        <div className="space-y-4 lg:space-y-6">
+          {showCompactForm ? (
+            /* Compact Form Summary */
+            <Card className="border-2 border-green-100 bg-green-50/30 lg:sticky lg:top-6">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <span className="text-green-600">✅</span> Instellingen
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <span className="font-semibold">Kind:</span> {childName}, {age} jaar
+                  </div>
+                  <div>
+                    <span className="font-semibold">Toon:</span> {TONES.find(t => t.value === tone)?.emoji} {TONES.find(t => t.value === tone)?.label}
+                  </div>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {rhyming && <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">🎵 Rijmd</span>}
+                    {explicit && <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">🎭 18+</span>}
+                  </div>
+                </div>
+                <div className="pt-2 space-y-2 border-t">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full text-xs"
+                    onClick={() => {
+                      // Scroll to top, show form again
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      setResults(null);
+                    }}
+                  >
+                    ✏️ Bewerk
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    className="w-full text-xs bg-gradient-to-r from-red-600 to-red-700"
+                    onClick={() => {
+                      setResults(null);
+                      setChildName("");
+                      setAge(undefined);
+                      setAchievements("");
+                      setBehaviorNotes("");
+                      setTone("liefdevol");
+                      setRhyming(false);
+                      setExplicit(false);
+                    }}
+                  >
+                    🆕 Nieuwe Voicemail
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            /* Full Form */
+            <div className="space-y-4 lg:space-y-6">
           <Card className="border-2 border-red-100">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -396,11 +463,16 @@ export default function SinterklaasVoicemailPage() {
               )}
             </CardContent>
           </Card>
+            </div>
+          )}
         </div>
 
-        {/* Results Section */}
+        {/* Right Column: Support Content or Results */}
         <div className="space-y-4">
-          {results ? (
+          {showCompactForm ? (
+            /* Results Content */
+            <div className="space-y-4">
+          {results && (
             <>
               <Card className="border-2 border-red-200 bg-gradient-to-br from-red-50 to-white">
                 <CardHeader>
@@ -544,19 +616,45 @@ export default function SinterklaasVoicemailPage() {
                 </CardContent>
               </Card>
             </>
+          ))}
+            </div>
           ) : (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center text-muted-foreground py-16">
-                  <div className="relative inline-block mb-6">
-                    <Phone className="h-16 w-16 mx-auto opacity-50" />
-                    <Sparkles className="h-8 w-8 text-yellow-500 absolute -top-2 -right-2 animate-pulse" />
+            /* Support Content (Pro Tips & Recent) */
+            <>
+              <Card className="bg-blue-50 border-blue-200">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    💡 Pro Tips
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm space-y-2">
+                  <p>• Persoonlijk & authentiek voor je kind</p>
+                  <p>• Download voor 5 december</p>
+                  <p>• Rijmd = extra speciaal</p>
+                  <p>• 45-60 seconden audio</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-blue-100">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm">✨ Creatieve Ideeën</CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm space-y-2">
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                    <p className="font-semibold text-purple-800 mb-1">🎄 Op Sinterklaas avond:</p>
+                    <p className="text-xs text-purple-700">
+                      "Sinterklaas belde! Hij heeft een boodschap voor je achtergelaten!"
+                    </p>
                   </div>
-                  <h3 className="font-semibold mb-2">Klaar voor magie?</h3>
-                  <p className="text-sm">Vul de gegevens in en genereer een persoonlijke<br />voicemail van Sinterklaas voor je kind!</p>
-                </div>
-              </CardContent>
-            </Card>
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                    <p className="font-semibold text-green-800 mb-1">📱 Tip:</p>
+                    <p className="text-xs text-green-700">
+                      Download de MP3 en zet 'm als wake-up op 5 december!
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
           )}
         </div>
       </div>
@@ -578,8 +676,6 @@ function VoicemailHistory() {
 
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [audioRefs, setAudioRefs] = useState<Map<string, HTMLAudioElement>>(new Map());
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [audioStates, setAudioStates] = useState<Map<string, { currentTime: number; duration: number }>>(new Map());
 
   const handlePlayPause = (jobId: string, audioUrl: string | null) => {
     if (!audioUrl) return;
@@ -603,33 +699,8 @@ function VoicemailHistory() {
       // Play new audio
       const audio = new Audio(audioUrl);
       
-      audio.addEventListener('loadedmetadata', () => {
-        setAudioStates(prev => {
-          const newState = new Map(prev);
-          newState.set(jobId, { currentTime: 0, duration: audio.duration });
-          return newState;
-        });
-      });
-      
-      audio.addEventListener('timeupdate', () => {
-        setAudioStates(prev => {
-          const newState = new Map(prev);
-          const current = newState.get(jobId) || { currentTime: 0, duration: 0 };
-          newState.set(jobId, { ...current, currentTime: audio.currentTime });
-          return newState;
-        });
-      });
-      
       audio.addEventListener('ended', () => {
         setPlayingId(null);
-        setAudioStates(prev => {
-          const newState = new Map(prev);
-          const current = newState.get(jobId);
-          if (current) {
-            newState.set(jobId, { ...current, currentTime: 0 });
-          }
-          return newState;
-        });
       });
       
       audio.addEventListener('error', () => {
@@ -646,39 +717,9 @@ function VoicemailHistory() {
       });
       
       setPlayingId(jobId);
-      setExpandedId(jobId); // Expand when playing
     }
   };
 
-  const handleStopHistory = (jobId: string) => {
-    const audio = audioRefs.get(jobId);
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-    }
-    setPlayingId(null);
-  };
-
-  const handleSeekHistory = (jobId: string, newTime: number) => {
-    const audio = audioRefs.get(jobId);
-    if (audio) {
-      audio.currentTime = newTime;
-      setAudioStates(prev => {
-        const newState = new Map(prev);
-        const current = newState.get(jobId);
-        if (current) {
-          newState.set(jobId, { ...current, currentTime: newTime });
-        }
-        return newState;
-      });
-    }
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
 
   const handleDownload = async (audioUrl: string | null, childName: string) => {
     if (!audioUrl) return;
@@ -710,13 +751,20 @@ function VoicemailHistory() {
   }
 
   return (
-    <Card>
+    <Card className="mt-6">
       <CardHeader>
-        <CardTitle>Recente Voicemails</CardTitle>
-        <CardDescription>Je recent gegenereerde voicemails van Sinterklaas</CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg">Recente Voicemails</CardTitle>
+            <CardDescription className="mt-1">Je recent gegenereerde voicemails van Sinterklaas</CardDescription>
+          </div>
+          <Button variant="ghost" size="sm" className="text-xs">
+            Alles weergeven →
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {history.items.map((job: any) => {
             let childName = "Onbekend";
             let audioUrl: string | null = null;
@@ -736,140 +784,49 @@ function VoicemailHistory() {
 
             const hasAudio = !!audioUrl;
             const isPlaying = playingId === job._id;
-            const isExpanded = expandedId === job._id;
-            const audioState = audioStates.get(job._id) || { currentTime: 0, duration: 0 };
 
             return (
-              <div key={job._id} className="border rounded-lg transition-all">
-                <div 
-                  className="p-4 hover:bg-red-50 cursor-pointer"
-                  onClick={() => setExpandedId(isExpanded ? null : job._id)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
-                        <Phone className="h-5 w-5 text-red-600" />
-                      </div>
-                      <div>
-                        <div className="font-semibold">🎵 Voicemail voor {childName}</div>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(job.createdAt).toLocaleDateString('nl-NL')} • {job.creditsUsed} credits
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      {isExpanded ? (
-                        <ChevronUp className="h-5 w-5 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                      )}
+              <div 
+                key={job._id} 
+                className="border rounded-lg p-4 bg-white hover:bg-red-50 hover:border-red-300 transition-all cursor-pointer group"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center group-hover:bg-red-200 transition-colors flex-shrink-0">
+                    <Phone className="h-5 w-5 text-red-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-sm truncate">🎵 {childName}</div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {new Date(job.createdAt).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-7 text-xs px-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (hasAudio) {
+                            handlePlayPause(job._id, audioUrl);
+                          }
+                        }}
+                      >
+                        {isPlaying && playingId === job._id ? '⏸️' : '▶️'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-7 text-xs px-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDownload(audioUrl, childName);
+                        }}
+                      >
+                        ⬇️
+                      </Button>
                     </div>
                   </div>
                 </div>
-
-                {isExpanded && (
-                  <div className="border-t p-4 space-y-4">
-                    {hasAudio && (
-                      <div className="bg-gradient-to-r from-red-100 to-red-50 p-4 rounded-lg">
-                        <div className="flex flex-col items-center gap-3">
-                          {/* Play/Pause Controls */}
-                          <div className="flex items-center justify-center gap-2">
-                            {audioRefs.get(job._id) && (
-                              <Button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleStopHistory(job._id);
-                                }}
-                                variant="outline"
-                                size="sm"
-                                className="rounded-full border-2"
-                              >
-                                <Square className="h-3 w-3" />
-                              </Button>
-                            )}
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handlePlayPause(job._id, audioUrl);
-                              }}
-                              size="lg"
-                              className="bg-red-600 hover:bg-red-700 text-white rounded-full w-14 h-14 shadow-lg flex items-center justify-center p-0"
-                            >
-                              {isPlaying ? (
-                                <Pause className="h-6 w-6 fill-white" />
-                              ) : (
-                                <Play className="h-6 w-6 ml-1 fill-white" />
-                              )}
-                            </Button>
-                          </div>
-                          
-                          {/* Progress Bar */}
-                          {audioState.duration > 0 && (
-                            <div className="w-full space-y-2">
-                              <input
-                                type="range"
-                                min="0"
-                                max={audioState.duration}
-                                value={audioState.currentTime}
-                                onChange={(e) => {
-                                  e.stopPropagation();
-                                  handleSeekHistory(job._id, parseFloat(e.target.value));
-                                }}
-                                className="w-full h-2 bg-red-200 rounded-lg appearance-none cursor-pointer accent-red-600"
-                                style={{
-                                  background: `linear-gradient(to right, #dc2626 0%, #dc2626 ${(audioState.currentTime / audioState.duration) * 100}%, #fecaca ${(audioState.currentTime / audioState.duration) * 100}%, #fecaca 100%)`
-                                }}
-                              />
-                              <div className="flex justify-between text-xs text-muted-foreground">
-                                <span>{formatTime(audioState.currentTime)}</span>
-                                <span>{formatTime(audioState.duration)}</span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Script Display */}
-                    <div className="bg-white border border-gray-200 p-3 rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label className="text-xs font-semibold">📝 Script</Label>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const script = job.outputData?.script || job.outputData?.scriptPreview;
-                              if (script) {
-                                navigator.clipboard.writeText(script);
-                                alert("Script gekopieerd!");
-                              }
-                            }}
-                            className="text-xs"
-                          >
-                            <Copy className="h-3 w-3 mr-1" />
-                            Kopieer
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDownload(audioUrl, childName);
-                            }}
-                          >
-                            <Download className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="text-xs text-muted-foreground whitespace-pre-wrap max-h-[150px] overflow-y-auto">
-                        {job.outputData?.script || job.outputData?.scriptPreview || "Script niet beschikbaar"}
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             );
           })}
