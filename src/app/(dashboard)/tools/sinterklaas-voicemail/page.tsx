@@ -616,7 +616,7 @@ export default function SinterklaasVoicemailPage() {
                 </CardContent>
               </Card>
             </>
-          ))}
+          )
             </div>
           ) : (
             /* Support Content (Pro Tips & Recent) */
