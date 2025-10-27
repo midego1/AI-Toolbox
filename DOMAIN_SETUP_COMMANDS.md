@@ -2,7 +2,7 @@
 
 ## Recommended Domain
 
-**Use**: `https://sinterklaasgpt.com` (without www)
+**Using**: `https://sinterklaasgpt.com` (without www) ✅ Setup Complete
 
 ## Setup Instructions
 
