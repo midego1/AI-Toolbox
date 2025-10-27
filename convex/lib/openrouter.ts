@@ -81,7 +81,7 @@ export async function callOpenRouter(
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://sinterklaasgpt.com",
+        "HTTP-Referer": "https://sinterklaasgpt.nl",
         "X-Title": "SinterklaasGPT",
       },
       body: JSON.stringify(body),
@@ -164,7 +164,7 @@ export async function generateImageFromImages(
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://sinterklaasgpt.com",
+        "HTTP-Referer": "https://sinterklaasgpt.nl",
         "X-Title": "SinterklaasGPT",
       },
       body: JSON.stringify(requestBody),
@@ -277,7 +277,7 @@ export async function generateImage(prompt: string): Promise<string> {
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://sinterklaasgpt.com",
+        "HTTP-Referer": "https://sinterklaasgpt.nl",
         "X-Title": "SinterklaasGPT",
       },
       body: JSON.stringify(requestBody),
@@ -630,7 +630,7 @@ export async function callOpenRouterStreaming(
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://sinterklaasgpt.com",
+        "HTTP-Referer": "https://sinterklaasgpt.nl",
         "X-Title": "SinterklaasGPT",
       },
       body: JSON.stringify({
