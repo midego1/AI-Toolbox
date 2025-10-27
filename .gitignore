@@ -38,8 +38,8 @@ yarn-error.log*
 next-env.d.ts
 
 # convex
-/convex/_generated
-/.convex
+/convex/_generated/*.tsbuildinfo
+.convex
 
 # clerk configuration (can include secrets)
 /.clerk/
