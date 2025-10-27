@@ -28,6 +28,7 @@ export default function SinterklaasVoicemailPage() {
   const [behaviorNotes, setBehaviorNotes] = useState("");
   const [tone, setTone] = useState<string>("liefdevol");
   const [rhyming, setRhyming] = useState(false);
+  const [explicit, setExplicit] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -71,6 +72,7 @@ export default function SinterklaasVoicemailPage() {
         behavior_notes: behaviorNotes || undefined,
         tone: tone as any,
         rhyming: rhyming,
+        explicit: explicit,
       });
 
       console.log("🎤 Voicemail result:", result);
@@ -309,6 +311,25 @@ export default function SinterklaasVoicemailPage() {
                 />
               </div>
 
+              {/* Explicit Mode Toggle */}
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border-2 border-red-300">
+                <div className="flex-1">
+                  <Label htmlFor="explicit" className="flex items-center gap-2 cursor-pointer">
+                    <span className="text-lg">🎭</span>
+                    <span className="font-bold text-red-700">Explicit Mode (18+)</span>
+                  </Label>
+                  <p className="text-xs text-red-600 mt-1 ml-8 font-medium">
+                    ⚠️ Grof taalgebruik - Sinterklaas kan echt schelden! Niet lief, maar wel grappig. Alleen voor volwassenen/oudere kinderen.
+                  </p>
+                </div>
+                <Switch
+                  id="explicit"
+                  checked={explicit}
+                  onCheckedChange={setExplicit}
+                  className="data-[state=checked]:bg-red-600"
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-2">
                 {TONES.map(t => (
                   <Button
@@ -359,6 +380,17 @@ export default function SinterklaasVoicemailPage() {
                   </p>
                   <p className="text-xs text-orange-700">
                     Je voicemail wordt gemaakt als een rijmd gedicht - super speciaal en leuk voor kinderen!
+                  </p>
+                </div>
+              )}
+
+              {explicit && (
+                <div className="bg-gradient-to-br from-red-100 to-orange-100 p-3 rounded-lg border-2 border-red-400">
+                  <p className="text-xs font-bold text-red-800 mb-1 flex items-center gap-1">
+                    🎭 EXPLICIT MODE ACTIEF - 18+
+                  </p>
+                  <p className="text-xs text-red-700 font-medium">
+                    ⚠️ Deze voicemail bevat grof taalgebruik en scheldwoorden. Perfect voor humoristische situaties, maar NIET geschikt voor jonge kinderen!
                   </p>
                 </div>
               )}
@@ -462,6 +494,11 @@ export default function SinterklaasVoicemailPage() {
                         {rhyming && (
                           <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">
                             🎵 Rijmd
+                          </span>
+                        )}
+                        {explicit && (
+                          <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full font-bold">
+                            🎭 18+ Explicit
                           </span>
                         )}
                       </div>

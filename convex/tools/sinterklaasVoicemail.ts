@@ -30,6 +30,7 @@ export const generateSinterklaasVoicemail = action({
       v.literal("bemoedigend")
     )),
     rhyming: v.optional(v.boolean()),
+    explicit: v.optional(v.boolean()),
   },
   handler: async (ctx, args): Promise<any> => {
     console.log(`\n${"#".repeat(80)}`);
@@ -75,6 +76,10 @@ export const generateSinterklaasVoicemail = action({
       console.log(`📝 Step 1: Generating personalized script with storyboard...`);
       
       // Step 1: Generate a storyboard first, then the actual script
+      const rhymingNote = args.rhyming ? "\n\nBELANGRIJK: Deze voicemail moet RIJMD zijn (a-a-b-b patroon zoals Sinterklaas gedichten). Het storyboard moet dit meenemen!" : "\n\nBELANGRIJK: Deze voicemail is GEWONE SPRAK, GEEN rijm.";
+      
+      const explicitNote = args.explicit ? "\n\nEXPLICITE MODE GEACTIVEERD! 🎭\n- Deze voicemail gebruikt GROF EN GRAPPIG taalgebruik\n- Scheldwoorden zijn WELKOOM: shit, fuck, godverdomme, klote, kut, verdomme, etc.\n- Het hoeft NIET lief of warm te zijn\n- Grappig, grof, en speels\n- Voor volwassenen/oudere kinderen die grapjes kunnen waarderen\n- Perfect voor humoristische situaties" : "";
+      
       const storyboardPrompt = `Je bent Sinterklaas, en je imiteert precies de stijl van Bram van der Vlught - de beroemde Nederlandse Sinterklaas.
 
 Maak een schets/storyboard voor een warme, persoonlijke voice boodschap voor ${args.child_name} (${args.age} jaar oud).
@@ -92,10 +97,9 @@ Maak een kort overzicht (3-4 punten) met:
 3. Sinterklaas element (traditioneel en respectvol)
 4. Afsluiting (zachte, liefdevolle manier)
 
-Toon: ${args.tone || "liefdevol"} (in Bram van der Vlught's stijl)
-Rijmd: ${args.rhyming ? "JA" : "NEE"}
-${args.achievements ? `Prestaties: ${args.achievements}` : ""}
-${args.behavior_notes ? `Gedrag: ${args.behavior_notes}` : ""}`;
+Toon: ${args.tone || "liefdevol"} (in Bram van der Vlught's stijl)${rhymingNote}${explicitNote}
+${args.achievements ? `\nPrestaties: ${args.achievements}` : ""}
+${args.behavior_notes ? `\nGedrag: ${args.behavior_notes}` : ""}`;
 
       const storyboard = await callOpenRouter(
         [{ role: "user", content: storyboardPrompt }],
@@ -137,6 +141,39 @@ ${args.behavior_notes ? `Gedrag: ${args.behavior_notes}` : ""}`;
 - Gebruik rijmd woorden die goed te spreken zijn in spraak
 ` : "BELANGRIJK - NATUURLIJKE SPRAK:\n- Deze voicemail is GEWONE spraak, GEEN rijm\n- Spreek natuurlijk en vloeiend\n- Alsof je echt aan de telefoon praat\n";
 
+      // Add explicit humor instructions if requested
+      const explicitInstructions = args.explicit ? `
+EXPLICITE GROVE HUMMOR MODUS - LET OP! 🎭
+Deze voicemail gebruikt GROF TAALGEBRUIK en hoeft NIET lief te zijn!
+
+TAALGEBRUIK:
+- Gebruik Nederlandse scheldwoorden: shit, fuck, godverdomme, klote, kut, verdomme, tering, etc.
+- Het HOEFT NIET WARM of LIEFDEVOL te zijn
+- Maak het GRAPIG en GROF
+- Spreek als een grappige, over-the-top Sinterklaas die scheldt
+- Voorbeelden:
+  * "Shit [naam], wat een ruziemaker was je dit jaar! Piet wordt er gek van!"
+  * "Aw fuck, je bent weer ontzettend lief geweest, godverdomme!"
+  * "Goddammit, waarom ben je zo goed gedrags als dit? Klote!"
+  * "Holy shit [naam], Piet heeft je naam 50 keer in het goed boek geschreven!"
+  * "Verdorie, je hebt al je taken wél gedaan! Wat de fuck is er mis met je?"
+
+STIJL:
+- Grof, grappig, over-the-top
+- GEEN "warme" of "lieve" toon nodig
+- Humoristisch en entertainend
+- Perfect voor volwassenen/oudere kinderen
+- Maak het GELACH oproepen, niet kwetsend
+
+BELANGRIJK:
+- Dit is voor GELACH, niet om te beledigen
+- Grappig, niet gemeen
+- Balance het grof met grappige context
+- Zorg dat het ENTERTAINEND is
+
+Gebruik GROF taalgebruik door de hele voicemail heen waar passend. Het hoeft niet lief te zijn!
+` : "";
+
       const scriptPrompt = `Je bent Sinterklaas, en je imiteert PRECIES de stijl van Bram van der Vlught - de legendarische Nederlandse Sinterklaas.
 
 Gebruik dit storyboard om een warme, persoonlijke voice boodschap te schrijven:
@@ -144,16 +181,30 @@ Gebruik dit storyboard om een warme, persoonlijke voice boodschap te schrijven:
 STORYBOARD:
 ${storyboard}
 
-${rhymingInstructions}
+${rhymingInstructions}${explicitInstructions}
 
+${args.explicit ? `
+🎭 EXPLICITE MODE - GROF & GRAPIG:
+- Spreek grappig en grof, NIET lief of warm nodig
+- Over-the-top Sinterklaas die scheldt
+- Grappig en entertainend
+` : `
 Bram van der Vlught's kenmerkende stijl:
 - Rustige, kalme stem - geen haast of druk
 - Warme en zachte intonatie - als een lieve opa
 - Traditonele, eerbiedige benadering - geen moderne slang
 - Geduldig en begripvol - neem de tijd voor elk woord
 - Authentieke Sinterklaas uitstraling - wijs en liefdevol
+`}
 
 De voicemail moet:
+${args.explicit ? `
+- GROF en GRAPIG zijn - NIET lief nodig!
+- Nederlandse scheldwoorden gebruiken waar passend
+- Grappig, entertainend, over-the-top
+- 35-50 seconden (90-130 woorden)
+- Sinterklaas elementen met GROFHEID combineren
+` : `
 - Natuurlijke Nederlandse spraak gebruiken (zoals Bram van der Vlught spreekt)
 - Rustig en kalm zijn - geen gejaagdheid
 - Warme, zachte toon hebben - liefdevol en toegewijd
@@ -161,7 +212,18 @@ De voicemail moet:
 - Klassieke Sinterklaas elementen bevatten (schoorsteen, pakjes, de Pieten)
 - Geen moderne taal - gebruik traditionele Nederlandse woorden
 ${toneInstruction}
+`}
 
+${args.explicit ? `
+BELANGRIJK - EXPLICITE MODE:
+- Gebruik GROF taalgebruik door de hele voicemail
+- Maak het ENTERTAINEND en GRAPIG
+- NIET warm of lief nodig
+- Scheld met grappige contexten
+- ${args.achievements ? `NOEM: ${args.achievements}` : ""}
+- ${args.behavior_notes ? `VERWIJS NAAR: ${args.behavior_notes}` : ""}
+- Over-the-top en hilarisch
+` : `
 BELANGRIJK: 
 - Neem de tijd om dieper in te gaan op de persoonlijke details
 - Imiteer Bram van der Vlught's rustige, warme toon
@@ -170,6 +232,7 @@ BELANGRIJK:
 - Pas de toon aan volgens: ${args.tone || "liefdevol"}
 ${args.achievements ? `\n- NOEM SPECIFIEK deze prestaties: ${args.achievements}` : ""}
 ${args.behavior_notes ? `\n- VERRWIJS NAAR dit gedrag: ${args.behavior_notes}` : ""}
+`}
 
 Schrijf de exacte tekst die gesproken wordt. Geen markdown, alleen gewone tekst.`;
 
