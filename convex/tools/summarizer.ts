@@ -70,8 +70,13 @@ export const summarize = action({
         status: "processing",
       });
 
-      // Build system prompt
-      const systemPrompt = buildSummarySystemPrompt(args);
+      // Fetch tool metadata from database
+      const toolMetadata = await ctx.runQuery(api.adminTools.getToolMetadataPublic, { 
+        toolId: "summarizer" 
+      });
+
+      // Build system prompt (use database prompt if available)
+      const systemPrompt = toolMetadata?.systemPrompt || buildSummarySystemPrompt(args);
       const userPrompt = buildSummaryUserPrompt(args);
 
       console.log("📊 Summarizer System Prompt:", systemPrompt);

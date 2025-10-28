@@ -577,94 +577,93 @@ export const translations: Record<Language, Translations> = {
         yourVoicemail: "Your Voicemail",
         creditsUsed: "credits used",
       },
-    },
-    commonFields: {
-      title: "AI Tool",
-      description: "Create amazing content with AI",
-      input: "Input",
-      output: "Output",
-      generate: "Generate",
-      generating: "Generating...",
-      copy: "Copy",
-      download: "Download",
-      copied: "Copied to clipboard!",
-      enterText: "Enter text to process",
-      notLoggedIn: "You are not logged in",
-      error: "Error",
-      cost: "Cost",
-      creditsUsed: "credits used",
-      history: "History",
-      historyTitle: "Recent Jobs",
-    },
-    copywriting: {
-      title: "AI Copywriter Studio",
-      description: "Generate professional marketing copy with multiple variants",
-      fields: {
-        topic: "Topic",
-        topicPlaceholder: "Enter your topic or product",
-        tone: "Tone",
-        length: "Length",
+      commonFields: {
+        title: "AI Tool",
+        description: "Create amazing content with AI",
+        input: "Input",
+        output: "Output",
+        generate: "Generate",
+        generating: "Generating...",
+        copy: "Copy",
+        download: "Download",
+        copied: "Copied to clipboard!",
+        enterText: "Enter text to process",
+        notLoggedIn: "You are not logged in",
+        error: "Error",
+        cost: "Cost",
+        creditsUsed: "credits used",
+        history: "History",
+        historyTitle: "Recent Jobs",
       },
-      actions: {
-        generate: "Generate Copy",
-        generating: "Generating your copy...",
+      copywriting: {
+        title: "AI Copywriter Studio",
+        description: "Generate professional marketing copy with multiple variants",
+        fields: {
+          topic: "Topic",
+          topicPlaceholder: "Enter your topic or product",
+          tone: "Tone",
+          length: "Length",
+        },
+        actions: {
+          generate: "Generate Copy",
+          generating: "Generating your copy...",
+        },
       },
-    },
-    summarizer: {
-      title: "Text Summarizer",
-      description: "Summarize long documents into concise summaries",
-      fields: {
-        input: "Text to summarize",
-        inputPlaceholder: "Paste your text here",
-        length: "Summary length",
-        focus: "Focus area",
+      summarizer: {
+        title: "Text Summarizer",
+        description: "Summarize long documents into concise summaries",
+        fields: {
+          input: "Text to summarize",
+          inputPlaceholder: "Paste your text here",
+          length: "Summary length",
+          focus: "Focus area",
+        },
+        actions: {
+          generate: "Generate Summary",
+          generating: "Generating summary...",
+        },
       },
-      actions: {
-        generate: "Generate Summary",
-        generating: "Generating summary...",
+      translation: {
+        title: "Translation",
+        description: "Translate text between languages",
+        fields: {
+          input: "Text to translate",
+          fromLanguage: "From",
+          toLanguage: "To",
+        },
+        actions: {
+          translate: "Translate",
+          translating: "Translating...",
+          swap: "Swap",
+        },
       },
-    },
-    translation: {
-      title: "Translation",
-      description: "Translate text between languages",
-      fields: {
-        input: "Text to translate",
-        fromLanguage: "From",
-        toLanguage: "To",
+      rewriter: {
+        title: "Content Rewriter",
+        description: "Rewrite and paraphrase content while maintaining meaning",
+        fields: {
+          input: "Text to rewrite",
+          tone: "Tone",
+          length: "Length",
+        },
+        actions: {
+          rewrite: "Rewrite",
+          rewriting: "Rewriting...",
+        },
       },
-      actions: {
-        translate: "Translate",
-        translating: "Translating...",
-        swap: "Swap",
+      seoOptimizer: {
+        title: "SEO Optimizer",
+        description: "Optimize your content for search engines",
+        fields: {
+          title: "Title",
+          metaDescription: "Meta Description",
+          content: "Content",
+          keywords: "Keywords",
+        },
+        actions: {
+          optimize: "Optimize",
+          optimizing: "Optimizing...",
+        },
       },
-    },
-    rewriter: {
-      title: "Content Rewriter",
-      description: "Rewrite and paraphrase content while maintaining meaning",
-      fields: {
-        input: "Text to rewrite",
-        tone: "Tone",
-        length: "Length",
-      },
-      actions: {
-        rewrite: "Rewrite",
-        rewriting: "Rewriting...",
-      },
-    },
-    seoOptimizer: {
-      title: "SEO Optimizer",
-      description: "Optimize your content for search engines",
-      fields: {
-        title: "Title",
-        metaDescription: "Meta Description",
-        content: "Content",
-        keywords: "Keywords",
-      },
-      actions: {
-        optimize: "Optimize",
-        optimizing: "Optimizing...",
-      },
-    },
   },
   nl: {
     common: {
@@ -928,94 +927,93 @@ export const translations: Record<Language, Translations> = {
         yourVoicemail: "Jouw Voicemail",
         creditsUsed: "credits gebruikt",
       },
-    },
-    commonFields: {
-      title: "AI Tool",
-      description: "Creëer geweldige content met AI",
-      input: "Invoer",
-      output: "Uitvoer",
-      generate: "Genereren",
-      generating: "Genereren...",
-      copy: "Kopieer",
-      download: "Download",
-      copied: "Gekopieerd naar klembord!",
-      enterText: "Voer tekst in om te verwerken",
-      notLoggedIn: "Je bent niet ingelogd",
-      error: "Fout",
-      cost: "Kosten",
-      creditsUsed: "credits gebruikt",
-      history: "Geschiedenis",
-      historyTitle: "Recente Jobs",
-    },
-    copywriting: {
-      title: "AI Copywriter Studio",
-      description: "Genereer professionele marketingtekst met meerdere varianten",
-      fields: {
-        topic: "Onderwerp",
-        topicPlaceholder: "Voer je onderwerp of product in",
-        tone: "Toon",
-        length: "Lengte",
+      commonFields: {
+        title: "AI Tool",
+        description: "Creëer geweldige content met AI",
+        input: "Invoer",
+        output: "Uitvoer",
+        generate: "Genereren",
+        generating: "Genereren...",
+        copy: "Kopieer",
+        download: "Download",
+        copied: "Gekopieerd naar klembord!",
+        enterText: "Voer tekst in om te verwerken",
+        notLoggedIn: "Je bent niet ingelogd",
+        error: "Fout",
+        cost: "Kosten",
+        creditsUsed: "credits gebruikt",
+        history: "Geschiedenis",
+        historyTitle: "Recente Jobs",
       },
-      actions: {
-        generate: "Genereer Tekst",
-        generating: "Genereren van je tekst...",
+      copywriting: {
+        title: "AI Copywriter Studio",
+        description: "Genereer professionele marketingtekst met meerdere varianten",
+        fields: {
+          topic: "Onderwerp",
+          topicPlaceholder: "Voer je onderwerp of product in",
+          tone: "Toon",
+          length: "Lengte",
+        },
+        actions: {
+          generate: "Genereer Tekst",
+          generating: "Genereren van je tekst...",
+        },
       },
-    },
-    summarizer: {
-      title: "Tekst Samenvatter",
-      description: "Vat lange documenten samen in beknopte samenvattingen",
-      fields: {
-        input: "Tekst om samen te vatten",
-        inputPlaceholder: "Plak je tekst hier",
-        length: "Samenvatting lengte",
-        focus: "Focus gebied",
+      summarizer: {
+        title: "Tekst Samenvatter",
+        description: "Vat lange documenten samen in beknopte samenvattingen",
+        fields: {
+          input: "Tekst om samen te vatten",
+          inputPlaceholder: "Plak je tekst hier",
+          length: "Samenvatting lengte",
+          focus: "Focus gebied",
+        },
+        actions: {
+          generate: "Genereer Samenvatting",
+          generating: "Genereren van samenvatting...",
+        },
       },
-      actions: {
-        generate: "Genereer Samenvatting",
-        generating: "Genereren van samenvatting...",
+      translation: {
+        title: "Vertaling",
+        description: "Vertaal tekst tussen talen",
+        fields: {
+          input: "Tekst om te vertalen",
+          fromLanguage: "Van",
+          toLanguage: "Naar",
+        },
+        actions: {
+          translate: "Vertalen",
+          translating: "Vertalen...",
+          swap: "Wisselen",
+        },
       },
-    },
-    translation: {
-      title: "Vertaling",
-      description: "Vertaal tekst tussen talen",
-      fields: {
-        input: "Tekst om te vertalen",
-        fromLanguage: "Van",
-        toLanguage: "Naar",
+      rewriter: {
+        title: "Content Herformuleerder",
+        description: "Herschrijf en parafraseer content terwijl de betekenis behouden blijft",
+        fields: {
+          input: "Tekst om te herschrijven",
+          tone: "Toon",
+          length: "Lengte",
+        },
+        actions: {
+          rewrite: "Herschrijf",
+          rewriting: "Herschrijven...",
+        },
       },
-      actions: {
-        translate: "Vertalen",
-        translating: "Vertalen...",
-        swap: "Wisselen",
+      seoOptimizer: {
+        title: "SEO Optimalisatie",
+        description: "Optimaliseer je content voor zoekmachines",
+        fields: {
+          title: "Titel",
+          metaDescription: "Meta Beschrijving",
+          content: "Inhoud",
+          keywords: "Sleutelwoorden",
+        },
+        actions: {
+          optimize: "Optimaliseer",
+          optimizing: "Optimaliseren...",
+        },
       },
-    },
-    rewriter: {
-      title: "Content Herformuleerder",
-      description: "Herschrijf en parafraseer content terwijl de betekenis behouden blijft",
-      fields: {
-        input: "Tekst om te herschrijven",
-        tone: "Toon",
-        length: "Lengte",
-      },
-      actions: {
-        rewrite: "Herschrijf",
-        rewriting: "Herschrijven...",
-      },
-    },
-    seoOptimizer: {
-      title: "SEO Optimalisatie",
-      description: "Optimaliseer je content voor zoekmachines",
-      fields: {
-        title: "Titel",
-        metaDescription: "Meta Beschrijving",
-        content: "Inhoud",
-        keywords: "Sleutelwoorden",
-      },
-      actions: {
-        optimize: "Optimaliseer",
-        optimizing: "Optimaliseren...",
-      },
-    },
   },
 };
 
