@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BookOpen, Sparkles, Download, Copy } from "lucide-react";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 const TONES = [
   { value: "traditioneel", label: "Traditioneel", emoji: "📜" },
@@ -81,6 +82,7 @@ export default function GedichtenPage() {
   };
 
   return (
+    <ToolAccessGuard toolId="sinterklaas_gedicht">
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
@@ -260,6 +262,7 @@ export default function GedichtenPage() {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 

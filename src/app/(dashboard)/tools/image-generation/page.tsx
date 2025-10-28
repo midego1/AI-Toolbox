@@ -10,7 +10,7 @@ import { useAction } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { getAuthToken } from "@/lib/auth-client";
 import { ImageGenerationHistory } from "@/components/image-generation/ImageGenerationHistory";
-import { PremiumOverlay } from "@/components/layout/premium-overlay";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 export default function ImageGenerationPage() {
   const [prompt, setPrompt] = useState("");
@@ -68,7 +68,7 @@ export default function ImageGenerationPage() {
   };
 
   return (
-    <PremiumOverlay toolId="image-generation">
+    <ToolAccessGuard toolId="image-generation">
     <div className="container mx-auto p-6 max-w-6xl">
       {/* Page Header */}
       <div className="mb-6">
@@ -216,6 +216,6 @@ export default function ImageGenerationPage() {
         </div>
       </div>
     </div>
-    </PremiumOverlay>
+    </ToolAccessGuard>
   );
 }
