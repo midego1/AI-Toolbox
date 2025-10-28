@@ -163,12 +163,8 @@ export default function OCRPage() {
       fileInputRef.current.value = "";
     }
   };
-
   return (
     <ToolAccessGuard toolId="ocr">
-
-
-  return (
       <div className="container mx-auto p-6 max-w-6xl">
       {/* Page Header */}
       <div className="mb-6">

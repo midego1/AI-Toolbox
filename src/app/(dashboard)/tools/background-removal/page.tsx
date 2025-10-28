@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Scissors, Upload, Sparkles, Download } from "lucide-react";
 import { BackgroundRemovalHistory } from "@/components/background-removal/BackgroundRemovalHistory";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 export default function BackgroundRemovalPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -90,9 +91,6 @@ export default function BackgroundRemovalPage() {
 
   return (
     <ToolAccessGuard toolId="background-removal">
-
-
-  return (
       <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
@@ -324,7 +322,8 @@ export default function BackgroundRemovalPage() {
           background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
       `}</style>
-    </div>
+      </div>
+    </ToolAccessGuard>
   );
 }
 

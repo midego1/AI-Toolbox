@@ -69,12 +69,8 @@ export default function SEOOptimizerPage() {
 
   const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
   const creditsNeeded = Math.max(8, Math.ceil(wordCount / 200) + 5);
-
   return (
     <ToolAccessGuard toolId="seo-optimizer">
-
-
-  return (
       <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">

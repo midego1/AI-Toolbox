@@ -3,13 +3,19 @@
 import { useState } from "react";
 import { useAction } from "convex/react";
 import { useAuthToken } from "@/hooks/useAuthToken";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { api } from "../../../../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Button } from "@/components/ui/button";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Input } from "@/components/ui/input";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Label } from "@/components/ui/label";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Gift, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 export default function CadeautipsPage() {
   // Use Clerk auth token
@@ -51,12 +57,8 @@ export default function CadeautipsPage() {
       setIsLoading(false);
     }
   };
-
   return (
     <ToolAccessGuard toolId="cadeautips">
-
-
-  return (
       <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
@@ -215,7 +217,8 @@ export default function CadeautipsPage() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </ToolAccessGuard>
   );
 }
 

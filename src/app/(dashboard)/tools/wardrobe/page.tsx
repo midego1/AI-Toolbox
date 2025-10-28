@@ -2,13 +2,18 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Button } from "@/components/ui/button";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Label } from "@/components/ui/label";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Shirt, Upload, Download, Sparkles, X } from "lucide-react";
 import { useAction, useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { getAuthToken } from "@/lib/auth-client";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { WardrobeHistory } from "@/components/wardrobe/WardrobeHistory";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 export default function WardrobePage() {
   const [personImage, setPersonImage] = useState<File | null>(null);
@@ -128,12 +133,8 @@ export default function WardrobePage() {
     setClothingImage(null);
     setClothingImagePreview("");
   };
-
   return (
     <ToolAccessGuard toolId="wardrobe">
-
-
-  return (
       <div className="container mx-auto p-6 max-w-6xl">
       {/* Page Header */}
       <div className="mb-6">

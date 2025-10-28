@@ -88,12 +88,8 @@ export default function TranscriptionPage() {
       setIsLoading(false);
     }
   };
-
   return (
     <ToolAccessGuard toolId="transcription">
-
-
-  return (
       <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">

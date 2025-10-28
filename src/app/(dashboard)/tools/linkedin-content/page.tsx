@@ -85,12 +85,8 @@ export default function LinkedInContentPage() {
   };
 
   const selectedType = CONTENT_TYPES.find(t => t.value === contentType);
-
   return (
     <ToolAccessGuard toolId="linkedin-content">
-
-
-  return (
       <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">

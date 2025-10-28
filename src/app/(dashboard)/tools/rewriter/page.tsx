@@ -80,12 +80,8 @@ export default function RewriterPage() {
 
   const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
   const creditsNeeded = Math.max(3, Math.ceil(wordCount / 200) + (variants - 1));
-
   return (
     <ToolAccessGuard toolId="rewriter">
-
-
-  return (
       <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
