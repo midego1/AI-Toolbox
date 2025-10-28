@@ -147,6 +147,82 @@ export interface Translations {
     title: string;
     usage: string;
   };
+  aiTools: {
+    gedichten: {
+      title: string;
+      description: string;
+      inputFields: {
+        name: string;
+        namePlaceholder: string;
+        age: string;
+        agePlaceholder: string;
+        likes: string;
+        likesPlaceholder: string;
+        gift: string;
+        giftPlaceholder: string;
+        notes: string;
+        notesPlaceholder: string;
+      };
+      tone: string;
+      tones: {
+        traditioneel: string;
+        modern: string;
+        grappig: string;
+        hartverwarmend: string;
+      };
+      actions: {
+        generate: string;
+        generating: string;
+        download: string;
+        copy: string;
+        copied: string;
+      };
+      cost: string;
+      enterName: string;
+      notLoggedIn: string;
+      yourGedicht: string;
+      creditsUsed: string;
+      noResults: string;
+      historyTitle: string;
+      historyDescription: string;
+    };
+    voicemail: {
+      title: string;
+      description: string;
+      inputFields: {
+        childName: string;
+        childNamePlaceholder: string;
+        age: string;
+        agePlaceholder: string;
+        achievements: string;
+        achievementsPlaceholder: string;
+        behaviorNotes: string;
+        behaviorNotesPlaceholder: string;
+      };
+      tone: string;
+      tones: {
+        traditioneel: string;
+        liefdevol: string;
+        grappig: string;
+        bemoedigend: string;
+      };
+      options: {
+        rhyming: string;
+        explicit: string;
+      };
+      actions: {
+        generate: string;
+        generating: string;
+        downloading: string;
+        listening: string;
+      };
+      cost: string;
+      enterChildName: string;
+      notLoggedIn: string;
+      yourVoicemail: string;
+      creditsUsed: string;
+    };
+  };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -337,6 +413,82 @@ export const translations: Record<Language, Translations> = {
       title: "Usage",
       usage: "Usage",
     },
+    aiTools: {
+      gedichten: {
+        title: "Sinterklaas Poem Generator",
+        description: "Create personalized Sinterklaas poems with AI - perfect for December 5th!",
+        inputFields: {
+          name: "Name",
+          namePlaceholder: "e.g. Emma or Dad",
+          age: "Age",
+          agePlaceholder: "e.g. 8",
+          likes: "Hobbies & Interests",
+          likesPlaceholder: "e.g. football, reading, drawing",
+          gift: "Gift (optional)",
+          giftPlaceholder: "e.g. new soccer shoes",
+          notes: "Personal Notes (optional)",
+          notesPlaceholder: "Special qualities, funny things, moments this year...",
+        },
+        tone: "Select Tone",
+        tones: {
+          traditioneel: "Traditional",
+          modern: "Modern",
+          grappig: "Funny",
+          hartverwarmend: "Heartwarming",
+        },
+        actions: {
+          generate: "Generate Poem",
+          generating: "Generating...",
+          download: "Download",
+          copy: "Copy",
+          copied: "Copied to clipboard!",
+        },
+        cost: "Cost: 10 credits per poem",
+        enterName: "Enter a name",
+        notLoggedIn: "You are not logged in",
+        yourGedicht: "Your Poem",
+        creditsUsed: "credits used",
+        noResults: "Fill in the details and click Generate to create your personalized Sinterklaas poem",
+        historyTitle: "Recent Poems",
+        historyDescription: "Your recently generated Sinterklaas poems",
+      },
+      voicemail: {
+        title: "Sinterklaas Voicemail",
+        description: "Generate personalized voice messages from Sinterklaas to children",
+        inputFields: {
+          childName: "Child's Name",
+          childNamePlaceholder: "e.g. Emma",
+          age: "Age",
+          agePlaceholder: "e.g. 8",
+          achievements: "Achievements (optional)",
+          achievementsPlaceholder: "What did they do well this year?",
+          behaviorNotes: "Behavior Notes (optional)",
+          behaviorNotesPlaceholder: "How has their behavior been?",
+        },
+        tone: "Tone",
+        tones: {
+          traditioneel: "Traditional",
+          liefdevol: "Loving",
+          grappig: "Funny",
+          bemoedigend: "Encouraging",
+        },
+        options: {
+          rhyming: "Make it rhyme",
+          explicit: "Include humoristic swearing (adults only)",
+        },
+        actions: {
+          generate: "Generate Voicemail",
+          generating: "Generating your voicemail...",
+          downloading: "Downloading",
+          listening: "Listening to voicemail",
+        },
+        cost: "Cost: 25 credits per voicemail",
+        enterChildName: "Enter a child's name",
+        notLoggedIn: "You are not logged in",
+        yourVoicemail: "Your Voicemail",
+        creditsUsed: "credits used",
+      },
+    },
   },
   nl: {
     common: {
@@ -524,6 +676,82 @@ export const translations: Record<Language, Translations> = {
     usage: {
       title: "Gebruik",
       usage: "Gebruik",
+    },
+    aiTools: {
+      gedichten: {
+        title: "Sinterklaas Gedichten Generator",
+        description: "Creëer persoonlijke Sinterklaas gedichten met AI - perfect voor pakjesavond!",
+        inputFields: {
+          name: "Naam",
+          namePlaceholder: "bijv. Emma of Papa",
+          age: "Leeftijd",
+          agePlaceholder: "bijv. 8",
+          likes: "Hobby's & Interesses",
+          likesPlaceholder: "bijv. voetbal, lezen, tekeningen maken",
+          gift: "Cadeau (optioneel)",
+          giftPlaceholder: "bijv. nieuwe voetbalschoenen",
+          notes: "Persoonlijke Notities (optioneel)",
+          notesPlaceholder: "Speciale eigenschappen, grappige dingen, momenten dit jaar...",
+        },
+        tone: "Selecteer Toon",
+        tones: {
+          traditioneel: "Traditioneel",
+          modern: "Modern",
+          grappig: "Grappig",
+          hartverwarmend: "Hartverwarmend",
+        },
+        actions: {
+          generate: "Genereer Gedicht",
+          generating: "Genereren...",
+          download: "Download",
+          copy: "Kopieer",
+          copied: "Gekopieerd naar klembord!",
+        },
+        cost: "Kosten: 10 credits per gedicht",
+        enterName: "Vul een naam in",
+        notLoggedIn: "Je bent niet ingelogd",
+        yourGedicht: "Jouw Gedicht",
+        creditsUsed: "credits gebruikt",
+        noResults: "Vul de gegevens in en klik op Genereren om je persoonlijke Sinterklaas gedicht te maken",
+        historyTitle: "Recent Gedichten",
+        historyDescription: "Je recent gegenereerde Sinterklaas gedichten",
+      },
+      voicemail: {
+        title: "Sinterklaas Voicemail",
+        description: "Genereer gepersonaliseerde voicemail berichten van Sinterklaas aan kinderen",
+        inputFields: {
+          childName: "Naam Kind",
+          childNamePlaceholder: "bijv. Emma",
+          age: "Leeftijd",
+          agePlaceholder: "bijv. 8",
+          achievements: "Prestaties (optioneel)",
+          achievementsPlaceholder: "Wat hebben ze goed gedaan dit jaar?",
+          behaviorNotes: "Gedrag Notities (optioneel)",
+          behaviorNotesPlaceholder: "Hoe is hun gedrag geweest?",
+        },
+        tone: "Toon",
+        tones: {
+          traditioneel: "Traditioneel",
+          liefdevol: "Liefdevol",
+          grappig: "Grappig",
+          bemoedigend: "Bemoedigend",
+        },
+        options: {
+          rhyming: "Laat het rijmen",
+          explicit: "Voeg grappig grove taal toe (alleen voor volwassenen)",
+        },
+        actions: {
+          generate: "Genereer Voicemail",
+          generating: "Genereren van je voicemail...",
+          downloading: "Downloaden",
+          listening: "Luisteren naar voicemail",
+        },
+        cost: "Kosten: 25 credits per voicemail",
+        enterChildName: "Vul een naam in",
+        notLoggedIn: "Je bent niet ingelogd",
+        yourVoicemail: "Jouw Voicemail",
+        creditsUsed: "credits gebruikt",
+      },
     },
   },
 };
