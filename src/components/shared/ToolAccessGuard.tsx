@@ -84,20 +84,26 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   }
   
   // Frost overlay mode for anonymous users - can see through but prompted to sign up
+  if (!isLoaded) {
+    // Wait for auth to load
+    return <>{children}</>;
+  }
+  
   if (!isSignedIn && !dismissed) {
+    console.log(`Showing frost overlay for anonymous user on tool: ${toolId}`);
     return (
       <div className="relative">
         {/* Tool content (blurred behind overlay) */}
-        <div className="blur-sm pointer-events-none select-none">
+        <div className="blur-sm pointer-events-none select-none opacity-60">
           {children}
         </div>
         
-        {/* Frost overlay with sign-up prompt */}
-        <div className="absolute inset-0 flex items-center justify-center p-4">
-          <div className="backdrop-blur-md bg-white/80 border border-white/20 rounded-2xl shadow-2xl p-6 max-w-md w-full">
+        {/* Frost overlay with sign-up prompt - blocks all interactions */}
+        <div className="absolute inset-0 flex items-center justify-center p-4 z-50">
+          <div className="backdrop-blur-md bg-white/90 border border-white/20 rounded-2xl shadow-2xl p-6 max-w-md w-full relative">
             <button
               onClick={() => setDismissed(true)}
-              className="absolute top-4 right-4 p-1 hover:bg-muted rounded-full transition-colors"
+              className="absolute top-4 right-4 p-1 hover:bg-muted rounded-full transition-colors z-10"
               aria-label="Dismiss"
             >
               <X className="h-4 w-4" />
