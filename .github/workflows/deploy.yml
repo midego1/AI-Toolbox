@@ -1,0 +1,13 @@
+name: Deploy to Coolify
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Add test/build steps here
+      - name: Deploy to Server
+        run: curl -X POST https://coolify.midego.net/api/v1/deploy?uuid=gc048cos8gs4884wgwgocko0&force=false
