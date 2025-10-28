@@ -84,17 +84,17 @@ export default function GedichtenPage() {
   return (
     <ToolAccessGuard toolId="sinterklaas_gedicht">
       <div className="container mx-auto p-6 max-w-6xl">
-      <div className="mb-6">
-        <div className="flex items-center space-x-3 mb-2">
-          <BookOpen className="h-8 w-8 text-red-600" />
-          <h1 className="text-3xl font-bold tracking-tight">Sinterklaas Gedichten Generator</h1>
+        <div className="mb-6">
+          <div className="flex items-center space-x-3 mb-2">
+            <BookOpen className="h-8 w-8 text-red-600" />
+            <h1 className="text-3xl font-bold tracking-tight">Sinterklaas Gedichten Generator</h1>
+          </div>
+          <p className="text-muted-foreground">
+            Creëer persoonlijke Sinterklaas gedichten met AI - perfect voor pakjesavond!
+          </p>
         </div>
-        <p className="text-muted-foreground">
-          Creëer persoonlijke Sinterklaas gedichten met AI - perfect voor pakjesavond!
-        </p>
-      </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-6">
         {/* Input Section */}
         <div className="space-y-6">
           <Card>
