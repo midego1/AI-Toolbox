@@ -1210,18 +1210,20 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
       
       // Set the specific field based on which one is being updated
       if (field === 'anonymous') {
-        updateParams.anonymous = value;
+        updateParams.anonymous = Boolean(value);
       } else if (field === 'free') {
-        updateParams.free = value;
+        updateParams.free = Boolean(value);
       } else if (field === 'paid') {
-        updateParams.paid = value;
+        updateParams.paid = Boolean(value);
       } else if (field === 'enabled') {
-        updateParams.enabled = value;
+        updateParams.enabled = Boolean(value);
       }
       
+      console.log("Calling updateToolConfig with:", { toolId, field, value, updateParams });
       await updateToolConfig(updateParams);
     } catch (error) {
       console.error("Failed to update tool config:", error);
+      alert(`Failed to update ${field} setting. Please check the console for details.`);
     } finally {
       setLoading(null);
     }
