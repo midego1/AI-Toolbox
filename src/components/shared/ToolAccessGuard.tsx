@@ -163,7 +163,7 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
             </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
   
