@@ -16,8 +16,18 @@ export default function LoginPage() {
     }
   }, [isLoaded, isSignedIn, router]);
 
-  // Don't render content while checking auth or if signed in
-  if (!isLoaded || isSignedIn) {
+  // Don't render content while checking auth or if signed in (but show content after brief load)
+  if (isSignedIn) {
+    // User is signed in - redirect to dashboard
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Brief loading state while Clerk initializes
+  if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/50">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

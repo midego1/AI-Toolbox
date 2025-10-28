@@ -23,10 +23,17 @@ export default function PublicLayout({
     }
   }, [isLoaded, isSignedIn, router]);
 
-  // Show loading spinner ONLY if Clerk is actively loading (not indefinitely)
-  // If Clerk doesn't load, we still show the content to users
+  // If user is signed in, redirect and show spinner during redirect
   if (isLoaded && isSignedIn) {
-    // User is signed in - show spinner while redirecting
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
+
+  // If Clerk is still loading, show brief loading state (max 2 seconds)
+  if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
