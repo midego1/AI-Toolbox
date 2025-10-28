@@ -153,14 +153,12 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   if (!isSignedIn && !dismissed) {
     console.log(`Showing frost overlay for anonymous user on tool: ${toolId}`);
     return (
-      <>
-        {/* Tool content (blurred, non-interactive) - rendered in normal flow */}
-        <div className="blur-sm pointer-events-none select-none opacity-60">
-          {children}
-        </div>
+      <div style={{ position: 'relative' }}>
+        {/* Tool content - rendered in normal flow without any modification */}
+        {children}
         
-        {/* Frost overlay with sign-up prompt - positioned fixed to viewport */}
-        <div className="fixed inset-0 flex items-center justify-center p-4 z-50 pointer-events-none">
+        {/* Frost overlay with blur effect - positioned absolutely over content */}
+        <div className="absolute inset-0 flex items-center justify-center p-4 z-50 pointer-events-none" style={{ backdropFilter: 'blur(4px)' }}>
           <div className="bg-white/95 border border-white/30 rounded-2xl shadow-2xl p-6 max-w-md w-full relative pointer-events-auto">
             <button
               onClick={() => setDismissed(true)}
@@ -204,7 +202,7 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
             </div>
           </div>
         </div>
-      </>
+      </div>
     );
   }
   
