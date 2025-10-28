@@ -218,13 +218,29 @@ Total: 3 contextual prompts, user can explore tool fully
 3. **Completion Rate:** % who fill forms before hitting auth wall
 4. **Time to Sign-Up:** Reduced friction should speed this up
 
+## Latest Update: Frost Overlay
+
+Instead of blocking banners or duplicate prompts, we've implemented a **frost overlay effect**:
+
+### How It Works
+1. Anonymous users see blurred content behind a beautiful glass card
+2. Centralized sign-up prompt appears over the blurred content
+3. Users can dismiss to continue as guest (limited access)
+4. No more duplicate banners or hard blocks
+
+### Benefits
+- ✅ See-through effect creates curiosity and intrigue
+- ✅ Single, non-intrusive sign-up prompt
+- ✅ Dismissible for users who want to explore first
+- ✅ Blurred content shows what they're missing
+- ✅ Modern, professional appearance
+
 ## Conclusion
 
-The improvements create a more professional, less intrusive user experience while maintaining clear paths to sign-up. Users can now:
-- Explore tools freely
-- Understand value before committing
-- See contextual prompts at the right moments
-- Experience lower friction overall
+The improvements create a more professional, less intrusive user experience while maintaining clear paths to sign-up. The frost overlay is the perfect balance between:
+- Showing users what they can get (blurred preview)
+- Not being too aggressive (dismissible)
+- Creating visual appeal (glass morphism effect)
 
-This aligns with modern SaaS best practices where preview/demo modes lead to higher conversion rates than hard access walls.
+This aligns with modern SaaS best practices where preview effects lead to higher conversion rates than hard blocking walls.
 
