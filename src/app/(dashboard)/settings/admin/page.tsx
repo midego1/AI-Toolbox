@@ -1370,14 +1370,27 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                         // Compact Toggle Component
                         const CompactToggle = ({ field, Icon, isActive }: any) => {
                           const getColorClasses = (field: string, isActive: boolean) => {
-                            if (!isActive) return 'bg-gray-100 hover:bg-gray-200';
+                            // Inactive state - gray background for OFF
+                            if (!isActive) return 'bg-gray-100 hover:bg-gray-200 border border-gray-300';
                             
-                            if (field === 'showInSidebar') return 'bg-orange-500 text-white';
-                            if (field === 'anonymous') return 'bg-blue-500 text-white';
-                            if (field === 'free') return 'bg-green-500 text-white';
-                            if (field === 'paid') return 'bg-purple-500 text-white';
+                            // Active state - colored backgrounds for ON
+                            if (field === 'showInSidebar') return 'bg-orange-500 text-white border border-orange-600';
+                            if (field === 'anonymous') return 'bg-green-500 text-white border border-green-600';
+                            if (field === 'free') return 'bg-blue-500 text-white border border-blue-600';
+                            if (field === 'paid') return 'bg-purple-500 text-white border border-purple-600';
                             
-                            return 'bg-gray-100 hover:bg-gray-200';
+                            return 'bg-gray-100 hover:bg-gray-200 border border-gray-300';
+                          };
+                          
+                          const getTooltip = (field: string, isActive: boolean) => {
+                            const state = isActive ? 'ON' : 'OFF';
+                            const tooltips: Record<string, string> = {
+                              'showInSidebar': `Show in Sidebar: ${state}`,
+                              'anonymous': `Anonymous Access (No Login): ${state}`,
+                              'free': `Free Tier (Login Required): ${state}`,
+                              'paid': `Premium (Subscription Required): ${state}`,
+                            };
+                            return tooltips[field] || field;
                           };
                           
                           return (
@@ -1385,7 +1398,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                               onClick={() => !isLoading && handleConfigUpdate(tool.id, field, !isActive)}
                               disabled={isLoading}
                               className={`w-full h-8 flex items-center justify-center rounded transition-colors ${getColorClasses(field, isActive)} disabled:opacity-50`}
-                              title={field}
+                              title={getTooltip(field, isActive)}
                             >
                               {isLoading ? (
                                 <RefreshCw className="h-3 w-3 animate-spin" />
