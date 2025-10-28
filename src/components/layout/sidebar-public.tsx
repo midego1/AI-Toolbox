@@ -27,6 +27,8 @@ import {
   Gift,
   Package,
   BookOpen,
+  Mail,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -39,6 +41,11 @@ const navigation = [
     icon: null,
     children: [
       { name: "Gedichten Generator", href: "/tools/gedichten", icon: BookOpen, requiresAuth: true },
+      { name: "Brief van Sinterklaas", href: "/tools/sinterklaas-brief", icon: Mail, requiresAuth: true },
+      { name: "Sinterklaas Voicemail", href: "/tools/sinterklaas-voicemail", icon: Mic, requiresAuth: true },
+      { name: "Lootjestrekken", href: "/tools/lootjestrekken", icon: Gift, requiresAuth: true },
+      { name: "Familie Moment", href: "/tools/familie-moment", icon: Users, requiresAuth: true },
+      { name: "Schoentje Tekening", href: "/tools/schoentje-tekening", icon: Image, requiresAuth: true },
       { name: "Cadeautips", href: "/tools/cadeautips", icon: Gift, requiresAuth: true },
       { name: "Surprise Ideeën", href: "/tools/surprises", icon: Package, requiresAuth: true },
     ],
