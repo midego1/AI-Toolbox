@@ -1048,6 +1048,13 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
       credits: "15",
     },
     {
+      id: "sinterklaas_voicemail",
+      name: "Sinterklaas Voicemail",
+      description: "Generate personalized voice messages from Sinterklaas",
+      category: "🎅 Sinterklaas",
+      credits: "20",
+    },
+    {
       id: "lootjestrekken",
       name: "Lootjestrekken",
       description: "Organize Secret Santa/Sinterklaas gift exchanges",
