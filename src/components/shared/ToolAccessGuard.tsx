@@ -29,36 +29,21 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic);
   const toolConfig = toolConfigs?.find(c => c.toolId === toolId);
   
-  // Get current user info if authenticated
+  // Check if tool allows anonymous access FIRST
+  const isAnonymous = toolConfig?.anonymous === true;
+  
+  // Only get current user info if authenticated AND we need to check access
+  // For anonymous tools, we don't need to query user info
   const user = useQuery(
     api.auth.getCurrentUser,
-    token ? { token } : "skip"
+    (token && !isAnonymous) ? { token } : "skip"
   );
-  
-  // Check if tool allows anonymous access
-  const isAnonymous = toolConfig?.anonymous === true;
   
   // If configs haven't loaded yet, use optimistic rendering
   // For non-authenticated users, assume anonymous access is OK
   if (toolConfigs === undefined) {
-    // If user is not signed in, allow access (optimistic for anonymous tools)
-    if (!isSignedIn) {
-      return <>{children}</>;
-    }
-    
-    // If user is signed in but Clerk is still loading, show loading
-    if (!isLoaded) {
-      return (
-        <div className="flex h-64 items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-            <p className="text-sm text-muted-foreground">Loading tool access...</p>
-          </div>
-        </div>
-      );
-    }
-    
-    // If user is signed in and Clerk is loaded, allow access
+    // Always allow access when configs are loading - this prevents infinite spinners
+    // The actual access control will be handled by the tool itself when it tries to execute
     return <>{children}</>;
   }
   
