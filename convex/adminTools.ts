@@ -773,32 +773,31 @@ export const updateToolConfig = mutation({
     const now = Date.now();
     
     if (existing) {
-      const updates: any = {
-        updatedAt: now,
-      };
+      const updates: Record<string, any> = {};
       
-      // Only update fields that are explicitly provided
-      // Note: We explicitly check for boolean values (including false) to handle toggles
-      if (args.enabled !== undefined && typeof args.enabled === 'boolean') updates.enabled = args.enabled;
-      if (args.anonymous !== undefined && typeof args.anonymous === 'boolean') updates.anonymous = args.anonymous;
-      if (args.free !== undefined && typeof args.free === 'boolean') updates.free = args.free;
-      if (args.paid !== undefined && typeof args.paid === 'boolean') updates.paid = args.paid;
+      // Build updates object with only the fields that are provided
+      if (args.enabled !== undefined) updates.enabled = args.enabled;
+      if (args.anonymous !== undefined) updates.anonymous = args.anonymous;
+      if (args.free !== undefined) updates.free = args.free;
+      if (args.paid !== undefined) updates.paid = args.paid;
       
-      // Only patch if we have actual field updates (beyond just updatedAt)
-      const hasUpdates = Object.keys(updates).filter(k => k !== 'updatedAt').length > 0;
-      if (hasUpdates) {
+      // Always update the updatedAt timestamp
+      updates.updatedAt = now;
+      
+      // Only patch if we have actual updates
+      if (Object.keys(updates).length > 0) {
         await ctx.db.patch(existing._id, updates);
       }
     } else {
-      // For new records, create with all required fields and optional ones that were provided
-      const newConfig: any = {
+      // Create new record with provided fields
+      const newConfig: Record<string, any> = {
         toolId: args.toolId,
-        enabled: args.enabled !== undefined ? args.enabled : true,
+        enabled: args.enabled ?? true,
         createdAt: now,
         updatedAt: now,
       };
       
-      // Add optional fields if provided
+      // Add optional fields if they were provided
       if (args.anonymous !== undefined) newConfig.anonymous = args.anonymous;
       if (args.free !== undefined) newConfig.free = args.free;
       if (args.paid !== undefined) newConfig.paid = args.paid;
