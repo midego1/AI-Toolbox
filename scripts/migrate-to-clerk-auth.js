@@ -35,3 +35,4 @@ console.log('\n✅ Migration script ready');
 console.log('Uncomment the writeFileSync line to apply changes');
 
 
+
