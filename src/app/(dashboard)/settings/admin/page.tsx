@@ -24,8 +24,26 @@ import { Id } from "../../../../../convex/_generated/dataModel";
 export default function AdminPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<Id<"users"> | null>(null);
+  const [activeTab, setActiveTab] = useState("overview");
   
   const token = useAuthToken();
+  
+  // Handle tab persistence via URL hash
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        setActiveTab(hash);
+      }
+    }
+  }, []);
+  
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    if (typeof window !== 'undefined') {
+      window.location.hash = value;
+    }
+  };
   
   // Load data
   const systemStats = useQuery(api.adminTools.getSystemStats, token ? { token } : "skip");
@@ -94,7 +112,7 @@ export default function AdminPage() {
       </div>
       
       {/* Tabs - Using consistent component */}
-      <Tabs defaultValue="overview" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="overview" className="flex items-center space-x-2">
             <BarChart3 className="h-4 w-4" />
@@ -1033,6 +1051,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
   const [loading, setLoading] = useState<string | null>(null);
   const [expandedTool, setExpandedTool] = useState<string | null>(null);
   const updateToolConfig = useMutation(api.adminTools.updateToolConfig);
+  const updateToolMetadata = useMutation(api.adminTools.updateToolMetadata);
   const initializeToolsMetadata = useMutation(api.adminTools.initializeToolsMetadata);
   const getToolMetadata = useQuery(api.adminTools.getToolMetadata, 
     expandedTool && token ? { token, toolId: expandedTool } : "skip"
@@ -1484,15 +1503,17 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                               <div className="border-l-2 border-primary bg-muted/20 p-4 space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   <div>
-                                    <Label>Tool Name</Label>
+                                    <Label htmlFor={`name-${tool.id}`}>Tool Name</Label>
                                     <Input 
+                                      id={`name-${tool.id}`}
                                       defaultValue={getToolMetadata?.name || getCurrentTool(tool.id)?.name || ''} 
                                       placeholder="Enter tool name"
                                     />
                                   </div>
                                   <div>
-                                    <Label>Credits</Label>
+                                    <Label htmlFor={`credits-${tool.id}`}>Credits</Label>
                                     <Input 
+                                      id={`credits-${tool.id}`}
                                       defaultValue={tool.credits} 
                                       placeholder="Enter credit cost"
                                     />
@@ -1500,8 +1521,9 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                                 </div>
                                 
                                 <div>
-                                  <Label>Description</Label>
+                                  <Label htmlFor={`description-${tool.id}`}>Description</Label>
                                   <Textarea 
+                                    id={`description-${tool.id}`}
                                     defaultValue={getToolMetadata?.description || getCurrentTool(tool.id)?.description || ''} 
                                     rows={3}
                                     placeholder="Enter tool description"
@@ -1509,8 +1531,9 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                                 </div>
                                 
                                 <div>
-                                  <Label>Default Prompt</Label>
+                                  <Label htmlFor={`defaultPrompt-${tool.id}`}>Default Prompt</Label>
                                   <Textarea 
+                                    id={`defaultPrompt-${tool.id}`}
                                     defaultValue={getToolMetadata?.defaultPrompt || ''} 
                                     rows={5}
                                     className="font-mono text-sm"
@@ -1522,8 +1545,9 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                                 </div>
                                 
                                 <div>
-                                  <Label>System Prompt</Label>
+                                  <Label htmlFor={`systemPrompt-${tool.id}`}>System Prompt</Label>
                                   <Textarea 
+                                    id={`systemPrompt-${tool.id}`}
                                     defaultValue={getToolMetadata?.systemPrompt || ''} 
                                     rows={8}
                                     className="font-mono text-sm"
@@ -1535,8 +1559,9 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                                 </div>
                                 
                                 <div>
-                                  <Label>Configuration Options (JSON)</Label>
+                                  <Label htmlFor={`configOptions-${tool.id}`}>Configuration Options (JSON)</Label>
                                   <Textarea 
+                                    id={`configOptions-${tool.id}`}
                                     defaultValue={JSON.stringify(getToolMetadata?.configOptions || {}, null, 2)} 
                                     rows={6}
                                     className="font-mono text-sm"
@@ -1551,9 +1576,41 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                                   <Button variant="outline" onClick={() => setExpandedTool(null)}>
                                     Collapse
                                   </Button>
-                                  <Button onClick={() => {
-                                    // TODO: Implement save functionality
-                                    alert("Save functionality coming soon!");
+                                  <Button onClick={async () => {
+                                    if (!token || !expandedTool) return;
+                                    
+                                    try {
+                                      // Get current form values
+                                      const nameEl = document.getElementById(`name-${tool.id}`) as HTMLInputElement;
+                                      const descriptionEl = document.getElementById(`description-${tool.id}`) as HTMLTextAreaElement;
+                                      const defaultPromptEl = document.getElementById(`defaultPrompt-${tool.id}`) as HTMLTextAreaElement;
+                                      const systemPromptEl = document.getElementById(`systemPrompt-${tool.id}`) as HTMLTextAreaElement;
+                                      const configOptionsEl = document.getElementById(`configOptions-${tool.id}`) as HTMLTextAreaElement;
+                                      
+                                      let configOptions = {};
+                                      try {
+                                        configOptions = JSON.parse(configOptionsEl.value);
+                                      } catch (e) {
+                                        alert("Invalid JSON in configuration options");
+                                        return;
+                                      }
+                                      
+                                      await updateToolMetadata({
+                                        token,
+                                        toolId: expandedTool,
+                                        name: nameEl.value,
+                                        description: descriptionEl.value,
+                                        defaultPrompt: defaultPromptEl.value,
+                                        systemPrompt: systemPromptEl.value,
+                                        configOptions: configOptions,
+                                      });
+                                      
+                                      alert("Changes saved successfully!");
+                                      setExpandedTool(null);
+                                    } catch (error) {
+                                      console.error("Failed to save metadata:", error);
+                                      alert("Failed to save changes. Please check the console.");
+                                    }
                                   }}>
                                     Save Changes
                                   </Button>
