@@ -85,29 +85,24 @@ export default function DashboardLayout({
               userEmail={null}
             />
             
-            {/* Guest Upgrade Banner */}
-            <div className="border-b bg-gradient-to-r from-red-50 to-orange-50">
-              <div className="container mx-auto px-4 py-3">
+            {/* Guest Banner - Subtle */}
+            <div className="border-b bg-muted/30">
+              <div className="container mx-auto px-4 py-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm text-red-600">✨</span>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
-                        Using as guest
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Sign in to save your work
-                      </p>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs">✨</span>
+                    <p className="text-xs text-muted-foreground">
+                      Using as guest - Sign in to save your work
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Link href="/login">
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" className="h-7 text-xs px-3">
                         Log In
                       </Button>
                     </Link>
                     <Link href="/signup">
-                      <Button size="sm" className="bg-red-600 hover:bg-red-700">
+                      <Button size="sm" className="bg-red-600 hover:bg-red-700 h-7 text-xs px-3">
                         Sign Up
                       </Button>
                     </Link>

@@ -6,7 +6,7 @@ import { getAuthToken } from "@/lib/auth-client";
 import { useUser } from "@clerk/nextjs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Lock, Sparkles, ArrowRight } from "lucide-react";
+import { Lock, Sparkles, ArrowRight, Info } from "lucide-react";
 import Link from "next/link";
 
 interface ToolAccessGuardProps {
@@ -20,6 +20,8 @@ interface ToolAccessGuardProps {
  * - Anonymous access (no login required)
  * - Free tier access (login required)
  * - Premium tier access (subscription required)
+ * 
+ * NEW: Allows preview mode - users can see the UI before signing up
  */
 export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   const token = getAuthToken();
@@ -79,32 +81,43 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
     return <>{children}</>;
   }
   
-  // If tool is free or paid but user is not signed in, show sign-in prompt
+  // NEW: Preview mode - show tool UI with a contextual sign-up banner
+  // This allows users to explore the tool before signing up, improving conversion
   if (!isSignedIn) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <Card className="p-8 max-w-md text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Lock className="h-8 w-8 text-white" />
-          </div>
-          <h3 className="text-2xl font-bold mb-2">Sign In Required</h3>
-          <p className="text-muted-foreground mb-4">
-            This tool requires authentication to use.
-          </p>
-          <div className="space-y-3">
-            <Link href="/signup" className="block">
-              <Button className="w-full bg-red-600 hover:bg-red-700">
-                Sign Up for Free
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="/login" className="block">
-              <Button variant="outline" className="w-full">
-                Already have an account? Log In
-              </Button>
-            </Link>
+      <div className="space-y-6">
+        {/* Contextual Sign-Up Banner */}
+        <Card className="border-2 border-red-200 bg-gradient-to-r from-red-50 to-orange-50">
+          <div className="flex items-center gap-3 p-4">
+            <div className="flex-shrink-0">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+                <Lock className="h-5 w-5 text-white" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900">Sign up to use this tool</p>
+              <p className="text-sm text-muted-foreground">
+                Create a free account to access all AI tools and get 100 credits to start
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link href="/login">
+                <Button variant="ghost" size="sm">
+                  Log In
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button size="sm" className="bg-red-600 hover:bg-red-700">
+                  Sign Up Free
+                  <ArrowRight className="ml-2 h-3 w-3" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </Card>
+        
+        {/* Show the tool in preview mode - users can interact but execution requires auth */}
+        {children}
       </div>
     );
   }
@@ -116,36 +129,32 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
     
     if (!hasAccess) {
       return (
-        <div className="flex h-64 items-center justify-center">
-          <Card className="p-8 max-w-md text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="h-8 w-8 text-white" />
+        <div className="space-y-6">
+          {/* Upgrade Banner */}
+          <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50">
+            <div className="flex items-center gap-3 p-4">
+              <div className="flex-shrink-0">
+                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-gray-900">Upgrade to Pro</p>
+                <p className="text-sm text-muted-foreground">
+                  Unlock access to all premium AI tools with a Pro subscription
+                </p>
+              </div>
+              <Link href="/billing">
+                <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
+                  Upgrade
+                  <ArrowRight className="ml-2 h-3 w-3" />
+                </Button>
+              </Link>
             </div>
-            <h3 className="text-2xl font-bold mb-2">Upgrade Required</h3>
-            <p className="text-muted-foreground mb-4">
-              This tool is available with a Pro subscription.
-            </p>
-            <div className="bg-muted/50 rounded-lg p-4 space-y-2 text-sm mb-4">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-purple-600" />
-                <span>Access to all premium tools</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-purple-600" />
-                <span>Priority support</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-purple-600" />
-                <span>Unlimited usage</span>
-              </div>
-            </div>
-            <Link href="/billing" className="block">
-              <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                Upgrade to Pro
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
           </Card>
+          
+          {/* Show the tool in preview mode */}
+          {children}
         </div>
       );
     }

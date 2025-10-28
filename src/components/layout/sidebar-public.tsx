@@ -154,20 +154,15 @@ export function SidebarPublic() {
         </Link>
       </div>
 
-      {/* Get Started CTA */}
-      <div className="mx-3 my-4 p-4 bg-gradient-to-br from-red-500 to-red-600 rounded-lg">
-        <h3 className="text-white font-semibold text-sm mb-2">Get Started</h3>
-        <p className="text-white/90 text-xs mb-3">
-          Sign up to access all AI tools and features
+      {/* Subtle Sign-Up Prompt */}
+      <div className="mx-3 my-4 p-3 bg-muted/50 rounded-lg border border-muted">
+        <p className="text-xs font-medium mb-1">✨ Free to Start</p>
+        <p className="text-xs text-muted-foreground mb-2">
+          Sign up for 100 credits
         </p>
         <Link href="/signup">
-          <Button size="sm" variant="secondary" className="w-full">
-            Sign Up Free
-          </Button>
-        </Link>
-        <Link href="/login">
-          <Button size="sm" variant="ghost" className="w-full mt-2 text-white hover:text-white hover:bg-white/10">
-            Log In
+          <Button size="sm" className="w-full text-xs">
+            Get Started
           </Button>
         </Link>
       </div>
@@ -237,15 +232,6 @@ export function SidebarPublic() {
         })}
       </nav>
 
-      {/* Info Section */}
-      <div className="border-t px-3 py-4 space-y-2">
-        <div className="p-3 bg-muted/50 rounded-lg text-sm">
-          <p className="font-medium mb-1">🎁 Free Trial</p>
-          <p className="text-xs text-muted-foreground">
-            Get 100 credits to explore all features
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
