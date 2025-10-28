@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Linkedin, Sparkles, TrendingUp, Users } from "lucide-react";
 import { TextToolHistory } from "@/components/shared/TextToolHistory";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 const CONTENT_TYPES = [
   { value: "post", label: "LinkedIn Post", desc: "Engaging post for your feed" },
@@ -86,7 +87,11 @@ export default function LinkedInContentPage() {
   const selectedType = CONTENT_TYPES.find(t => t.value === contentType);
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <ToolAccessGuard toolId="linkedin-content">
+
+
+  return (
+      <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
           <Linkedin className="h-8 w-8 text-primary" />

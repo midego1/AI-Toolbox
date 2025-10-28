@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FileText, Sparkles, List, BookOpen } from "lucide-react";
 import { TextToolHistory } from "@/components/shared/TextToolHistory";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 const OUTPUT_FORMATS = [
   { value: "paragraph", label: "Paragraph", icon: "📄" },
@@ -74,6 +75,7 @@ export default function SummarizerPage() {
   const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
 
   return (
+    <ToolAccessGuard toolId="summarizer">
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
@@ -341,6 +343,7 @@ export default function SummarizerPage() {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 

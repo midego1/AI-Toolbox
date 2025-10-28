@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TrendingUp, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
 import { TextToolHistory } from "@/components/shared/TextToolHistory";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 export default function SEOOptimizerPage() {
   const [content, setContent] = useState("");
@@ -70,7 +71,11 @@ export default function SEOOptimizerPage() {
   const creditsNeeded = Math.max(8, Math.ceil(wordCount / 200) + 5);
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <ToolAccessGuard toolId="seo-optimizer">
+
+
+  return (
+      <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
           <TrendingUp className="h-8 w-8 text-primary" />

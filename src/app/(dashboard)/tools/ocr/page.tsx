@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { FileText, Upload, Copy, Download, Image as ImageIcon, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { TextToolHistory } from "@/components/shared/TextToolHistory";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 export default function OCRPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -164,7 +165,11 @@ export default function OCRPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <ToolAccessGuard toolId="ocr">
+
+
+  return (
+      <div className="container mx-auto p-6 max-w-6xl">
       {/* Page Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">

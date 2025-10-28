@@ -12,6 +12,7 @@ import { getAuthToken } from "@/lib/auth-client";
 import { useAction } from "convex/react";
 import { isAnonymousTool } from "@/lib/premium-tools";
 import Link from "next/link";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 const languages = [
   { code: "en", name: "English" },
@@ -80,6 +81,7 @@ export default function TranslationPage() {
   const estimatedCredits = Math.ceil(inputText.length / 1000) || 1;
 
   return (
+    <ToolAccessGuard toolId="translation">
     <div className="container mx-auto p-6 max-w-6xl">
       {/* Page Header */}
       <div className="mb-6">
@@ -253,5 +255,6 @@ export default function TranslationPage() {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }

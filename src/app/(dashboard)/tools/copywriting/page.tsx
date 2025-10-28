@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PenTool, Sparkles, TrendingUp } from "lucide-react";
 import { TextToolHistory } from "@/components/shared/TextToolHistory";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 const CONTENT_TYPES = [
   { value: "email_subject", label: "Email Subject Line" },
@@ -86,7 +87,11 @@ export default function CopywritingPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <ToolAccessGuard toolId="copywriting">
+
+
+  return (
+      <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
           <PenTool className="h-8 w-8 text-primary" />

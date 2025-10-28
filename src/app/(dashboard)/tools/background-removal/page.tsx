@@ -89,7 +89,11 @@ export default function BackgroundRemovalPage() {
   const creditsNeeded = 3 + (edgeRefinementLevel > 5 ? 2 : 0);
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <ToolAccessGuard toolId="background-removal">
+
+
+  return (
+      <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
           <Scissors className="h-8 w-8 text-primary" />

@@ -63,7 +63,11 @@ export default function SurprisesPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <ToolAccessGuard toolId="surprise_ideeen">
+
+
+  return (
+      <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
           <Package className="h-8 w-8 text-red-600" />

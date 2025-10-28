@@ -53,7 +53,11 @@ export default function SchoentjeTekeningPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <ToolAccessGuard toolId="schoentje_tekening">
+
+
+  return (
+      <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
           <span className="text-3xl">👞</span>
