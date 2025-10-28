@@ -1253,11 +1253,11 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
   });
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Card>
-        <CardHeader>
-          <CardTitle>AI Tools Management</CardTitle>
-          <CardDescription>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">AI Tools Management</CardTitle>
+          <CardDescription className="text-sm">
             Enable or disable AI tools system-wide. Disabled tools will not be accessible to users.
           </CardDescription>
         </CardHeader>
@@ -1268,122 +1268,131 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
               const isSinterklaas = category.includes("🎅");
               
               return (
-                <div key={category}>
-                  <h3 className={`text-base font-semibold mb-3 flex items-center ${isSinterklaas ? 'text-red-600' : ''}`}>
-                    <Zap className={`h-4 w-4 mr-2 ${isSinterklaas ? 'text-red-600' : 'text-primary'}`} />
+                <div key={category} className="space-y-2">
+                  <h3 className={`text-sm font-semibold mb-2 flex items-center ${isSinterklaas ? 'text-red-600' : ''}`}>
+                    <Zap className={`h-3 w-3 mr-1.5 ${isSinterklaas ? 'text-red-600' : 'text-primary'}`} />
                     {category}
                   </h3>
-                <div className="grid grid-cols-1 gap-3">
-                  {tools.map((tool) => {
-                    const config = getToolConfig(tool.id);
-                    const isLoading = loading === tool.id;
-                    
-                    const ToggleSwitch = ({ field, label, icon: Icon, colorClass }: any) => {
-                      const value = config[field];
-                      const isActive = value === true;
-                      
-                      return (
-                        <button
-                          onClick={() => !isLoading && handleConfigUpdate(tool.id, field, !isActive)}
-                          disabled={isLoading}
-                          className={`flex items-center justify-between p-2 rounded-lg border transition-colors ${
-                            isActive 
-                              ? colorClass
-                              : 'bg-gray-50 border-gray-200'
-                          } disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-80`}
-                        >
-                          <div className="flex items-center space-x-2">
-                            {Icon && <Icon className={`h-4 w-4 ${isActive ? 'text-current' : 'text-gray-400'}`} />}
-                            <span className="text-xs font-medium">{label}</span>
-                          </div>
-                          {isLoading ? (
-                            <RefreshCw className="h-3 w-3 animate-spin" />
-                          ) : (
-                            <div className={`w-8 h-4 rounded-full relative transition-colors ${
-                              isActive ? 'bg-current' : 'bg-gray-300'
-                            }`}>
-                              <div className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full bg-white transition-transform ${
-                                isActive ? 'translate-x-4' : ''
-                              }`} />
-                            </div>
-                          )}
-                        </button>
-                      );
-                    };
-                    
-                    return (
-                      <div
-                        key={tool.id}
-                        className={`p-4 border-2 rounded-lg transition-all ${
-                          config.enabled ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200 opacity-60"
-                        }`}
-                      >
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-1">
-                              <h4 className="font-semibold">{tool.name}</h4>
-                              <Badge variant={config.enabled ? "default" : "destructive"}>
-                                {config.enabled ? "Enabled" : "Disabled"}
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-2">
-                              {tool.description}
-                            </p>
-                            <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                              <span>Category: {tool.category}</span>
-                              <span>•</span>
-                              <span>Credits: {tool.credits}</span>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => !isLoading && handleToggle(tool.id, config.enabled)}
-                            disabled={isLoading}
-                            className={`ml-3 flex items-center justify-center w-12 h-12 rounded-lg transition-colors ${
-                              config.enabled
-                                ? "bg-green-500 hover:bg-green-600 text-white"
-                                : "bg-gray-300 hover:bg-gray-400"
-                            } disabled:opacity-50 disabled:cursor-not-allowed`}
-                          >
-                            {isLoading ? (
-                              <RefreshCw className="h-5 w-5 animate-spin" />
-                            ) : config.enabled ? (
-                              <Check className="h-5 w-5" />
-                            ) : (
-                              <X className="h-5 w-5" />
-                            )}
-                          </button>
-                        </div>
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="grid grid-cols-[2fr_60px_60px_60px_60px_80px] gap-2 p-2 bg-muted/30 border-b text-xs font-semibold items-center">
+                      <div>Tool</div>
+                      <div className="text-center">Enable</div>
+                      <div className="text-center" title="Anonymous Access">👤</div>
+                      <div className="text-center" title="Free for Users">💚</div>
+                      <div className="text-center" title="Paid/Pre">💳</div>
+                      <div className="text-center">Credits</div>
+                    </div>
+                    <div className="space-y-0">
+                      {tools.map((tool, idx) => {
+                        const config = getToolConfig(tool.id);
+                        const isLoading = loading === tool.id;
                         
-                        {/* Configuration Settings */}
-                        <div className="mt-3 pt-3 border-t border-gray-200">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label className="text-xs font-semibold">Access & Pricing:</Label>
+                        // Compact Toggle Component
+                        const CompactToggle = ({ field, Icon, isActive }: any) => {
+                          const getColorClasses = (field: string, isActive: boolean) => {
+                            if (!isActive) return 'bg-gray-100 hover:bg-gray-200';
+                            
+                            if (field === 'anonymous') return 'bg-blue-500 text-white';
+                            if (field === 'free') return 'bg-green-500 text-white';
+                            if (field === 'paid') return 'bg-purple-500 text-white';
+                            
+                            return 'bg-gray-100 hover:bg-gray-200';
+                          };
+                          
+                          return (
+                            <button
+                              onClick={() => !isLoading && handleConfigUpdate(tool.id, field, !isActive)}
+                              disabled={isLoading}
+                              className={`w-full h-8 flex items-center justify-center rounded transition-colors ${getColorClasses(field, isActive)} disabled:opacity-50`}
+                              title={field}
+                            >
+                              {isLoading ? (
+                                <RefreshCw className="h-3 w-3 animate-spin" />
+                              ) : (
+                                <Icon className="h-3.5 w-3.5" />
+                              )}
+                            </button>
+                          );
+                        };
+                        
+                        return (
+                          <div
+                            key={tool.id}
+                            className={`grid grid-cols-[2fr_60px_60px_60px_60px_80px] gap-2 p-2 items-center border-b last:border-b-0 ${
+                              config.enabled ? "bg-green-50/50 hover:bg-green-50" : "bg-red-50/50 opacity-60"
+                            }`}
+                          >
+                            {/* Tool Info */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2">
+                                <h4 className="text-sm font-medium truncate">{tool.name}</h4>
+                                {config.enabled ? (
+                                  <Badge variant="default" className="h-4 px-1.5 text-[10px]">ON</Badge>
+                                ) : (
+                                  <Badge variant="destructive" className="h-4 px-1.5 text-[10px]">OFF</Badge>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground truncate">{tool.description}</p>
+                            </div>
+                            
+                            {/* Enable/Disable Toggle */}
+                            <div className="flex items-center justify-center">
+                              <button
+                                onClick={() => !isLoading && handleToggle(tool.id, config.enabled)}
+                                disabled={isLoading}
+                                className={`w-10 h-8 flex items-center justify-center rounded transition-colors ${
+                                  config.enabled
+                                    ? "bg-green-500 hover:bg-green-600 text-white"
+                                    : "bg-gray-300 hover:bg-gray-400"
+                                } disabled:opacity-50`}
+                                title={config.enabled ? "Disable" : "Enable"}
+                              >
+                                {isLoading ? (
+                                  <RefreshCw className="h-3 w-3 animate-spin" />
+                                ) : config.enabled ? (
+                                  <Check className="h-4 w-4" />
+                                ) : (
+                                  <X className="h-4 w-4" />
+                                )}
+                              </button>
+                            </div>
+                            
+                            {/* Anonymous Toggle */}
+                            <div className="flex items-center justify-center">
+                              <CompactToggle 
+                                field="anonymous"
+                                Icon={() => <Users className="h-3.5 w-3.5" />}
+                                isActive={config.anonymous === true}
+                              />
+                            </div>
+                            
+                            {/* Free Toggle */}
+                            <div className="flex items-center justify-center">
+                              <CompactToggle 
+                                field="free"
+                                Icon={() => <DollarSign className="h-3.5 w-3.5" />}
+                                isActive={config.free === true}
+                              />
+                            </div>
+                            
+                            {/* Paid Toggle */}
+                            <div className="flex items-center justify-center">
+                              <CompactToggle 
+                                field="paid"
+                                Icon={() => <CreditCard className="h-3.5 w-3.5" />}
+                                isActive={config.paid === true}
+                              />
+                            </div>
+                            
+                            {/* Credits */}
+                            <div className="text-xs text-muted-foreground text-center">
+                              {tool.credits}
+                            </div>
                           </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <ToggleSwitch 
-                              field="anonymous"
-                              label="Anonymous"
-                              icon={() => <Users className="h-4 w-4" />}
-                              colorClass="bg-blue-50 border-blue-200 text-blue-500"
-                            />
-                            <ToggleSwitch 
-                              field="free"
-                              label="Free"
-                              icon={() => <DollarSign className="h-4 w-4" />}
-                              colorClass="bg-green-50 border-green-200 text-green-500"
-                            />
-                            <ToggleSwitch 
-                              field="paid"
-                              label="Paid"
-                              icon={() => <CreditCard className="h-4 w-4" />}
-                              colorClass="bg-purple-50 border-purple-200 text-purple-500"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               );
             })}
