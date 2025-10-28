@@ -1251,6 +1251,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
       anonymous: undefined,
       free: undefined,
       paid: undefined,
+      showInSidebar: undefined,
     };
   };
   
@@ -1312,6 +1313,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                           const getColorClasses = (field: string, isActive: boolean) => {
                             if (!isActive) return 'bg-gray-100 hover:bg-gray-200';
                             
+                            if (field === 'showInSidebar') return 'bg-orange-500 text-white';
                             if (field === 'anonymous') return 'bg-blue-500 text-white';
                             if (field === 'free') return 'bg-green-500 text-white';
                             if (field === 'paid') return 'bg-purple-500 text-white';
