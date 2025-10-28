@@ -322,8 +322,6 @@ function GedichtenHistory() {
         </div>
       </CardContent>
     </Card>
-    </div>
-    </ToolAccessGuard>
   );
 }
 
