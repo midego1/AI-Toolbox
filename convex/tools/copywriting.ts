@@ -87,8 +87,13 @@ export const generateCopy = action({
         status: "processing",
       });
 
-      // Build comprehensive prompt
-      const systemPrompt = buildSystemPrompt(args);
+      // Fetch tool metadata from database
+      const toolMetadata = await ctx.runQuery(api.adminTools.getToolMetadataPublic, { 
+        toolId: "copywriting" 
+      });
+      
+      // Build comprehensive prompt (use database prompt if available)
+      const systemPrompt = toolMetadata?.systemPrompt || buildSystemPrompt(args);
       const userPrompt = buildUserPrompt(args);
 
       console.log("🎨 Copywriting System Prompt:", systemPrompt);
