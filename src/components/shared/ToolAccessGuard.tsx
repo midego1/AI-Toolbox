@@ -1,10 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { getAuthToken } from "@/lib/auth-client";
 import { useUser } from "@clerk/nextjs";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Lock, X } from "lucide-react";
+import Link from "next/link";
 
 interface ToolAccessGuardProps {
   toolId: string;
@@ -18,9 +22,10 @@ interface ToolAccessGuardProps {
  * - Free tier access (login required)
  * - Premium tier access (subscription required)
  * 
- * NEW: Allows preview mode - users can see the UI before signing up
+ * NEW: Frost overlay for anonymous users - can see through blurred content
  */
 export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
+  const [dismissed, setDismissed] = useState(false);
   const token = getAuthToken();
   const { isSignedIn, isLoaded } = useUser();
   
@@ -78,14 +83,65 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
     return <>{children}</>;
   }
   
-  // Allow preview mode - show tool UI without blocking banner
-  // Users can explore freely, auth check happens at execution time
-  if (!isSignedIn) {
-    return <>{children}</>;
+  // Frost overlay mode for anonymous users - can see through but prompted to sign up
+  if (!isSignedIn && !dismissed) {
+    return (
+      <div className="relative">
+        {/* Tool content (blurred behind overlay) */}
+        <div className="blur-sm pointer-events-none select-none">
+          {children}
+        </div>
+        
+        {/* Frost overlay with sign-up prompt */}
+        <div className="absolute inset-0 flex items-center justify-center p-4">
+          <div className="backdrop-blur-md bg-white/80 border border-white/20 rounded-2xl shadow-2xl p-6 max-w-md w-full">
+            <button
+              onClick={() => setDismissed(true)}
+              className="absolute top-4 right-4 p-1 hover:bg-muted rounded-full transition-colors"
+              aria-label="Dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            
+            <div className="text-center space-y-4">
+              <div className="mx-auto w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+                <Lock className="h-6 w-6 text-white" />
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-bold mb-2">Sign up to use this tool</h3>
+                <p className="text-sm text-muted-foreground">
+                  Create a free account to access this AI tool and get 100 credits to start
+                </p>
+              </div>
+              
+              <div className="flex gap-3">
+                <Link href="/login" className="flex-1">
+                  <Button variant="outline" className="w-full">
+                    Log In
+                  </Button>
+                </Link>
+                <Link href="/signup" className="flex-1">
+                  <Button className="w-full bg-red-600 hover:bg-red-700">
+                    Sign Up Free
+                  </Button>
+                </Link>
+              </div>
+              
+              <button
+                onClick={() => setDismissed(true)}
+                className="text-xs text-muted-foreground hover:text-foreground underline"
+              >
+                Continue as guest (limited access)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
   
-  // User is signed in - show the tool
-  // Auth checks for premium features should be handled by the tool itself
+  // Show tool normally if dismissed or signed in
   return <>{children}</>;
 }
 

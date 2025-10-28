@@ -85,33 +85,7 @@ export default function DashboardLayout({
               userEmail={null}
             />
             
-            {/* Guest Banner - Subtle */}
-            <div className="border-b bg-muted/30">
-              <div className="container mx-auto px-4 py-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs">✨</span>
-                    <p className="text-xs text-muted-foreground">
-                      Using as guest - Sign in to save your work
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Link href="/login">
-                      <Button variant="ghost" size="sm" className="h-7 text-xs px-3">
-                        Log In
-                      </Button>
-                    </Link>
-                    <Link href="/signup">
-                      <Button size="sm" className="bg-red-600 hover:bg-red-700 h-7 text-xs px-3">
-                        Sign Up
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <main className="flex-1 overflow-y-auto bg-muted/10">
+            <main className="flex-1 overflow-y-auto bg-muted/10 relative">
               {children}
             </main>
           </div>
