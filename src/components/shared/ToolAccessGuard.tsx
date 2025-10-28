@@ -37,12 +37,13 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   // Only true is anonymous, undefined/false means auth required
   const isAnonymous = toolConfig?.anonymous === true;
   
-  console.log(`ToolAccessGuard Debug for ${toolId}:`, {
+  console.log(`🔍 ToolAccessGuard Debug for ${toolId}:`, {
     isAnonymous,
     anonymousValue: toolConfig?.anonymous,
     isSignedIn,
     isLoaded,
     dismissed,
+    willShowOverlay: !isSignedIn && !dismissed && isLoaded && !isAnonymous
   });
   
   // Only get current user info if authenticated AND we need to check access
