@@ -1,12 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Languages, Copy, Download, ArrowRightLeft } from "lucide-react";
+import { Languages, Copy, Download, ArrowRightLeft, Sparkles } from "lucide-react";
 import { api } from "../../../../../convex/_generated/api";
 import { TextToolHistory } from "@/components/shared/TextToolHistory";
+import { getAuthToken } from "@/lib/auth-client";
+import { useAction } from "convex/react";
+import { isAnonymousTool } from "@/lib/premium-tools";
+import Link from "next/link";
 
 const languages = [
   { code: "en", name: "English" },
@@ -22,20 +27,43 @@ const languages = [
 ];
 
 export default function TranslationPage() {
+  const { isSignedIn } = useUser();
   const [sourceLanguage, setSourceLanguage] = useState("en");
   const [targetLanguage, setTargetLanguage] = useState("es");
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [isTranslating, setIsTranslating] = useState(false);
 
+  const translateAction = useAction(api.tools.translation.translate);
+
   const handleTranslate = async () => {
     if (!inputText.trim()) return;
 
+    // Check if user needs to sign in
+    if (!isSignedIn) {
+      alert("Please sign in to use this tool");
+      return;
+    }
+
     setIsTranslating(true);
-    // Simulate API call - replace with actual AI service call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setOutputText(`[Translated to ${targetLanguage}]: ${inputText}`);
-    setIsTranslating(false);
+    
+    try {
+      const token = getAuthToken();
+      if (!token) throw new Error("Not authenticated");
+
+      const result = await translateAction({
+        token,
+        text: inputText,
+        sourceLang: sourceLanguage,
+        targetLang: targetLanguage,
+      });
+
+      setOutputText(result.translatedText);
+    } catch (error: any) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      setIsTranslating(false);
+    }
   };
 
   const handleSwapLanguages = () => {
@@ -63,6 +91,31 @@ export default function TranslationPage() {
           Translate text between 100+ languages instantly
         </p>
       </div>
+
+      {/* Guest Upgrade Banner */}
+      {!isSignedIn && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Sparkles className="h-5 w-5 text-red-600" />
+              <div>
+                <p className="font-medium text-gray-900">Sign in to use this tool</p>
+                <p className="text-sm text-muted-foreground">Save your work and get 100 free credits</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Link href="/login">
+                <Button variant="ghost" size="sm">Log In</Button>
+              </Link>
+              <Link href="/signup">
+                <Button size="sm" className="bg-red-600 hover:bg-red-700">
+                  Sign Up Free
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-6">
         {/* Language Selection */}

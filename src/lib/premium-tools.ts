@@ -1,12 +1,29 @@
 /**
  * Premium Tool Management
  * 
- * Defines which tools require a premium subscription
+ * Defines three tiers: Anonymous (no auth), Free (auth required), Premium (subscription required)
  */
 
 export type ToolId = string;
 
-// Tools that require premium subscription
+// Tools that can be used anonymously without authentication (trial mode)
+export const ANONYMOUS_TOOLS: Set<ToolId> = new Set([
+  "translation",
+  "summarizer",
+  "rewriter",
+  "ocr",
+  "transcription",
+]);
+
+// Tools that are free for authenticated users (require sign-in)
+export const FREE_TOOLS: Set<ToolId> = new Set([
+  "chat",
+  "gedichten",
+  "cadeautips",
+  "surprises",
+]);
+
+// Tools that require premium subscription (Pro tier)
 export const PREMIUM_TOOLS: Set<ToolId> = new Set([
   "image-generation",
   "background-removal",
@@ -17,18 +34,12 @@ export const PREMIUM_TOOLS: Set<ToolId> = new Set([
   "linkedin-content",
 ]);
 
-// Tools that are available for free users
-export const FREE_TOOLS: Set<ToolId> = new Set([
-  "translation",
-  "ocr",
-  "transcription",
-  "rewriter",
-  "summarizer",
-  "chat",
-  "gedichten",
-  "cadeautips",
-  "surprises",
-]);
+/**
+ * Check if a tool can be used anonymously
+ */
+export function isAnonymousTool(toolId: string): boolean {
+  return ANONYMOUS_TOOLS.has(toolId);
+}
 
 /**
  * Check if a tool requires premium subscription
@@ -38,13 +49,26 @@ export function isPremiumTool(toolId: string): boolean {
 }
 
 /**
+ * Check if tool requires authentication
+ */
+export function requiresAuthentication(toolId: string): boolean {
+  return !isAnonymousTool(toolId);
+}
+
+/**
  * Check if user has access to a tool based on subscription
  */
 export function hasAccessToTool(
   userTier: string | undefined | null,
-  toolId: string
+  toolId: string,
+  isAuthenticated: boolean = false
 ): boolean {
-  // If no user tier, check if tool is premium
+  // Anonymous users can only access anonymous tools
+  if (!isAuthenticated) {
+    return isAnonymousTool(toolId);
+  }
+  
+  // Free tier users can access free tools and premium tools are blocked
   if (!userTier || userTier === "free") {
     return !isPremiumTool(toolId);
   }
@@ -60,14 +84,17 @@ export function getToolTierRequirement(toolId: string): string {
   if (isPremiumTool(toolId)) {
     return "pro";
   }
-  return "free";
+  if (isAnonymousTool(toolId)) {
+    return "anonymous";
+  }
+  return "free"; // Free tools require authentication
 }
 
 /**
  * Get list of all tool IDs
  */
 export function getAllToolIds(): ToolId[] {
-  return Array.from(new Set([...PREMIUM_TOOLS, ...FREE_TOOLS]));
+  return Array.from(new Set([...PREMIUM_TOOLS, ...FREE_TOOLS, ...ANONYMOUS_TOOLS]));
 }
 
 /**
@@ -82,6 +109,13 @@ export function getPremiumToolIds(): ToolId[] {
  */
 export function getFreeToolIds(): ToolId[] {
   return Array.from(FREE_TOOLS);
+}
+
+/**
+ * Get anonymous tool IDs
+ */
+export function getAnonymousToolIds(): ToolId[] {
+  return Array.from(ANONYMOUS_TOOLS);
 }
 
 

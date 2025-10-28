@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import { SidebarPublic } from "@/components/layout/sidebar-public";
 import { DashboardHeaderPublic } from "@/components/layout/dashboard-header-public";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -11,6 +13,24 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
+  const { isSignedIn, isLoaded } = useUser();
+
+  // Redirect to dashboard if signed in
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      router.push("/dashboard");
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  // Don't render layout content while checking auth or if signed in
+  if (!isLoaded || isSignedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen overflow-hidden">

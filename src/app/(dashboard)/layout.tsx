@@ -12,6 +12,8 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { useConvexUser } from "@/hooks/useConvexUser";
 import { useAuthToken } from "@/hooks/useAuthToken";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardLayout({
   children,
@@ -30,8 +32,8 @@ export default function DashboardLayout({
   // Get token for Convex operations
   const token = useAuthToken();
 
-  // Show loading state while checking auth
-  if (!isLoaded) {
+  // Show loading state while checking auth or loading Convex user
+  if (!isLoaded || convexUser === undefined) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
@@ -42,11 +44,11 @@ export default function DashboardLayout({
     );
   }
 
-  // Preview mode - show content with blur overlay (not signed in)
+  // Preview/Guest mode - allow limited access for anonymous tools
   if (!isSignedIn || !user || convexUser === null) {
     return (
       <LanguageProvider>
-        <div className="flex h-screen overflow-hidden relative">
+        <div className="flex h-screen overflow-hidden">
           {/* Desktop Sidebar */}
           <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:border-r">
             <Sidebar />
@@ -59,19 +61,48 @@ export default function DashboardLayout({
             </SheetContent>
           </Sheet>
 
-          {/* Main Content with blur overlay */}
-          <div className="flex flex-col flex-1 overflow-hidden relative">
+          {/* Main Content with guest banner */}
+          <div className="flex flex-col flex-1 overflow-hidden">
             <DashboardHeader
               onMenuClick={() => setSidebarOpen(true)}
               credits={0}
               userName={null}
               userEmail={null}
             />
-            <main className="flex-1 overflow-y-auto bg-muted/10 relative">
-              <div className="blur-sm brightness-50 pointer-events-none select-none">
-                {children}
+            
+            {/* Guest Upgrade Banner */}
+            <div className="border-b bg-gradient-to-r from-red-50 to-orange-50">
+              <div className="container mx-auto px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-red-600">✨</span>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        Using as guest
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Sign in to save your work
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link href="/login">
+                      <Button variant="ghost" size="sm">
+                        Log In
+                      </Button>
+                    </Link>
+                    <Link href="/signup">
+                      <Button size="sm" className="bg-red-600 hover:bg-red-700">
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               </div>
-              <PreviewOverlay />
+            </div>
+            
+            <main className="flex-1 overflow-y-auto bg-muted/10">
+              {children}
             </main>
           </div>
         </div>

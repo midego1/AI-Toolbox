@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -151,16 +149,6 @@ const aiTools = [
 ];
 
 export default function PublicLandingPage() {
-  const router = useRouter();
-  const { isSignedIn, isLoaded } = useUser();
-
-  // Redirect to dashboard if signed in
-  useEffect(() => {
-    if (isLoaded && isSignedIn) {
-      router.push("/dashboard");
-    }
-  }, [isLoaded, isSignedIn, router]);
-
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -184,16 +172,47 @@ export default function PublicLandingPage() {
               AI-gegenereerde gedichten, cadeautips en verrassingen. Geen stress, alleen plezier! 🎁
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Link href="/signup">
-                <Button size="lg" className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg">
-                  Start Gratis - 100 Credits
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+            {/* Quick Access Tools */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <Link 
+                href="/tools/translation" 
+                className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all hover:-translate-y-1 border-2 hover:border-red-300"
+              >
+                <div className="text-3xl mb-2">🌐</div>
+                <p className="font-semibold text-sm mb-1">Translation</p>
+                <p className="text-xs text-muted-foreground">Free to use</p>
               </Link>
-              <Link href="/login">
+              <Link 
+                href="/tools/summarizer" 
+                className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all hover:-translate-y-1 border-2 hover:border-red-300"
+              >
+                <div className="text-3xl mb-2">📄</div>
+                <p className="font-semibold text-sm mb-1">Summarizer</p>
+                <p className="text-xs text-muted-foreground">Free to use</p>
+              </Link>
+              <Link 
+                href="/tools/ocr" 
+                className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all hover:-translate-y-1 border-2 hover:border-red-300"
+              >
+                <div className="text-3xl mb-2">📸</div>
+                <p className="font-semibold text-sm mb-1">OCR</p>
+                <p className="text-xs text-muted-foreground">Free to use</p>
+              </Link>
+              <Link 
+                href="/tools/rewriter" 
+                className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all hover:-translate-y-1 border-2 hover:border-red-300"
+              >
+                <div className="text-3xl mb-2">✍️</div>
+                <p className="font-semibold text-sm mb-1">Rewriter</p>
+                <p className="text-xs text-muted-foreground">Free to use</p>
+              </Link>
+            </div>
+            
+            {/* Subtle Signup CTA */}
+            <div className="text-center mb-8">
+              <Link href="/signup">
                 <Button size="lg" variant="outline" className="border-2">
-                  Inloggen
+                  Want to save your work? Sign up free
                 </Button>
               </Link>
             </div>
@@ -375,44 +394,49 @@ export default function PublicLandingPage() {
         </div>
       </section>
 
-      {/* Final CTA */}
+      {/* All Tools Section */}
       <section className="bg-gradient-to-r from-red-500 to-red-600 py-16 mt-12">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-5xl mx-auto text-center">
             <div className="text-6xl mb-4">🎅</div>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              Klaar voor Pakjesavond?
+              20+ AI Tools at Your Fingertips
             </h2>
             <p className="text-lg text-white/90 mb-8">
-              Sluit je aan bij 100+ Nederlandse families die AI gebruiken om pakjesavond 
-              makkelijker te maken. Start met 100 gratis credits.
+              Try all tools for free. Sign up to save your work and get 100 credits.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-              <Link href="/signup">
-                <Button size="lg" className="bg-white text-red-600 hover:bg-white/90 shadow-lg">
-                  Start Nu Gratis
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                  Al een account?
-                </Button>
-              </Link>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-white">
+                <p className="text-sm font-semibold">🎁 Sinterklaas Tools</p>
+                <p className="text-xs opacity-80">8 tools</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-white">
+                <p className="text-sm font-semibold">✍️ Content Tools</p>
+                <p className="text-xs opacity-80">6 tools</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-white">
+                <p className="text-sm font-semibold">🌐 Language Tools</p>
+                <p className="text-xs opacity-80">3 tools</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-white">
+                <p className="text-sm font-semibold">🖼️ Image Tools</p>
+                <p className="text-xs opacity-80">4 tools</p>
+              </div>
             </div>
             
             <div className="flex items-center justify-center gap-6 text-white/80 text-sm flex-wrap">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4" />
-                <span>Geen credit card</span>
+                <span>Use free tools without login</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4" />
-                <span>100 gratis credits</span>
+                <span>Sign up to save & get 100 credits</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4" />
-                <span>Altijd gratis opzeggen</span>
+                <span>No credit card required</span>
               </div>
             </div>
           </div>
