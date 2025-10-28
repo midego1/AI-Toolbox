@@ -758,10 +758,10 @@ export const updateToolConfig = mutation({
   args: {
     token: v.string(),
     toolId: v.string(),
-    enabled: v.optional(v.union(v.boolean(), v.null())),
-    anonymous: v.optional(v.union(v.boolean(), v.null())),
-    free: v.optional(v.union(v.boolean(), v.null())),
-    paid: v.optional(v.union(v.boolean(), v.null())),
+    enabled: v.optional(v.boolean()),
+    anonymous: v.optional(v.boolean()),
+    free: v.optional(v.boolean()),
+    paid: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     await verifyAdmin(ctx, args.token);
@@ -775,21 +775,26 @@ export const updateToolConfig = mutation({
     
     try {
       if (existing) {
-        const updates: Record<string, any> = {};
+        // Only update fields that were explicitly provided
+        const updates: Record<string, any> = {
+          updatedAt: now,
+        };
         
-        // Build updates object with only the fields that are provided
-        if (args.enabled !== undefined) updates.enabled = args.enabled;
-        if (args.anonymous !== undefined) updates.anonymous = args.anonymous;
-        if (args.free !== undefined) updates.free = args.free;
-        if (args.paid !== undefined) updates.paid = args.paid;
-        
-        // Always update the updatedAt timestamp
-        updates.updatedAt = now;
-        
-        // Only patch if we have actual updates
-        if (Object.keys(updates).length > 0) {
-          await ctx.db.patch(existing._id, updates);
+        // Only add fields if they were explicitly passed (not undefined)
+        if (args.enabled !== undefined) {
+          updates.enabled = args.enabled;
         }
+        if (args.anonymous !== undefined) {
+          updates.anonymous = args.anonymous;
+        }
+        if (args.free !== undefined) {
+          updates.free = args.free;
+        }
+        if (args.paid !== undefined) {
+          updates.paid = args.paid;
+        }
+        
+        await ctx.db.patch(existing._id, updates);
       } else {
         // Create new record with provided fields
         const newConfig: Record<string, any> = {
@@ -799,10 +804,16 @@ export const updateToolConfig = mutation({
           updatedAt: now,
         };
         
-        // Add optional fields if they were provided
-        if (args.anonymous !== undefined) newConfig.anonymous = args.anonymous;
-        if (args.free !== undefined) newConfig.free = args.free;
-        if (args.paid !== undefined) newConfig.paid = args.paid;
+        // Only add optional fields if explicitly provided
+        if (args.anonymous !== undefined) {
+          newConfig.anonymous = args.anonymous;
+        }
+        if (args.free !== undefined) {
+          newConfig.free = args.free;
+        }
+        if (args.paid !== undefined) {
+          newConfig.paid = args.paid;
+        }
         
         await ctx.db.insert("aiToolConfigs", newConfig);
       }
@@ -810,6 +821,8 @@ export const updateToolConfig = mutation({
       return { success: true };
     } catch (error) {
       console.error("Error updating tool config:", error);
+      console.error("Args:", args);
+      console.error("Existing:", existing);
       throw error;
     }
   },
