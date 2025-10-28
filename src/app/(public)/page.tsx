@@ -56,38 +56,40 @@ function CompactCountdown() {
     return () => clearInterval(interval);
   }, []);
 
+  const CountdownBox = ({ label, value }: { label: string; value: number }) => (
+    <div className="bg-white rounded-xl shadow-lg p-3 md:p-4 min-w-[70px] md:min-w-[90px] border-2 border-red-300 hover:scale-105 transition-transform duration-300">
+      <div className="text-2xl md:text-3xl font-extrabold text-red-600 mb-1">
+        {String(value).padStart(2, '0')}
+      </div>
+      <div className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+        {label}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl border-2 border-red-300 p-4 md:p-5">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl md:text-3xl">🎅</span>
-          <div>
-            <h1 className="text-xl md:text-3xl font-bold text-red-900">
-              Pakjesavond komt eraan!
-            </h1>
-            <p className="text-xs md:text-sm text-muted-foreground">
-              📅 {targetDateStr}
-            </p>
-          </div>
+    <div className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 rounded-3xl border-[3px] border-red-400 shadow-xl p-6 md:p-8 backdrop-blur-sm">
+      <div className="text-center mb-4 md:mb-6">
+        <div className="inline-flex items-center gap-2 px-3 md:px-5 py-2 bg-gradient-to-r from-red-100 to-orange-100 rounded-full shadow-lg border-2 border-red-300">
+          <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-red-600" />
+          <span className="text-sm md:text-base font-extrabold text-red-900">
+            Sinterklaas komt eraan!
+          </span>
+          <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-red-600" />
         </div>
-        <div className="flex gap-2">
-          <div className="bg-white/90 rounded-lg px-3 py-2 border-2 border-red-300 text-center min-w-[50px]">
-            <div className="text-xl md:text-2xl font-bold text-red-600">{String(timeLeft.days).padStart(2, '0')}</div>
-            <div className="text-[10px] text-muted-foreground uppercase">D</div>
-          </div>
-          <div className="bg-white/90 rounded-lg px-3 py-2 border-2 border-red-300 text-center min-w-[50px]">
-            <div className="text-xl md:text-2xl font-bold text-red-600">{String(timeLeft.hours).padStart(2, '0')}</div>
-            <div className="text-[10px] text-muted-foreground uppercase">U</div>
-          </div>
-          <div className="bg-white/90 rounded-lg px-3 py-2 border-2 border-red-300 text-center min-w-[50px]">
-            <div className="text-xl md:text-2xl font-bold text-red-600">{String(timeLeft.minutes).padStart(2, '0')}</div>
-            <div className="text-[10px] text-muted-foreground uppercase">M</div>
-          </div>
-          <div className="bg-white/90 rounded-lg px-3 py-2 border-2 border-red-300 text-center min-w-[50px]">
-            <div className="text-xl md:text-2xl font-bold text-red-600">{String(timeLeft.seconds).padStart(2, '0')}</div>
-            <div className="text-[10px] text-muted-foreground uppercase">S</div>
-          </div>
-        </div>
+      </div>
+
+      <div className="flex justify-center gap-2 md:gap-4 mb-4 md:mb-6 flex-wrap">
+        <CountdownBox label="Dagen" value={timeLeft.days} />
+        <CountdownBox label="Uren" value={timeLeft.hours} />
+        <CountdownBox label="Min" value={timeLeft.minutes} />
+        <CountdownBox label="Sec" value={timeLeft.seconds} />
+      </div>
+
+      <div className="text-center text-xs md:text-sm font-semibold text-muted-foreground">
+        <span className="inline-block animate-bounce text-xl md:text-2xl">🎅</span>
+        <span className="mx-2">Tot pakjesavond op {targetDateStr}!</span>
+        <span className="inline-block animate-bounce text-xl md:text-2xl">🎁</span>
       </div>
     </div>
   );

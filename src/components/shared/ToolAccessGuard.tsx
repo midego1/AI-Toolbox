@@ -35,8 +35,17 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
     token ? { token } : "skip"
   );
   
-  // If Clerk is still loading, show loading state
-  if (!isLoaded || toolConfigs === undefined) {
+  // Check if tool allows anonymous access
+  const isAnonymous = toolConfig?.anonymous === true;
+  
+  // If configs haven't loaded yet, don't block for non-authenticated users
+  // (Assume anonymous access is allowed until configs load)
+  if (toolConfigs === undefined && !isSignedIn) {
+    return <>{children}</>;
+  }
+  
+  // If Clerk is still loading and user is signed in, show loading state
+  if (!isLoaded && toolConfigs === undefined) {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="text-center">
