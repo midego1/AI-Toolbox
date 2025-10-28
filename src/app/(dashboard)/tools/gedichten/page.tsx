@@ -255,11 +255,11 @@ export default function GedichtenPage() {
             </Card>
           )}
         </div>
+      </div>
 
-        {/* History Section */}
-        <div className="lg:col-span-2 mt-8">
-          <GedichtenHistory />
-        </div>
+      {/* History Section */}
+      <div className="mt-8">
+        <GedichtenHistory />
       </div>
     </div>
     </ToolAccessGuard>
