@@ -83,7 +83,7 @@ export default function GedichtenPage() {
 
   return (
     <ToolAccessGuard toolId="sinterklaas_gedicht">
-    <div className="container mx-auto p-6 max-w-6xl">
+      <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
           <BookOpen className="h-8 w-8 text-red-600" />
@@ -322,6 +322,7 @@ function GedichtenHistory() {
         </div>
       </CardContent>
     </Card>
+      </div>
     </ToolAccessGuard>
   );
 }

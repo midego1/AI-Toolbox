@@ -666,6 +666,7 @@ export default function SinterklaasVoicemailPage() {
         <VoicemailHistory />
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 
@@ -835,7 +836,6 @@ function VoicemailHistory() {
         </div>
       </CardContent>
     </Card>
-    </ToolAccessGuard>
   );
 }
 
