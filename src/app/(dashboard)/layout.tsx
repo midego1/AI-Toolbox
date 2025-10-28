@@ -32,8 +32,22 @@ export default function DashboardLayout({
   // Get token for Convex operations
   const token = useAuthToken();
 
-  // Show loading state while checking auth or loading Convex user
-  if (!isLoaded || convexUser === undefined) {
+  // Show loading state while Clerk is checking auth
+  // For anonymous users, don't wait for Convex user
+  if (!isLoaded) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // For signed-in users, wait for Convex user to load
+  // For anonymous users, show guest mode immediately
+  if (isSignedIn && convexUser === undefined) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
