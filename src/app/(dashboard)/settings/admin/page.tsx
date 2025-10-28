@@ -1037,6 +1037,12 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
     editingTool && token ? { token, toolId: editingTool } : "skip"
   );
   
+  // Get the current tool info from the allTools list
+  const getCurrentTool = (toolId: string | null) => {
+    if (!toolId) return null;
+    return allTools.find(t => t.id === toolId);
+  };
+  
   // Define all available tools
   const allTools = [
     // Sinterklaas Tools
@@ -1452,22 +1458,22 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
           <DialogHeader>
             <DialogTitle>Edit Tool Configuration</DialogTitle>
             <DialogDescription>
-              Configure prompts, parameters, and settings for {editingTool ? `"${allTools.find(t => t.id === editingTool)?.name || editingTool}"` : "this tool"}
+              Configure prompts, parameters, and settings for {getCurrentTool(editingTool)?.name || editingTool || "this tool"}
             </DialogDescription>
           </DialogHeader>
           
-          {getToolMetadata ? (
+          {(getToolMetadata !== undefined || getCurrentTool(editingTool)) ? (
             <div className="space-y-4 mt-4">
               <div>
                 <Label htmlFor="name">Tool Name</Label>
-                <Input id="name" defaultValue={getToolMetadata.name || ''} />
+                <Input id="name" defaultValue={getToolMetadata?.name || getCurrentTool(editingTool)?.name || ''} />
               </div>
               
               <div>
                 <Label htmlFor="description">Description</Label>
                 <Textarea 
                   id="description" 
-                  defaultValue={getToolMetadata.description || ''} 
+                  defaultValue={getToolMetadata?.description || getCurrentTool(editingTool)?.description || ''} 
                   rows={3}
                 />
               </div>
@@ -1476,7 +1482,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                 <Label htmlFor="defaultPrompt">Default Prompt</Label>
                 <Textarea 
                   id="defaultPrompt" 
-                  defaultValue={getToolMetadata.defaultPrompt || ''} 
+                  defaultValue={getToolMetadata?.defaultPrompt || ''} 
                   rows={5}
                   className="font-mono text-sm"
                 />
@@ -1489,7 +1495,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                 <Label htmlFor="systemPrompt">System Prompt</Label>
                 <Textarea 
                   id="systemPrompt" 
-                  defaultValue={getToolMetadata.systemPrompt || ''} 
+                  defaultValue={getToolMetadata?.systemPrompt || ''} 
                   rows={8}
                   className="font-mono text-sm"
                 />
@@ -1502,7 +1508,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                 <Label htmlFor="configOptions">Configuration Options</Label>
                 <Textarea 
                   id="configOptions" 
-                  defaultValue={JSON.stringify(getToolMetadata.configOptions || {}, null, 2)} 
+                  defaultValue={JSON.stringify(getToolMetadata?.configOptions || {}, null, 2)} 
                   rows={6}
                   className="font-mono text-sm"
                 />
