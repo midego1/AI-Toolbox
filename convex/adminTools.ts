@@ -783,46 +783,48 @@ export const updateToolConfig = mutation({
         };
         
         // Only add fields if they were explicitly passed (not undefined)
-        if (args.enabled !== undefined) {
+        if (typeof args.enabled === 'boolean') {
           updates.enabled = args.enabled;
         }
-        if (args.anonymous !== undefined) {
+        if (typeof args.anonymous === 'boolean') {
           updates.anonymous = args.anonymous;
         }
-        if (args.free !== undefined) {
+        if (typeof args.free === 'boolean') {
           updates.free = args.free;
         }
-        if (args.paid !== undefined) {
+        if (typeof args.paid === 'boolean') {
           updates.paid = args.paid;
         }
-        if (args.showInSidebar !== undefined) {
+        if (typeof args.showInSidebar === 'boolean') {
           updates.showInSidebar = args.showInSidebar;
         }
         
+        console.log("Patching aiToolConfigs with updates:", updates);
         await ctx.db.patch(existing._id, updates);
       } else {
         // Create new record with provided fields
         const newConfig: any = {
           toolId: args.toolId,
-          enabled: args.enabled ?? true,
+          enabled: typeof args.enabled === 'boolean' ? args.enabled : true,
           createdAt: now,
           updatedAt: now,
         };
         
-        // Only add optional fields if explicitly provided
-        if (args.anonymous !== undefined) {
+        // Only add optional fields if explicitly provided as booleans
+        if (typeof args.anonymous === 'boolean') {
           newConfig.anonymous = args.anonymous;
         }
-        if (args.free !== undefined) {
+        if (typeof args.free === 'boolean') {
           newConfig.free = args.free;
         }
-        if (args.paid !== undefined) {
+        if (typeof args.paid === 'boolean') {
           newConfig.paid = args.paid;
         }
-        if (args.showInSidebar !== undefined) {
+        if (typeof args.showInSidebar === 'boolean') {
           newConfig.showInSidebar = args.showInSidebar;
         }
         
+        console.log("Inserting new aiToolConfigs:", newConfig);
         await ctx.db.insert("aiToolConfigs", newConfig);
       }
       
