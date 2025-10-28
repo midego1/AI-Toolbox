@@ -71,7 +71,6 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
     );
   }
   
-  const isAnonymous = toolConfig?.anonymous === true;
   const isFree = toolConfig?.free === true;
   const isPaid = toolConfig?.paid === true;
   
