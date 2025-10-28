@@ -5,9 +5,6 @@ import { api } from "../../../convex/_generated/api";
 import { getAuthToken } from "@/lib/auth-client";
 import { useUser } from "@clerk/nextjs";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Lock, Sparkles, ArrowRight, Info } from "lucide-react";
-import Link from "next/link";
 
 interface ToolAccessGuardProps {
   toolId: string;
@@ -81,86 +78,14 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
     return <>{children}</>;
   }
   
-  // NEW: Preview mode - show tool UI with a contextual sign-up banner
-  // This allows users to explore the tool before signing up, improving conversion
+  // Allow preview mode - show tool UI without blocking banner
+  // Users can explore freely, auth check happens at execution time
   if (!isSignedIn) {
-    return (
-      <div className="space-y-6">
-        {/* Contextual Sign-Up Banner */}
-        <Card className="border-2 border-red-200 bg-gradient-to-r from-red-50 to-orange-50">
-          <div className="flex items-center gap-3 p-4">
-            <div className="flex-shrink-0">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
-                <Lock className="h-5 w-5 text-white" />
-              </div>
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold text-gray-900">Sign up to use this tool</p>
-              <p className="text-sm text-muted-foreground">
-                Create a free account to access all AI tools and get 100 credits to start
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Link href="/login">
-                <Button variant="ghost" size="sm">
-                  Log In
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button size="sm" className="bg-red-600 hover:bg-red-700">
-                  Sign Up Free
-                  <ArrowRight className="ml-2 h-3 w-3" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </Card>
-        
-        {/* Show the tool in preview mode - users can interact but execution requires auth */}
-        {children}
-      </div>
-    );
+    return <>{children}</>;
   }
   
-  // If user is signed in but tool requires paid subscription
-  if (isPaid && user) {
-    const userTier = user.subscriptionTier;
-    const hasAccess = userTier === "pro" || userTier === "enterprise";
-    
-    if (!hasAccess) {
-      return (
-        <div className="space-y-6">
-          {/* Upgrade Banner */}
-          <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50">
-            <div className="flex items-center gap-3 p-4">
-              <div className="flex-shrink-0">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
-                  <Sparkles className="h-5 w-5 text-white" />
-                </div>
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-gray-900">Upgrade to Pro</p>
-                <p className="text-sm text-muted-foreground">
-                  Unlock access to all premium AI tools with a Pro subscription
-                </p>
-              </div>
-              <Link href="/billing">
-                <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
-                  Upgrade
-                  <ArrowRight className="ml-2 h-3 w-3" />
-                </Button>
-              </Link>
-            </div>
-          </Card>
-          
-          {/* Show the tool in preview mode */}
-          {children}
-        </div>
-      );
-    }
-  }
-  
-  // User has access, show the tool
+  // User is signed in - show the tool
+  // Auth checks for premium features should be handled by the tool itself
   return <>{children}</>;
 }
 
