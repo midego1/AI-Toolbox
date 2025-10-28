@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { getAuthToken } from "@/lib/auth-client";
@@ -28,16 +28,6 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   const [dismissed, setDismissed] = useState(false);
   const token = getAuthToken();
   const { isSignedIn, isLoaded } = useUser();
-  
-  // Prevent body scroll when overlay is active
-  useEffect(() => {
-    if (!isSignedIn && !dismissed) {
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = '';
-      };
-    }
-  }, [isSignedIn, dismissed]);
   
   // Get tool configuration from database
   const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic);
@@ -112,9 +102,9 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   if (!isSignedIn && !dismissed) {
     console.log(`Showing frost overlay for anonymous user on tool: ${toolId}`);
     return (
-      <>
+      <div className="fixed inset-0 overflow-hidden">
         {/* Tool content (blurred, non-interactive) */}
-        <div className="blur-sm pointer-events-none select-none opacity-60">
+        <div className="blur-sm pointer-events-none select-none opacity-60 h-full overflow-y-auto">
           {children}
         </div>
         
@@ -163,7 +153,7 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
             </div>
           </div>
         </div>
-      </>
+      </div>
     );
   }
   
