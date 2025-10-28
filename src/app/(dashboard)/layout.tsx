@@ -6,6 +6,7 @@ import { useUser, SignIn } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Sidebar } from "@/components/layout/sidebar";
+import { SidebarPublic } from "@/components/layout/sidebar-public";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { PreviewOverlay } from "@/components/layout/preview-overlay";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -63,15 +64,15 @@ export default function DashboardLayout({
     return (
       <LanguageProvider>
         <div className="flex h-screen overflow-hidden">
-          {/* Desktop Sidebar */}
+          {/* Desktop Sidebar - Use public sidebar for guest users */}
           <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:border-r">
-            <Sidebar />
+            <SidebarPublic />
           </aside>
 
           {/* Mobile Sidebar */}
           <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
             <SheetContent side="left" className="p-0 w-64">
-              <Sidebar />
+              <SidebarPublic />
             </SheetContent>
           </Sheet>
 

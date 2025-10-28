@@ -60,13 +60,33 @@ export function DashboardHeader({
           <span className="sr-only">{t.header.toggleMenu}</span>
         </Button>
 
-        {/* Logo (mobile only) */}
+        {/* Logo (mobile only) - Clickable for anonymous users to return home */}
         <div className="lg:hidden flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">AI</span>
-          </div>
-          <span className="text-lg font-bold">Toolbox</span>
+          {!userName ? (
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-sm">AI</span>
+              </div>
+              <span className="text-lg font-bold">Toolbox</span>
+            </Link>
+          ) : (
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">AI</span>
+            </div>
+          )}
         </div>
+
+        {/* Desktop Home Button for anonymous users */}
+        {!userName && (
+          <div className="hidden md:flex">
+            <Link href="/">
+              <Button variant="ghost" size="sm">
+                <Home className="mr-2 h-4 w-4" />
+                Home
+              </Button>
+            </Link>
+          </div>
+        )}
 
         {/* Spacer */}
         <div className="flex-1" />
