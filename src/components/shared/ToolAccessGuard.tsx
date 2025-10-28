@@ -23,7 +23,7 @@ interface ToolAccessGuardProps {
  */
 export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   const token = getAuthToken();
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   
   // Get tool configuration from database
   const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic);
@@ -35,8 +35,8 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
     token ? { token } : "skip"
   );
   
-  // If tool configs are loading, show loading state
-  if (toolConfigs === undefined) {
+  // If Clerk is still loading, show loading state
+  if (!isLoaded || toolConfigs === undefined) {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="text-center">
@@ -66,8 +66,17 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   const isFree = toolConfig?.free === true;
   const isPaid = toolConfig?.paid === true;
   
+  console.log(`ToolAccessGuard for ${toolId}:`, {
+    isAnonymous,
+    isFree,
+    isPaid,
+    isSignedIn,
+    isLoaded,
+  });
+  
   // If tool allows anonymous access, show it to everyone
   if (isAnonymous) {
+    console.log(`Tool ${toolId} allows anonymous access - showing content`);
     return <>{children}</>;
   }
   
