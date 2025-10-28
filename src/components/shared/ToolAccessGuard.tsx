@@ -31,13 +31,39 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   
   // Prevent body scroll when overlay is active
   useEffect(() => {
-    if (!isSignedIn && !dismissed) {
-      document.body.style.overflow = 'hidden';
+    if (!isSignedIn && !dismissed && isLoaded) {
+      const body = document.body;
+      
+      // Store scroll position
+      const scrollY = window.scrollY;
+      
+      // Prevent scrolling
+      body.style.overflow = 'hidden';
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}px`;
+      body.style.width = '100%';
+      body.style.left = '0';
+      body.style.right = '0';
+      
+      // Also add to html element
+      const html = document.documentElement;
+      html.style.overflow = 'hidden';
+      
       return () => {
-        document.body.style.overflow = '';
+        // Restore scrolling
+        body.style.overflow = '';
+        body.style.position = '';
+        body.style.top = '';
+        body.style.width = '';
+        body.style.left = '';
+        body.style.right = '';
+        html.style.overflow = '';
+        
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
       };
     }
-  }, [isSignedIn, dismissed]);
+  }, [isSignedIn, dismissed, isLoaded]);
   
   // Get tool configuration from database
   const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic);
