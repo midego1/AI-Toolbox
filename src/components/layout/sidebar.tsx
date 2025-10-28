@@ -221,7 +221,8 @@ export function Sidebar() {
   };
 
   // Filter and translate tool groups
-  const filteredToolGroups = toolGroups.map((group) => {
+  // Only filter if toolConfigs has loaded (avoid showing disabled tools during initial render)
+  const filteredToolGroups = toolConfigs !== undefined ? toolGroups.map((group) => {
     const filteredChildren = group.children
       .filter((child: any) => {
         const toolId = getToolIdFromHref(child.href);
@@ -236,7 +237,7 @@ export function Sidebar() {
       ...group,
       children: filteredChildren,
     };
-  }).filter((group) => group.children.length > 0);
+  }).filter((group) => group.children.length > 0) : [];
 
   // Filter and translate navigation items
   const filteredNavigation = navigation.map((item) => ({

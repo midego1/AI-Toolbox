@@ -109,7 +109,8 @@ export function SidebarPublic() {
   };
   
   // Filter navigation items based on enabled status
-  const filteredNavigation = navigation.map((item) => {
+  // Only filter if toolConfigs has loaded (avoid showing disabled tools during initial render)
+  const filteredNavigation = toolConfigs !== undefined ? navigation.map((item) => {
     if (item.children) {
       return {
         ...item,
@@ -128,7 +129,7 @@ export function SidebarPublic() {
       return item.children.length > 0;
     }
     return true;
-  });
+  }) : []; // Show empty array while loading
 
   return (
     <div className="flex h-full flex-col">

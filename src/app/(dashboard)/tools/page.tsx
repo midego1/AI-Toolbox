@@ -241,10 +241,11 @@ export default function ToolsPage() {
   });
   
   // Filter tools based on enabled status
-  const enabledTools = ALL_TOOLS.filter(tool => {
+  // Only filter if toolConfigs has loaded (avoid showing disabled tools during initial render)
+  const enabledTools = toolConfigs !== undefined ? ALL_TOOLS.filter(tool => {
     const status = toolStatusMap.get(tool.id);
     return status !== undefined ? status : true; // Default to enabled if not configured
-  });
+  }) : []; // Show empty array while loading
   
   // Apply translations to tools
   const translatedTools = enabledTools.map(tool => ({
