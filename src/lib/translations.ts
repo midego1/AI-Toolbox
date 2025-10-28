@@ -664,6 +664,7 @@ export const translations: Record<Language, Translations> = {
           optimizing: "Optimizing...",
         },
       },
+    },
   },
   nl: {
     common: {
@@ -1014,6 +1015,7 @@ export const translations: Record<Language, Translations> = {
           optimizing: "Optimaliseren...",
         },
       },
+    },
   },
 };
 

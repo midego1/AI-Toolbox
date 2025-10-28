@@ -248,3 +248,5 @@ function JobDetailModal({ job, toolName, extractTitle, onClose }: JobDetailModal
 
 
 
+
+

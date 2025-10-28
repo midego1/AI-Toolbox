@@ -21,3 +21,5 @@ npx convex run adminTools:addCredits --args "{\"email\":\"$EMAIL\",\"amount\":$A
 
 
 
+
+
