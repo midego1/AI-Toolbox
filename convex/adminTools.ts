@@ -829,6 +829,103 @@ export const updateToolConfig = mutation({
 });
 
 // ============================================================================
+// AI TOOLS METADATA MANAGEMENT
+// ============================================================================
+
+/**
+ * Get all tool metadata
+ */
+export const getAllToolsMetadata = query({
+  args: {
+    token: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await verifyAdmin(ctx, args.token);
+    
+    const tools = await ctx.db
+      .query("aiTools")
+      .collect();
+    
+    return tools;
+  },
+});
+
+/**
+ * Get tool metadata by ID
+ */
+export const getToolMetadata = query({
+  args: {
+    token: v.string(),
+    toolId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await verifyAdmin(ctx, args.token);
+    
+    const tool = await ctx.db
+      .query("aiTools")
+      .withIndex("by_tool_id", (q) => q.eq("toolId", args.toolId))
+      .first();
+    
+    return tool;
+  },
+});
+
+/**
+ * Update tool metadata (name, description, prompts, etc.)
+ */
+export const updateToolMetadata = mutation({
+  args: {
+    token: v.string(),
+    toolId: v.string(),
+    name: v.optional(v.string()),
+    description: v.optional(v.string()),
+    defaultPrompt: v.optional(v.string()),
+    systemPrompt: v.optional(v.string()),
+    configOptions: v.optional(v.any()),
+  },
+  handler: async (ctx, args) => {
+    await verifyAdmin(ctx, args.token);
+    
+    const existing = await ctx.db
+      .query("aiTools")
+      .withIndex("by_tool_id", (q) => q.eq("toolId", args.toolId))
+      .first();
+    
+    const now = Date.now();
+    
+    if (existing) {
+      const updates: any = {
+        updatedAt: now,
+      };
+      
+      if (args.name !== undefined) updates.name = args.name;
+      if (args.description !== undefined) updates.description = args.description;
+      if (args.defaultPrompt !== undefined) updates.defaultPrompt = args.defaultPrompt;
+      if (args.systemPrompt !== undefined) updates.systemPrompt = args.systemPrompt;
+      if (args.configOptions !== undefined) updates.configOptions = args.configOptions;
+      
+      await ctx.db.patch(existing._id, updates);
+    } else {
+      // Create new tool metadata (shouldn't happen normally, but handle gracefully)
+      await ctx.db.insert("aiTools", {
+        toolId: args.toolId,
+        name: args.name || args.toolId,
+        description: args.description || "",
+        category: "Uncategorized",
+        credits: "10",
+        defaultPrompt: args.defaultPrompt,
+        systemPrompt: args.systemPrompt,
+        configOptions: args.configOptions,
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+    
+    return { success: true };
+  },
+});
+
+// ============================================================================
 // SYSTEM HEALTH
 // ============================================================================
 

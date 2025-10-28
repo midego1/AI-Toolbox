@@ -182,4 +182,26 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_tool_id", ["toolId"]),
+  
+  // AI Tools Metadata (for editing prompts and settings)
+  aiTools: defineTable({
+    toolId: v.string(), // e.g., "copywriting", "translation"
+    name: v.string(), // Display name
+    description: v.string(), // Tool description
+    category: v.string(), // Category for grouping
+    icon: v.optional(v.string()), // Icon identifier
+    credits: v.string(), // Credits cost (e.g., "5-10")
+    
+    // Tool-specific configuration
+    defaultPrompt: v.optional(v.string()), // Default AI prompt
+    systemPrompt: v.optional(v.string()), // System instructions
+    
+    // Configuration options
+    configOptions: v.optional(v.any()), // Tool-specific settings (JSON)
+    
+    // Metadata
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_tool_id", ["toolId"]),
 });
