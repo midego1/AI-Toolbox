@@ -1285,13 +1285,13 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                     {category}
                   </h3>
                   <div className="border rounded-lg overflow-hidden">
-                    <div className="grid grid-cols-[2fr_50px_60px_60px_60px_60px_80px] gap-2 p-2 bg-muted/30 border-b text-xs font-semibold items-center">
+                    <div className="grid grid-cols-[2fr_50px_80px_80px_80px_80px_80px] gap-2 p-2 bg-muted/30 border-b text-xs font-semibold items-center">
                       <div>Tool</div>
                       <div className="text-center">ON/OFF</div>
-                      <div className="text-center" title="Show in Sidebar">📋</div>
-                      <div className="text-center" title="Anonymous Access (No Login Required)">🔓</div>
-                      <div className="text-center" title="Free Tier (Login Required)">🔑</div>
-                      <div className="text-center" title="Premium (Subscription Required)">💎</div>
+                      <div className="text-center">Sidebar</div>
+                      <div className="text-center">Anonymous</div>
+                      <div className="text-center">Free</div>
+                      <div className="text-center">Premium</div>
                       <div className="text-center">Credits</div>
                     </div>
                     <div className="space-y-0">
@@ -1330,7 +1330,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                         return (
                           <div
                             key={tool.id}
-                            className={`grid grid-cols-[2fr_50px_60px_60px_60px_60px_80px] gap-2 p-2 items-center border-b last:border-b-0 ${
+                            className={`grid grid-cols-[2fr_50px_80px_80px_80px_80px_80px] gap-2 p-2 items-center border-b last:border-b-0 ${
                               config.enabled ? "bg-green-50/50 hover:bg-green-50" : "bg-red-50/50 opacity-60"
                             }`}
                           >
