@@ -76,8 +76,9 @@ export function SidebarPublic() {
   
   // Helper function to check if a tool is enabled
   const isToolEnabled = (toolId: string): boolean => {
-    const status = toolStatusMap.get(toolId);
-    return status !== undefined ? status : true; // Default to enabled if not configured
+    const config = toolConfigs?.find(c => c.toolId === toolId);
+    if (!config) return true; // Default to enabled if not configured
+    return config.enabled && (config.showInSidebar !== false); // Only show if enabled AND visible in sidebar
   };
   
   // Map href to tool ID for filtering

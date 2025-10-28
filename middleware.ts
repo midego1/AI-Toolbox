@@ -10,6 +10,7 @@ const isPublicRoute = createRouteMatcher([
   "/sso-callback(.*)",
   "/oauth/error(.*)",
   "/api/webhooks(.*)",
+  "/tools(.*)", // Allow anonymous access to tools
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

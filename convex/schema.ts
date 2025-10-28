@@ -178,6 +178,7 @@ export default defineSchema({
     anonymous: v.optional(v.boolean()), // Can be used without authentication
     free: v.optional(v.boolean()), // Free for authenticated users
     paid: v.optional(v.boolean()), // Requires subscription (premium)
+    showInSidebar: v.optional(v.boolean()), // Show in sidebar navigation
     createdAt: v.number(),
     updatedAt: v.number(),
   })

@@ -689,6 +689,7 @@ export const getToolConfigsPublic = query({
       anonymous: config.anonymous,
       free: config.free,
       paid: config.paid,
+      showInSidebar: config.showInSidebar,
       createdAt: config.createdAt,
       updatedAt: config.updatedAt,
     }));
@@ -762,6 +763,7 @@ export const updateToolConfig = mutation({
     anonymous: v.optional(v.boolean()),
     free: v.optional(v.boolean()),
     paid: v.optional(v.boolean()),
+    showInSidebar: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     await verifyAdmin(ctx, args.token);
@@ -793,6 +795,9 @@ export const updateToolConfig = mutation({
         if (args.paid !== undefined) {
           updates.paid = args.paid;
         }
+        if (args.showInSidebar !== undefined) {
+          updates.showInSidebar = args.showInSidebar;
+        }
         
         await ctx.db.patch(existing._id, updates);
       } else {
@@ -813,6 +818,9 @@ export const updateToolConfig = mutation({
         }
         if (args.paid !== undefined) {
           newConfig.paid = args.paid;
+        }
+        if (args.showInSidebar !== undefined) {
+          newConfig.showInSidebar = args.showInSidebar;
         }
         
         await ctx.db.insert("aiToolConfigs", newConfig);

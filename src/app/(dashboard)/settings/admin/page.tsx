@@ -1224,6 +1224,8 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
         updateParams.paid = Boolean(value);
       } else if (field === 'enabled') {
         updateParams.enabled = Boolean(value);
+      } else if (field === 'showInSidebar') {
+        updateParams.showInSidebar = Boolean(value);
       }
       
       console.log("Calling updateToolConfig with:", { toolId, field, value, updateParams });
@@ -1283,9 +1285,10 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                     {category}
                   </h3>
                   <div className="border rounded-lg overflow-hidden">
-                    <div className="grid grid-cols-[2fr_60px_60px_60px_60px_80px] gap-2 p-2 bg-muted/30 border-b text-xs font-semibold items-center">
+                    <div className="grid grid-cols-[2fr_50px_60px_60px_60px_60px_80px] gap-2 p-2 bg-muted/30 border-b text-xs font-semibold items-center">
                       <div>Tool</div>
                       <div className="text-center">ON/OFF</div>
+                      <div className="text-center" title="Show in Sidebar">📋</div>
                       <div className="text-center" title="Anonymous Access (No Login Required)">🔓</div>
                       <div className="text-center" title="Free Tier (Login Required)">🔑</div>
                       <div className="text-center" title="Premium (Subscription Required)">💎</div>
@@ -1327,7 +1330,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                         return (
                           <div
                             key={tool.id}
-                            className={`grid grid-cols-[2fr_60px_60px_60px_60px_80px] gap-2 p-2 items-center border-b last:border-b-0 ${
+                            className={`grid grid-cols-[2fr_50px_60px_60px_60px_60px_80px] gap-2 p-2 items-center border-b last:border-b-0 ${
                               config.enabled ? "bg-green-50/50 hover:bg-green-50" : "bg-red-50/50 opacity-60"
                             }`}
                           >
@@ -1364,6 +1367,15 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                                   <X className="h-4 w-4" />
                                 )}
                               </button>
+                            </div>
+                            
+                            {/* Sidebar Toggle */}
+                            <div className="flex items-center justify-center">
+                              <CompactToggle 
+                                field="showInSidebar"
+                                Icon={() => <div className="text-base">📋</div>}
+                                isActive={config.showInSidebar === true}
+                              />
                             </div>
                             
                             {/* Anonymous Toggle */}
