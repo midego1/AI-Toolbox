@@ -243,7 +243,7 @@ export default function SinterklaasBriefPage() {
         <BriefHistory />
       </div>
     </div>
-    </ToolAccessGuard>
+
   );
 }
 
@@ -252,7 +252,7 @@ function BriefHistory() {
   const history = useQuery(
     api.aiJobs.getHistoryByType,
     token ? { token, typeFilter: "sinterklaas_brief", limit: 10, offset: 0 } : "skip"
-    </ToolAccessGuard>
+
   );
 
   if (!token || !history || history.items.length === 0) {
@@ -304,7 +304,7 @@ function BriefHistory() {
         </div>
       </CardContent>
     </Card>
-    </ToolAccessGuard>
+
   );
 }
 
