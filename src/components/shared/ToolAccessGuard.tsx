@@ -38,22 +38,28 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   // Check if tool allows anonymous access
   const isAnonymous = toolConfig?.anonymous === true;
   
-  // If configs haven't loaded yet, don't block for non-authenticated users
-  // (Assume anonymous access is allowed until configs load)
-  if (toolConfigs === undefined && !isSignedIn) {
-    return <>{children}</>;
-  }
-  
-  // If Clerk is still loading and user is signed in, show loading state
-  if (!isLoaded && toolConfigs === undefined) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-          <p className="text-sm text-muted-foreground">Loading tool access...</p>
+  // If configs haven't loaded yet, use optimistic rendering
+  // For non-authenticated users, assume anonymous access is OK
+  if (toolConfigs === undefined) {
+    // If user is not signed in, allow access (optimistic for anonymous tools)
+    if (!isSignedIn) {
+      return <>{children}</>;
+    }
+    
+    // If user is signed in but Clerk is still loading, show loading
+    if (!isLoaded) {
+      return (
+        <div className="flex h-64 items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+            <p className="text-sm text-muted-foreground">Loading tool access...</p>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    
+    // If user is signed in and Clerk is loaded, allow access
+    return <>{children}</>;
   }
   
   // Check if tool is enabled
