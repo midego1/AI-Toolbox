@@ -222,6 +222,95 @@ export interface Translations {
       yourVoicemail: string;
       creditsUsed: string;
     };
+    // Common fields for all AI tools
+    commonFields?: {
+      title: string;
+      description: string;
+      input: string;
+      output: string;
+      generate: string;
+      generating: string;
+      copy: string;
+      download: string;
+      copied: string;
+      enterText: string;
+      notLoggedIn: string;
+      error: string;
+      cost: string;
+      creditsUsed: string;
+      history: string;
+      historyTitle: string;
+    };
+    // Tool-specific translations
+    copywriting?: {
+      title: string;
+      description: string;
+      fields: {
+        topic: string;
+        topicPlaceholder: string;
+        tone: string;
+        length: string;
+      };
+      actions: {
+        generate: string;
+        generating: string;
+      };
+    };
+    summarizer?: {
+      title: string;
+      description: string;
+      fields: {
+        input: string;
+        inputPlaceholder: string;
+        length: string;
+        focus: string;
+      };
+      actions: {
+        generate: string;
+        generating: string;
+      };
+    };
+    translation?: {
+      title: string;
+      description: string;
+      fields: {
+        input: string;
+        fromLanguage: string;
+        toLanguage: string;
+      };
+      actions: {
+        translate: string;
+        translating: string;
+        swap: string;
+      };
+    };
+    rewriter?: {
+      title: string;
+      description: string;
+      fields: {
+        input: string;
+        tone: string;
+        length: string;
+      };
+      actions: {
+        rewrite: string;
+        rewriting: string;
+      };
+    };
+    seoOptimizer?: {
+      title: string;
+      description: string;
+      fields: {
+        title: string;
+        metaDescription: string;
+        content: string;
+        keywords: string;
+      };
+      actions: {
+        optimize: string;
+        optimizing: string;
+      };
+    };
   };
 }
 
@@ -489,6 +578,93 @@ export const translations: Record<Language, Translations> = {
         creditsUsed: "credits used",
       },
     },
+    commonFields: {
+      title: "AI Tool",
+      description: "Create amazing content with AI",
+      input: "Input",
+      output: "Output",
+      generate: "Generate",
+      generating: "Generating...",
+      copy: "Copy",
+      download: "Download",
+      copied: "Copied to clipboard!",
+      enterText: "Enter text to process",
+      notLoggedIn: "You are not logged in",
+      error: "Error",
+      cost: "Cost",
+      creditsUsed: "credits used",
+      history: "History",
+      historyTitle: "Recent Jobs",
+    },
+    copywriting: {
+      title: "AI Copywriter Studio",
+      description: "Generate professional marketing copy with multiple variants",
+      fields: {
+        topic: "Topic",
+        topicPlaceholder: "Enter your topic or product",
+        tone: "Tone",
+        length: "Length",
+      },
+      actions: {
+        generate: "Generate Copy",
+        generating: "Generating your copy...",
+      },
+    },
+    summarizer: {
+      title: "Text Summarizer",
+      description: "Summarize long documents into concise summaries",
+      fields: {
+        input: "Text to summarize",
+        inputPlaceholder: "Paste your text here",
+        length: "Summary length",
+        focus: "Focus area",
+      },
+      actions: {
+        generate: "Generate Summary",
+        generating: "Generating summary...",
+      },
+    },
+    translation: {
+      title: "Translation",
+      description: "Translate text between languages",
+      fields: {
+        input: "Text to translate",
+        fromLanguage: "From",
+        toLanguage: "To",
+      },
+      actions: {
+        translate: "Translate",
+        translating: "Translating...",
+        swap: "Swap",
+      },
+    },
+    rewriter: {
+      title: "Content Rewriter",
+      description: "Rewrite and paraphrase content while maintaining meaning",
+      fields: {
+        input: "Text to rewrite",
+        tone: "Tone",
+        length: "Length",
+      },
+      actions: {
+        rewrite: "Rewrite",
+        rewriting: "Rewriting...",
+      },
+    },
+    seoOptimizer: {
+      title: "SEO Optimizer",
+      description: "Optimize your content for search engines",
+      fields: {
+        title: "Title",
+        metaDescription: "Meta Description",
+        content: "Content",
+        keywords: "Keywords",
+      },
+      actions: {
+        optimize: "Optimize",
+        optimizing: "Optimizing...",
+      },
+    },
   },
   nl: {
     common: {
@@ -751,6 +927,93 @@ export const translations: Record<Language, Translations> = {
         notLoggedIn: "Je bent niet ingelogd",
         yourVoicemail: "Jouw Voicemail",
         creditsUsed: "credits gebruikt",
+      },
+    },
+    commonFields: {
+      title: "AI Tool",
+      description: "Creëer geweldige content met AI",
+      input: "Invoer",
+      output: "Uitvoer",
+      generate: "Genereren",
+      generating: "Genereren...",
+      copy: "Kopieer",
+      download: "Download",
+      copied: "Gekopieerd naar klembord!",
+      enterText: "Voer tekst in om te verwerken",
+      notLoggedIn: "Je bent niet ingelogd",
+      error: "Fout",
+      cost: "Kosten",
+      creditsUsed: "credits gebruikt",
+      history: "Geschiedenis",
+      historyTitle: "Recente Jobs",
+    },
+    copywriting: {
+      title: "AI Copywriter Studio",
+      description: "Genereer professionele marketingtekst met meerdere varianten",
+      fields: {
+        topic: "Onderwerp",
+        topicPlaceholder: "Voer je onderwerp of product in",
+        tone: "Toon",
+        length: "Lengte",
+      },
+      actions: {
+        generate: "Genereer Tekst",
+        generating: "Genereren van je tekst...",
+      },
+    },
+    summarizer: {
+      title: "Tekst Samenvatter",
+      description: "Vat lange documenten samen in beknopte samenvattingen",
+      fields: {
+        input: "Tekst om samen te vatten",
+        inputPlaceholder: "Plak je tekst hier",
+        length: "Samenvatting lengte",
+        focus: "Focus gebied",
+      },
+      actions: {
+        generate: "Genereer Samenvatting",
+        generating: "Genereren van samenvatting...",
+      },
+    },
+    translation: {
+      title: "Vertaling",
+      description: "Vertaal tekst tussen talen",
+      fields: {
+        input: "Tekst om te vertalen",
+        fromLanguage: "Van",
+        toLanguage: "Naar",
+      },
+      actions: {
+        translate: "Vertalen",
+        translating: "Vertalen...",
+        swap: "Wisselen",
+      },
+    },
+    rewriter: {
+      title: "Content Herformuleerder",
+      description: "Herschrijf en parafraseer content terwijl de betekenis behouden blijft",
+      fields: {
+        input: "Tekst om te herschrijven",
+        tone: "Toon",
+        length: "Lengte",
+      },
+      actions: {
+        rewrite: "Herschrijf",
+        rewriting: "Herschrijven...",
+      },
+    },
+    seoOptimizer: {
+      title: "SEO Optimalisatie",
+      description: "Optimaliseer je content voor zoekmachines",
+      fields: {
+        title: "Titel",
+        metaDescription: "Meta Beschrijving",
+        content: "Inhoud",
+        keywords: "Sleutelwoorden",
+      },
+      actions: {
+        optimize: "Optimaliseer",
+        optimizing: "Optimaliseren...",
       },
     },
   },
