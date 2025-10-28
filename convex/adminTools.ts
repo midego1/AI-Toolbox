@@ -909,7 +909,6 @@ export const initializeToolsMetadata = mutation({
       description: v.string(),
       category: v.string(),
       credits: v.string(),
-      defaultPrompt: v.optional(v.string()),
       systemPrompt: v.optional(v.string()),
       configOptions: v.optional(v.any()),
     })),
@@ -933,7 +932,6 @@ export const initializeToolsMetadata = mutation({
           description: tool.description,
           category: tool.category,
           credits: tool.credits,
-          defaultPrompt: tool.defaultPrompt,
           systemPrompt: tool.systemPrompt,
           configOptions: tool.configOptions,
           updatedAt: now,
@@ -947,7 +945,6 @@ export const initializeToolsMetadata = mutation({
           description: tool.description,
           category: tool.category,
           credits: tool.credits,
-          defaultPrompt: tool.defaultPrompt,
           systemPrompt: tool.systemPrompt,
           configOptions: tool.configOptions,
           createdAt: now,
@@ -970,7 +967,6 @@ export const updateToolMetadata = mutation({
     toolId: v.string(),
     name: v.optional(v.string()),
     description: v.optional(v.string()),
-    defaultPrompt: v.optional(v.string()),
     systemPrompt: v.optional(v.string()),
     configOptions: v.optional(v.any()),
   },
@@ -991,7 +987,6 @@ export const updateToolMetadata = mutation({
       
       if (args.name !== undefined) updates.name = args.name;
       if (args.description !== undefined) updates.description = args.description;
-      if (args.defaultPrompt !== undefined) updates.defaultPrompt = args.defaultPrompt;
       if (args.systemPrompt !== undefined) updates.systemPrompt = args.systemPrompt;
       if (args.configOptions !== undefined) updates.configOptions = args.configOptions;
       
@@ -1004,7 +999,6 @@ export const updateToolMetadata = mutation({
         description: args.description || "",
         category: "Uncategorized",
         credits: "10",
-        defaultPrompt: args.defaultPrompt,
         systemPrompt: args.systemPrompt,
         configOptions: args.configOptions,
         createdAt: now,

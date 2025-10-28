@@ -1069,8 +1069,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
           description: "Generate personalized voice messages from Sinterklaas to children",
           category: "🎅 Sinterklaas",
           credits: "25",
-          defaultPrompt: "Generate a personalized Sinterklaas voicemail for {child_name}, age {age}. Tone: {tone}",
-          systemPrompt: "Je bent Sinterklaas, en je imiteert PRECIES de stijl van Bram van der Vlught - de legendarische Nederlandse Sinterklaas.\n\nSTORYBOARD:\n{storyboard}\n\nDe voicemail moet:\n- Natuurlijke Nederlandse spraak gebruiken\n- Rustig en kalm zijn\n- Warme, zachte toon hebben\n- 35-50 seconden (90-130 woorden)\n- Klassieke Sinterklaas elementen bevatten\n\nBram van der Vlught's kenmerkende stijl:\n- Rustige, kalme stem\n- Warme en zachte intonatie\n- Traditonele, eerbiedige benadering\n- Geduldig en begripvol\n- Authentieke Sinterklaas uitstraling",
+          systemPrompt: "Je bent Sinterklaas, en je imiteert PRECIES de stijl van Bram van der Vlught - de legendarische Nederlandse Sinterklaas.\n\nSTORYBOARD:\n{storyboard}\n\nDe voicemail moet:\n- Voor {child_name} zijn (leeftijd: {age})\n- Toon: {tone}\n- Natuurlijke Nederlandse spraak gebruiken\n- Rustig en kalm zijn\n- Warme, zachte toon hebben\n- 35-50 seconden (90-130 woorden)\n- Klassieke Sinterklaas elementen bevatten\n\nBram van der Vlught's kenmerkende stijl:\n- Rustige, kalme stem\n- Warme en zachte intonatie\n- Traditonele, eerbiedige benadering\n- Geduldig en begripvol\n- Authentieke Sinterklaas uitstraling",
           configOptions: {
             storyboardPrompt: "Je bent Sinterklaas. Maak een schets/storyboard voor een warme, persoonlijke voice boodschap voor {child_name} ({age} jaar oud)."
           }
@@ -1544,20 +1543,6 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                                 </div>
                                 
                                 <div>
-                                  <Label htmlFor={`defaultPrompt-${tool.id}`}>Default Prompt</Label>
-                                  <Textarea 
-                                    id={`defaultPrompt-${tool.id}`}
-                                    defaultValue={getToolMetadata?.defaultPrompt || ''} 
-                                    rows={5}
-                                    className="font-mono text-sm"
-                                    placeholder="Enter default prompt shown to users"
-                                  />
-                                  <p className="text-xs text-muted-foreground mt-1">
-                                    This prompt is shown to users as the default input for this tool
-                                  </p>
-                                </div>
-                                
-                                <div>
                                   <Label htmlFor={`systemPrompt-${tool.id}`}>System Prompt</Label>
                                   <Textarea 
                                     id={`systemPrompt-${tool.id}`}
@@ -1596,7 +1581,6 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                                       // Get current form values
                                       const nameEl = document.getElementById(`name-${tool.id}`) as HTMLInputElement;
                                       const descriptionEl = document.getElementById(`description-${tool.id}`) as HTMLTextAreaElement;
-                                      const defaultPromptEl = document.getElementById(`defaultPrompt-${tool.id}`) as HTMLTextAreaElement;
                                       const systemPromptEl = document.getElementById(`systemPrompt-${tool.id}`) as HTMLTextAreaElement;
                                       const configOptionsEl = document.getElementById(`configOptions-${tool.id}`) as HTMLTextAreaElement;
                                       
@@ -1613,7 +1597,6 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                                         toolId: expandedTool,
                                         name: nameEl.value,
                                         description: descriptionEl.value,
-                                        defaultPrompt: defaultPromptEl.value,
                                         systemPrompt: systemPromptEl.value,
                                         configOptions: configOptions,
                                       });

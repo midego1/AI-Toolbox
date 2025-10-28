@@ -194,7 +194,6 @@ export default defineSchema({
     credits: v.string(), // Credits cost (e.g., "5-10")
     
     // Tool-specific configuration
-    defaultPrompt: v.optional(v.string()), // Default AI prompt
     systemPrompt: v.optional(v.string()), // System instructions
     
     // Configuration options
