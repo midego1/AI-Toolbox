@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { getAuthToken } from "@/lib/auth-client";
@@ -28,6 +28,16 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   const [dismissed, setDismissed] = useState(false);
   const token = getAuthToken();
   const { isSignedIn, isLoaded } = useUser();
+  
+  // Prevent body scroll when overlay is active
+  useEffect(() => {
+    if (!isSignedIn && !dismissed) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }
+  }, [isSignedIn, dismissed]);
   
   // Get tool configuration from database
   const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic);
@@ -102,14 +112,17 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   if (!isSignedIn && !dismissed) {
     console.log(`Showing frost overlay for anonymous user on tool: ${toolId}`);
     return (
-      <div className="fixed inset-0 overflow-hidden">
-        {/* Tool content (blurred, non-interactive) */}
-        <div className="blur-sm pointer-events-none select-none opacity-60 h-full overflow-y-auto">
+      <>
+        {/* Tool content (blurred, non-interactive) - rendered in normal flow */}
+        <div className="blur-sm pointer-events-none select-none opacity-60 relative z-0">
           {children}
         </div>
         
-        {/* Frost overlay with sign-up prompt - positioned fixed to viewport */}
-        <div className="fixed inset-0 flex items-center justify-center p-4 z-50 pointer-events-none">
+        {/* Frost overlay with sign-up prompt - positioned fixed to viewport, prevents scrolling */}
+        <div 
+          className="fixed inset-0 flex items-center justify-center p-4 z-50 pointer-events-none"
+          style={{ backdropFilter: 'blur(2px)', background: 'rgba(0,0,0,0.1)' }}
+        >
           <div className="backdrop-blur-md bg-white/90 border border-white/20 rounded-2xl shadow-2xl p-6 max-w-md w-full relative pointer-events-auto">
             <button
               onClick={() => setDismissed(true)}
@@ -153,7 +166,7 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
             </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
   
