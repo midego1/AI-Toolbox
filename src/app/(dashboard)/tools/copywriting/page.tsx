@@ -88,9 +88,6 @@ export default function CopywritingPage() {
 
   return (
     <ToolAccessGuard toolId="copywriting">
-
-
-  return (
       <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-2">
@@ -321,6 +318,7 @@ export default function CopywritingPage() {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 
