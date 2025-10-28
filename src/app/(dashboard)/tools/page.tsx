@@ -229,7 +229,7 @@ const ALL_TOOLS = [
 
 export default function ToolsPage() {
   const { language } = useLanguage();
-  const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic);
+  const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic, {}, {});
   
   // Get translations
   const t = getTranslations(language);

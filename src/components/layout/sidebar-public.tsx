@@ -66,7 +66,8 @@ export function SidebarPublic() {
   const pathname = usePathname();
   
   // Get tool configs to check which tools are enabled
-  const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic);
+  // Add error handling to prevent infinite spinner
+  const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic, {}, {});
   
   // Create a map of enabled/disabled status
   const toolStatusMap = new Map<string, boolean>();
