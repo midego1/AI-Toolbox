@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BookOpen, Sparkles, Download, Copy } from "lucide-react";
 import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslations } from "@/lib/translations";
 
 const TONES = [
   { value: "traditioneel", label: "Traditioneel", emoji: "📜" },
@@ -28,6 +30,10 @@ export default function GedichtenPage() {
   const [results, setResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Use translations
+  const { language } = useLanguage();
+  const t = getTranslations(language).aiTools.gedichten;
+
   // Use Clerk auth token
   const token = useAuthToken();
 
@@ -35,7 +41,7 @@ export default function GedichtenPage() {
 
   const handleGenerate = async () => {
     if (!name.trim()) {
-      alert("Vul een naam in");
+      alert(t.enterName);
       return;
     }
 
@@ -44,7 +50,7 @@ export default function GedichtenPage() {
 
     try {
       if (!token) {
-        alert("Je bent niet ingelogd");
+        alert(t.notLoggedIn);
         return;
       }
 
@@ -60,7 +66,7 @@ export default function GedichtenPage() {
 
       setResults(result);
     } catch (error: any) {
-      alert(`Fout: ${error.message}`);
+      alert(`${t.actions.copy} ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +74,7 @@ export default function GedichtenPage() {
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert("Gekopieerd naar klembord!");
+    alert(t.actions.copied);
   };
 
   const handleDownload = (content: string, fileName: string) => {
@@ -87,10 +93,10 @@ export default function GedichtenPage() {
         <div className="mb-6">
           <div className="flex items-center space-x-3 mb-2">
             <BookOpen className="h-8 w-8 text-red-600" />
-            <h1 className="text-3xl font-bold tracking-tight">Sinterklaas Gedichten Generator</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{t.title}</h1>
           </div>
           <p className="text-muted-foreground">
-            Creëer persoonlijke Sinterklaas gedichten met AI - perfect voor pakjesavond!
+            {t.description}
           </p>
         </div>
 
@@ -104,17 +110,17 @@ export default function GedichtenPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="name">Naam *</Label>
+                <Label htmlFor="name">{t.inputFields.name} *</Label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="bijv. Emma of Papa"
+                  placeholder={t.inputFields.namePlaceholder}
                 />
               </div>
 
               <div>
-                <Label htmlFor="age">Leeftijd</Label>
+                <Label htmlFor="age">{t.inputFields.age}</Label>
                 <Input
                   id="age"
                   type="number"
@@ -122,37 +128,37 @@ export default function GedichtenPage() {
                   max={100}
                   value={age || ""}
                   onChange={(e) => setAge(e.target.value ? parseInt(e.target.value) : undefined)}
-                  placeholder="bijv. 8"
+                  placeholder={t.inputFields.agePlaceholder}
                 />
               </div>
 
               <div>
-                <Label htmlFor="likes">Hobby's & Interesses</Label>
+                <Label htmlFor="likes">{t.inputFields.likes}</Label>
                 <Input
                   id="likes"
                   value={likes}
                   onChange={(e) => setLikes(e.target.value)}
-                  placeholder="bijv. voetbal, lezen, tekeningen maken"
+                  placeholder={t.inputFields.likesPlaceholder}
                 />
               </div>
 
               <div>
-                <Label htmlFor="gift">Cadeau (optioneel)</Label>
+                <Label htmlFor="gift">{t.inputFields.gift}</Label>
                 <Input
                   id="gift"
                   value={gift}
                   onChange={(e) => setGift(e.target.value)}
-                  placeholder="bijv. nieuwe voetbalschoenen"
+                  placeholder={t.inputFields.giftPlaceholder}
                 />
               </div>
 
               <div>
-                <Label htmlFor="notes">Persoonlijke Notities (optioneel)</Label>
+                <Label htmlFor="notes">{t.inputFields.notes}</Label>
                 <textarea
                   id="notes"
                   value={personalNotes}
                   onChange={(e) => setPersonalNotes(e.target.value)}
-                  placeholder="Speciale eigenschappen, grappige dingen, momenten dit jaar..."
+                  placeholder={t.inputFields.notesPlaceholder}
                   className="w-full mt-1 p-2 border rounded-md min-h-[100px]"
                 />
               </div>
@@ -165,18 +171,18 @@ export default function GedichtenPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label>Selecteer Toon</Label>
+                <Label>{t.tone}</Label>
                 <div className="grid grid-cols-2 gap-2 mt-2">
-                  {TONES.map(t => (
+                  {TONES.map(toneOption => (
                     <Button
-                      key={t.value}
+                      key={toneOption.value}
                       size="sm"
-                      variant={tone === t.value ? "default" : "outline"}
-                      onClick={() => setTone(t.value)}
+                      variant={tone === toneOption.value ? "default" : "outline"}
+                      onClick={() => setTone(toneOption.value)}
                       className="w-full"
                     >
-                      <span className="mr-2">{t.emoji}</span>
-                      {t.label}
+                      <span className="mr-2">{toneOption.emoji}</span>
+                      {t.tones[toneOption.value as keyof typeof t.tones]}
                     </Button>
                   ))}
                 </div>
@@ -189,17 +195,17 @@ export default function GedichtenPage() {
                 size="lg"
               >
                 {isLoading ? (
-                  "Genereren..."
+                  t.actions.generating
                 ) : (
                   <>
                     <Sparkles className="h-4 w-4 mr-2" />
-                    Genereer Gedicht
+                    {t.actions.generate}
                   </>
                 )}
               </Button>
 
               <div className="text-center text-sm text-muted-foreground">
-                Kosten: 10 credits per gedicht
+                {t.cost}
               </div>
             </CardContent>
           </Card>
@@ -211,9 +217,9 @@ export default function GedichtenPage() {
             <Card className="border-2 border-red-200">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  <span>Jouw Gedicht</span>
+                  <span>{t.yourGedicht}</span>
                   <span className="text-sm font-normal text-muted-foreground">
-                    {results.creditsUsed} credits gebruikt
+                    {results.creditsUsed} {t.creditsUsed}
                   </span>
                 </CardTitle>
               </CardHeader>
@@ -231,7 +237,7 @@ export default function GedichtenPage() {
                     onClick={() => handleCopy(results.poem)}
                   >
                     <Copy className="h-4 w-4 mr-2" />
-                    Kopieer
+                    {t.actions.copy}
                   </Button>
                   <Button 
                     variant="outline" 
@@ -239,7 +245,7 @@ export default function GedichtenPage() {
                     onClick={() => handleDownload(results.poem, `sinterklaas-gedicht-${name}.txt`)}
                   >
                     <Download className="h-4 w-4 mr-2" />
-                    Download
+                    {t.actions.download}
                   </Button>
                 </div>
               </CardContent>
@@ -249,7 +255,7 @@ export default function GedichtenPage() {
               <CardContent className="pt-6">
                 <div className="text-center text-muted-foreground py-12">
                   <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Vul de gegevens in en klik op Genereren om je persoonlijke Sinterklaas gedicht te maken</p>
+                  <p>{t.noResults}</p>
                 </div>
               </CardContent>
             </Card>
@@ -268,6 +274,9 @@ export default function GedichtenPage() {
 
 function GedichtenHistory() {
   const token = useAuthToken();
+  const { language } = useLanguage();
+  const t = getTranslations(language).aiTools.gedichten;
+  
   const history = useQuery(
     api.aiJobs.getHistoryByType,
     token ? { token, typeFilter: "sinterklaas_gedicht", limit: 10, offset: 0 } : "skip"
@@ -280,8 +289,8 @@ function GedichtenHistory() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Gedichten</CardTitle>
-        <CardDescription>Je recent gegenereerde Sinterklaas gedichten</CardDescription>
+        <CardTitle>{t.historyTitle}</CardTitle>
+        <CardDescription>{t.historyDescription}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
