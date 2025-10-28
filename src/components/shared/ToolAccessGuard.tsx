@@ -32,6 +32,7 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
   // Prevent body scroll when overlay is active
   useEffect(() => {
     if (!isSignedIn && !dismissed && isLoaded) {
+      console.log('🔒 Locking scroll - overlay is active');
       const body = document.body;
       
       // Store scroll position
@@ -49,7 +50,21 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
       const html = document.documentElement;
       html.style.overflow = 'hidden';
       
+      // Prevent touch scrolling on mobile
+      const preventDefault = (e: Event) => {
+        e.preventDefault();
+      };
+      
+      // Add event listeners to prevent scrolling
+      document.addEventListener('wheel', preventDefault, { passive: false });
+      document.addEventListener('touchmove', preventDefault, { passive: false });
+      
       return () => {
+        console.log('🔓 Unlocking scroll - overlay dismissed');
+        // Remove event listeners
+        document.removeEventListener('wheel', preventDefault);
+        document.removeEventListener('touchmove', preventDefault);
+        
         // Restore scrolling
         body.style.overflow = '';
         body.style.position = '';
