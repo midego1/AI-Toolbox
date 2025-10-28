@@ -12,6 +12,8 @@ import { Switch } from "@/components/ui/switch";
 import { Phone, Play, Pause, Volume2, Copy, Download, Loader2, Sparkles, Square, ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslations } from "@/lib/translations";
 
 const TONES = [
   { value: "traditioneel", label: "Traditioneel", emoji: "🎅", description: "Klassieke Sinterklaas stijl" },
@@ -21,6 +23,10 @@ const TONES = [
 ];
 
 export default function SinterklaasVoicemailPage() {
+  // Use translations
+  const { language } = useLanguage();
+  const t = getTranslations(language).aiTools.voicemail;
+  
   // Use Clerk auth token
   const token = useAuthToken();
   
