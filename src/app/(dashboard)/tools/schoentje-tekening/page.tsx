@@ -159,7 +159,7 @@ export default function SchoentjeTekeningPage() {
         <SchoentjeHistory />
       </div>
     </div>
-
+    </ToolAccessGuard>
   );
 }
 

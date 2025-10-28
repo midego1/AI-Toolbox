@@ -243,7 +243,7 @@ export default function SinterklaasBriefPage() {
         <BriefHistory />
       </div>
     </div>
-
+    </ToolAccessGuard>
   );
 }
 

@@ -258,6 +258,7 @@ export default function LootjestrekkenPage() {
         <LootjestrekkenHistory />
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 
