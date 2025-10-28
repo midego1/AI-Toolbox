@@ -1285,10 +1285,10 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                   <div className="border rounded-lg overflow-hidden">
                     <div className="grid grid-cols-[2fr_60px_60px_60px_60px_80px] gap-2 p-2 bg-muted/30 border-b text-xs font-semibold items-center">
                       <div>Tool</div>
-                      <div className="text-center">Enable</div>
-                      <div className="text-center" title="Anonymous Access">👤</div>
-                      <div className="text-center" title="Free for Users">💚</div>
-                      <div className="text-center" title="Paid/Pre">💳</div>
+                      <div className="text-center">ON/OFF</div>
+                      <div className="text-center" title="Anonymous Access (No Login Required)">🔓</div>
+                      <div className="text-center" title="Free Tier (Login Required)">🔑</div>
+                      <div className="text-center" title="Premium (Subscription Required)">💎</div>
                       <div className="text-center">Credits</div>
                     </div>
                     <div className="space-y-0">
@@ -1370,7 +1370,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                             <div className="flex items-center justify-center">
                               <CompactToggle 
                                 field="anonymous"
-                                Icon={() => <Users className="h-3.5 w-3.5" />}
+                                Icon={() => <div className="text-base">🔓</div>}
                                 isActive={config.anonymous === true}
                               />
                             </div>
@@ -1379,7 +1379,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                             <div className="flex items-center justify-center">
                               <CompactToggle 
                                 field="free"
-                                Icon={() => <DollarSign className="h-3.5 w-3.5" />}
+                                Icon={() => <div className="text-base">🔑</div>}
                                 isActive={config.free === true}
                               />
                             </div>
@@ -1388,7 +1388,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                             <div className="flex items-center justify-center">
                               <CompactToggle 
                                 field="paid"
-                                Icon={() => <CreditCard className="h-3.5 w-3.5" />}
+                                Icon={() => <div className="text-base">💎</div>}
                                 isActive={config.paid === true}
                               />
                             </div>
