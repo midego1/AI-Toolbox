@@ -10,11 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   Shield, Users, Activity, CreditCard, Database, 
   Settings, TrendingUp, AlertTriangle, RefreshCw,
   Search, Plus, Check, X, BarChart3,
-  Zap, DollarSign, ToggleLeft, ToggleRight
+  Zap, DollarSign, ToggleLeft, ToggleRight, Edit
 } from "lucide-react";
 import { Id } from "../../../../../convex/_generated/dataModel";
 
@@ -1028,7 +1030,12 @@ function HealthTab({ systemHealth, cleanupSessions, resetStuckJobs, token }: any
 
 function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
   const [loading, setLoading] = useState<string | null>(null);
+  const [editingTool, setEditingTool] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const updateToolConfig = useMutation(api.adminTools.updateToolConfig);
+  const getToolMetadata = useQuery(api.adminTools.getToolMetadata, 
+    editingTool && token ? { token, toolId: editingTool } : "skip"
+  );
   
   // Define all available tools
   const allTools = [
@@ -1285,7 +1292,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                     {category}
                   </h3>
                   <div className="border rounded-lg overflow-hidden">
-                    <div className="grid grid-cols-[2fr_50px_80px_80px_80px_80px_80px] gap-2 p-2 bg-muted/30 border-b text-xs font-semibold items-center">
+                    <div className="grid grid-cols-[2fr_50px_80px_80px_80px_80px_80px_60px] gap-2 p-2 bg-muted/30 border-b text-xs font-semibold items-center">
                       <div>Tool</div>
                       <div className="text-center">ON/OFF</div>
                       <div className="text-center">Sidebar</div>
@@ -1293,6 +1300,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                       <div className="text-center">Free</div>
                       <div className="text-center">Premium</div>
                       <div className="text-center">Credits</div>
+                      <div className="text-center">Edit</div>
                     </div>
                     <div className="space-y-0">
                       {tools.map((tool, idx) => {
@@ -1330,7 +1338,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                         return (
                           <div
                             key={tool.id}
-                            className={`grid grid-cols-[2fr_50px_80px_80px_80px_80px_80px] gap-2 p-2 items-center border-b last:border-b-0 ${
+                            className={`grid grid-cols-[2fr_50px_80px_80px_80px_80px_80px_60px] gap-2 p-2 items-center border-b last:border-b-0 ${
                               config.enabled ? "bg-green-50/50 hover:bg-green-50" : "bg-red-50/50 opacity-60"
                             }`}
                           >
@@ -1409,6 +1417,21 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                             <div className="text-xs text-muted-foreground text-center">
                               {tool.credits}
                             </div>
+                            
+                            {/* Edit Button */}
+                            <div className="flex items-center justify-center">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0"
+                                onClick={() => {
+                                  setEditingTool(tool.id);
+                                  setIsDialogOpen(true);
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
                         );
                       })}
@@ -1420,6 +1443,91 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
           </div>
         </CardContent>
       </Card>
+      
+      {/* Edit Tool Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Tool Configuration</DialogTitle>
+            <DialogDescription>
+              Configure prompts, parameters, and settings for {editingTool ? `"${allTools.find(t => t.id === editingTool)?.name || editingTool}"` : "this tool"}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {getToolMetadata ? (
+            <div className="space-y-4 mt-4">
+              <div>
+                <Label htmlFor="name">Tool Name</Label>
+                <Input id="name" defaultValue={getToolMetadata.name || ''} />
+              </div>
+              
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea 
+                  id="description" 
+                  defaultValue={getToolMetadata.description || ''} 
+                  rows={3}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="defaultPrompt">Default Prompt</Label>
+                <Textarea 
+                  id="defaultPrompt" 
+                  defaultValue={getToolMetadata.defaultPrompt || ''} 
+                  rows={5}
+                  className="font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  This prompt is shown to users as the default input for this tool
+                </p>
+              </div>
+              
+              <div>
+                <Label htmlFor="systemPrompt">System Prompt</Label>
+                <Textarea 
+                  id="systemPrompt" 
+                  defaultValue={getToolMetadata.systemPrompt || ''} 
+                  rows={8}
+                  className="font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Internal instructions for the AI when processing requests for this tool
+                </p>
+              </div>
+              
+              <div>
+                <Label htmlFor="configOptions">Configuration Options</Label>
+                <Textarea 
+                  id="configOptions" 
+                  defaultValue={JSON.stringify(getToolMetadata.configOptions || {}, null, 2)} 
+                  rows={6}
+                  className="font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  JSON configuration for tool parameters, features, and settings
+                </p>
+              </div>
+              
+              <div className="flex justify-end space-x-2 pt-4 border-t">
+                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={() => {
+                  // TODO: Implement save functionality
+                  alert("Save functionality coming soon!");
+                }}>
+                  Save Changes
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-32">
+              <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
       
       <Card>
         <CardHeader>
