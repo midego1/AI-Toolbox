@@ -881,6 +881,23 @@ export const getToolMetadata = query({
 });
 
 /**
+ * Get tool metadata by ID (public, no admin required - for backend use)
+ */
+export const getToolMetadataPublic = query({
+  args: {
+    toolId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const tool = await ctx.db
+      .query("aiTools")
+      .withIndex("by_tool_id", (q) => q.eq("toolId", args.toolId))
+      .first();
+    
+    return tool;
+  },
+});
+
+/**
  * Initialize tool metadata - creates or updates multiple tools at once
  */
 export const initializeToolsMetadata = mutation({

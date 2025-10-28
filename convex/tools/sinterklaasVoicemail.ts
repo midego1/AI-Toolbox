@@ -73,7 +73,34 @@ export const generateSinterklaasVoicemail = action({
         status: "processing",
       });
 
-      console.log(`📝 Step 1: Generating personalized script with storyboard...`);
+      console.log(`📝 Step 1: Fetching tool metadata from database...`);
+      
+      // Fetch tool metadata from database
+      const toolMetadata = await ctx.runQuery(api.adminTools.getToolMetadataPublic, { 
+        toolId: "sinterklaas_voicemail" 
+      });
+      
+      // Use database prompts or fallback to hardcoded if not available
+      const systemPrompt = toolMetadata?.systemPrompt || `Je bent Sinterklaas, en je imiteert PRECIES de stijl van Bram van der Vlught - de legendarische Nederlandse Sinterklaas.
+
+STORYBOARD:
+{storyboard}
+
+De voicemail moet:
+- Natuurlijke Nederlandse spraak gebruiken
+- Rustig en kalm zijn
+- Warme, zachte toon hebben
+- 35-50 seconden (90-130 woorden)
+- Klassieke Sinterklaas elementen bevatten
+
+Bram van der Vlught's kenmerkende stijl:
+- Rustige, kalme stem
+- Warme en zachte intonatie
+- Traditonele, eerbiedige benadering
+- Geduldig en begripvol
+- Authentieke Sinterklaas uitstraling`;
+
+      console.log(`📝 Step 2: Generating personalized script with storyboard...`);
       
       // Step 1: Generate a storyboard first, then the actual script
       const rhymingNote = args.rhyming ? "\n\nBELANGRIJK: Deze voicemail moet RIJMD zijn (a-a-b-b patroon zoals Sinterklaas gedichten). Het storyboard moet dit meenemen!" : "\n\nBELANGRIJK: Deze voicemail is GEWONE SPRAK, GEEN rijm.";
@@ -240,17 +267,10 @@ BELANGRIJK:
 ${achievementsText}${behaviorText}`;
       }
 
-      const scriptPrompt = `Je bent Sinterklaas, en je imiteert PRECIES de stijl van Bram van der Vlught - de legendarische Nederlandse Sinterklaas.
-
-Gebruik dit storyboard om een warme, persoonlijke voice boodschap te schrijven:
-
-STORYBOARD:
-${storyboard}
-
-${rhymingInstructions}${explicitInstructions}${styleSection}
-De voicemail moet:${voicemailMustSection}${importantSection}
-
-Schrijf de exacte tekst die gesproken wordt. Geen markdown, alleen gewone tekst.`;
+      // Use the database prompt or fallback
+      const scriptPrompt = systemPrompt
+        .replace('{storyboard}', storyboard)
+        + `\n\n${rhymingInstructions}${explicitInstructions}${styleSection}De voicemail moet:${voicemailMustSection}${importantSection}\n\nSchrijf de exacte tekst die gesproken wordt. Geen markdown, alleen gewone tekst.`;
 
       const script = await callOpenRouter(
         [{ role: "user", content: scriptPrompt }],
