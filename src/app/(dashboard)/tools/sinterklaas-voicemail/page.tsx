@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Phone, Play, Pause, Volume2, Copy, Download, Loader2, Sparkles, Square, ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 
 const TONES = [
   { value: "traditioneel", label: "Traditioneel", emoji: "🎅", description: "Klassieke Sinterklaas stijl" },
@@ -215,7 +216,8 @@ export default function SinterklaasVoicemailPage() {
   const showCompactForm = results !== null;
 
   return (
-    <div className="container mx-auto p-4 lg:p-6 max-w-7xl">
+    <ToolAccessGuard toolId="sinterklaas_voicemail">
+      <div className="container mx-auto p-4 lg:p-6 max-w-7xl">
       {/* Compact Header */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
@@ -833,6 +835,7 @@ function VoicemailHistory() {
         </div>
       </CardContent>
     </Card>
+    </ToolAccessGuard>
   );
 }
 
