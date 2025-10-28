@@ -681,7 +681,17 @@ export const getToolConfigsPublic = query({
       .query("aiToolConfigs")
       .collect();
     
-    return configs;
+    // Return all fields for public access
+    return configs.map(config => ({
+      _id: config._id,
+      toolId: config.toolId,
+      enabled: config.enabled,
+      anonymous: config.anonymous,
+      free: config.free,
+      paid: config.paid,
+      createdAt: config.createdAt,
+      updatedAt: config.updatedAt,
+    }));
   },
 });
 
@@ -737,6 +747,55 @@ export const toggleToolStatus = mutation({
     }
     
     return { success: true, enabled: args.enabled };
+  },
+});
+
+/**
+ * Update tool configuration (all fields)
+ */
+export const updateToolConfig = mutation({
+  args: {
+    token: v.string(),
+    toolId: v.string(),
+    enabled: v.optional(v.boolean()),
+    anonymous: v.optional(v.boolean()),
+    free: v.optional(v.boolean()),
+    paid: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    await verifyAdmin(ctx, args.token);
+    
+    const existing = await ctx.db
+      .query("aiToolConfigs")
+      .withIndex("by_tool_id", (q) => q.eq("toolId", args.toolId))
+      .first();
+    
+    const now = Date.now();
+    const updates: any = {
+      updatedAt: now,
+    };
+    
+    // Only update fields that are provided
+    if (args.enabled !== undefined) updates.enabled = args.enabled;
+    if (args.anonymous !== undefined) updates.anonymous = args.anonymous;
+    if (args.free !== undefined) updates.free = args.free;
+    if (args.paid !== undefined) updates.paid = args.paid;
+    
+    if (existing) {
+      await ctx.db.patch(existing._id, updates);
+    } else {
+      await ctx.db.insert("aiToolConfigs", {
+        toolId: args.toolId,
+        enabled: args.enabled ?? true,
+        anonymous: args.anonymous,
+        free: args.free,
+        paid: args.paid,
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+    
+    return { success: true };
   },
 });
 

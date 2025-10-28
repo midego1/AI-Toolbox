@@ -175,6 +175,9 @@ export default defineSchema({
   aiToolConfigs: defineTable({
     toolId: v.string(), // e.g., "copywriting", "translation"
     enabled: v.boolean(),
+    anonymous: v.optional(v.boolean()), // Can be used without authentication
+    free: v.optional(v.boolean()), // Free for authenticated users
+    paid: v.optional(v.boolean()), // Requires subscription (premium)
     createdAt: v.number(),
     updatedAt: v.number(),
   })

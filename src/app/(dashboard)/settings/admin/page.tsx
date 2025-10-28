@@ -1028,6 +1028,7 @@ function HealthTab({ systemHealth, cleanupSessions, resetStuckJobs, token }: any
 
 function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
   const [loading, setLoading] = useState<string | null>(null);
+  const updateToolConfig = useMutation(api.adminTools.updateToolConfig);
   
   // Define all available tools
   const allTools = [
@@ -1185,7 +1186,7 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
   // Create a map of tool configs for quick lookup
   const configMap = new Map();
   toolConfigs?.forEach((config: any) => {
-    configMap.set(config.toolId, config.enabled);
+    configMap.set(config.toolId, config);
   });
   
   const handleToggle = async (toolId: string, currentStatus: boolean) => {
@@ -1200,8 +1201,27 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
     }
   };
   
-  const getToolStatus = (toolId: string): boolean => {
-    return configMap.get(toolId) ?? true; // Default to enabled if not configured
+  const handleConfigUpdate = async (toolId: string, field: string, value: boolean) => {
+    if (!token) return;
+    setLoading(toolId);
+    try {
+      const updates: any = {};
+      updates[field] = value;
+      await updateToolConfig({ token, toolId, ...updates });
+    } catch (error) {
+      console.error("Failed to update tool config:", error);
+    } finally {
+      setLoading(null);
+    }
+  };
+  
+  const getToolConfig = (toolId: string) => {
+    return configMap.get(toolId) || {
+      enabled: true,
+      anonymous: undefined,
+      free: undefined,
+      paid: undefined,
+    };
   };
   
   // Group tools by category
@@ -1241,24 +1261,57 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                     <Zap className={`h-4 w-4 mr-2 ${isSinterklaas ? 'text-red-600' : 'text-primary'}`} />
                     {category}
                   </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   {tools.map((tool) => {
-                    const isEnabled = getToolStatus(tool.id);
+                    const config = getToolConfig(tool.id);
                     const isLoading = loading === tool.id;
+                    
+                    const ToggleSwitch = ({ field, label, icon: Icon, colorClass }: any) => {
+                      const value = config[field];
+                      const isActive = value === true;
+                      
+                      return (
+                        <button
+                          onClick={() => !isLoading && handleConfigUpdate(tool.id, field, !isActive)}
+                          disabled={isLoading}
+                          className={`flex items-center justify-between p-2 rounded-lg border transition-colors ${
+                            isActive 
+                              ? colorClass
+                              : 'bg-gray-50 border-gray-200'
+                          } disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-80`}
+                        >
+                          <div className="flex items-center space-x-2">
+                            {Icon && <Icon className={`h-4 w-4 ${isActive ? 'text-current' : 'text-gray-400'}`} />}
+                            <span className="text-xs font-medium">{label}</span>
+                          </div>
+                          {isLoading ? (
+                            <RefreshCw className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <div className={`w-8 h-4 rounded-full relative transition-colors ${
+                              isActive ? 'bg-current' : 'bg-gray-300'
+                            }`}>
+                              <div className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full bg-white transition-transform ${
+                                isActive ? 'translate-x-4' : ''
+                              }`} />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    };
                     
                     return (
                       <div
                         key={tool.id}
-                        className={`p-3 border rounded-lg transition-all ${
-                          isEnabled ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200 opacity-60"
+                        className={`p-4 border-2 rounded-lg transition-all ${
+                          config.enabled ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200 opacity-60"
                         }`}
                       >
-                        <div className="flex items-start justify-between">
+                        <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-1">
-                              <h4 className="font-medium">{tool.name}</h4>
-                              <Badge variant={isEnabled ? "default" : "secondary"}>
-                                {isEnabled ? "Enabled" : "Disabled"}
+                              <h4 className="font-semibold">{tool.name}</h4>
+                              <Badge variant={config.enabled ? "default" : "destructive"}>
+                                {config.enabled ? "Enabled" : "Disabled"}
                               </Badge>
                             </div>
                             <p className="text-sm text-muted-foreground mb-2">
@@ -1271,22 +1324,49 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                             </div>
                           </div>
                           <button
-                            onClick={() => !isLoading && handleToggle(tool.id, isEnabled)}
+                            onClick={() => !isLoading && handleToggle(tool.id, config.enabled)}
                             disabled={isLoading}
-                            className={`ml-3 flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
-                              isEnabled
+                            className={`ml-3 flex items-center justify-center w-12 h-12 rounded-lg transition-colors ${
+                              config.enabled
                                 ? "bg-green-500 hover:bg-green-600 text-white"
                                 : "bg-gray-300 hover:bg-gray-400"
                             } disabled:opacity-50 disabled:cursor-not-allowed`}
                           >
                             {isLoading ? (
-                              <RefreshCw className="h-4 w-4 animate-spin" />
-                            ) : isEnabled ? (
-                              <Check className="h-4 w-4" />
+                              <RefreshCw className="h-5 w-5 animate-spin" />
+                            ) : config.enabled ? (
+                              <Check className="h-5 w-5" />
                             ) : (
-                              <X className="h-4 w-4" />
+                              <X className="h-5 w-5" />
                             )}
                           </button>
+                        </div>
+                        
+                        {/* Configuration Settings */}
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label className="text-xs font-semibold">Access & Pricing:</Label>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <ToggleSwitch 
+                              field="anonymous"
+                              label="Anonymous"
+                              icon={() => <Users className="h-4 w-4" />}
+                              colorClass="bg-blue-50 border-blue-200 text-blue-500"
+                            />
+                            <ToggleSwitch 
+                              field="free"
+                              label="Free"
+                              icon={() => <DollarSign className="h-4 w-4" />}
+                              colorClass="bg-green-50 border-green-200 text-green-500"
+                            />
+                            <ToggleSwitch 
+                              field="paid"
+                              label="Paid"
+                              icon={() => <CreditCard className="h-4 w-4" />}
+                              colorClass="bg-purple-50 border-purple-200 text-purple-500"
+                            />
+                          </div>
                         </div>
                       </div>
                     );
@@ -1304,22 +1384,34 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
           <CardTitle>Tool Management Statistics</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="p-3 border rounded-lg text-center">
               <div className="text-xl font-bold text-primary">{allTools.length}</div>
               <div className="text-xs text-muted-foreground">Total Tools</div>
             </div>
             <div className="p-3 border rounded-lg text-center">
               <div className="text-xl font-bold text-green-600">
-                {allTools.filter(t => getToolStatus(t.id)).length}
+                {allTools.filter(t => getToolConfig(t.id).enabled).length}
               </div>
               <div className="text-xs text-muted-foreground">Enabled</div>
             </div>
             <div className="p-3 border rounded-lg text-center">
-              <div className="text-xl font-bold text-red-600">
-                {allTools.filter(t => !getToolStatus(t.id)).length}
+              <div className="text-xl font-bold text-blue-600">
+                {allTools.filter(t => getToolConfig(t.id).anonymous).length}
               </div>
-              <div className="text-xs text-muted-foreground">Disabled</div>
+              <div className="text-xs text-muted-foreground">Anonymous</div>
+            </div>
+            <div className="p-3 border rounded-lg text-center">
+              <div className="text-xl font-bold text-green-600">
+                {allTools.filter(t => getToolConfig(t.id).free).length}
+              </div>
+              <div className="text-xs text-muted-foreground">Free</div>
+            </div>
+            <div className="p-3 border rounded-lg text-center">
+              <div className="text-xl font-bold text-purple-600">
+                {allTools.filter(t => getToolConfig(t.id).paid).length}
+              </div>
+              <div className="text-xs text-muted-foreground">Paid</div>
             </div>
           </div>
         </CardContent>
