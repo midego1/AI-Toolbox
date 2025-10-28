@@ -772,40 +772,45 @@ export const updateToolConfig = mutation({
     
     const now = Date.now();
     
-    if (existing) {
-      const updates: Record<string, any> = {};
-      
-      // Build updates object with only the fields that are provided
-      if (args.enabled !== undefined) updates.enabled = args.enabled;
-      if (args.anonymous !== undefined) updates.anonymous = args.anonymous;
-      if (args.free !== undefined) updates.free = args.free;
-      if (args.paid !== undefined) updates.paid = args.paid;
-      
-      // Always update the updatedAt timestamp
-      updates.updatedAt = now;
-      
-      // Only patch if we have actual updates
-      if (Object.keys(updates).length > 0) {
-        await ctx.db.patch(existing._id, updates);
+    try {
+      if (existing) {
+        const updates: Record<string, any> = {};
+        
+        // Build updates object with only the fields that are provided
+        if (args.enabled !== undefined) updates.enabled = args.enabled;
+        if (args.anonymous !== undefined) updates.anonymous = args.anonymous;
+        if (args.free !== undefined) updates.free = args.free;
+        if (args.paid !== undefined) updates.paid = args.paid;
+        
+        // Always update the updatedAt timestamp
+        updates.updatedAt = now;
+        
+        // Only patch if we have actual updates
+        if (Object.keys(updates).length > 0) {
+          await ctx.db.patch(existing._id, updates);
+        }
+      } else {
+        // Create new record with provided fields
+        const newConfig: Record<string, any> = {
+          toolId: args.toolId,
+          enabled: args.enabled ?? true,
+          createdAt: now,
+          updatedAt: now,
+        };
+        
+        // Add optional fields if they were provided
+        if (args.anonymous !== undefined) newConfig.anonymous = args.anonymous;
+        if (args.free !== undefined) newConfig.free = args.free;
+        if (args.paid !== undefined) newConfig.paid = args.paid;
+        
+        await ctx.db.insert("aiToolConfigs", newConfig);
       }
-    } else {
-      // Create new record with provided fields
-      const newConfig: Record<string, any> = {
-        toolId: args.toolId,
-        enabled: args.enabled ?? true,
-        createdAt: now,
-        updatedAt: now,
-      };
       
-      // Add optional fields if they were provided
-      if (args.anonymous !== undefined) newConfig.anonymous = args.anonymous;
-      if (args.free !== undefined) newConfig.free = args.free;
-      if (args.paid !== undefined) newConfig.paid = args.paid;
-      
-      await ctx.db.insert("aiToolConfigs", newConfig);
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating tool config:", error);
+      throw error;
     }
-    
-    return { success: true };
   },
 });
 
