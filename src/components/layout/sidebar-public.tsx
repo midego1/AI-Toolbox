@@ -78,7 +78,8 @@ export function SidebarPublic() {
   const isToolEnabled = (toolId: string): boolean => {
     const config = toolConfigs?.find(c => c.toolId === toolId);
     if (!config) return true; // Default to enabled if not configured
-    return config.enabled && (config.showInSidebar !== false); // Only show if enabled AND visible in sidebar
+    // Only show if enabled AND explicitly set to show in sidebar
+    return config.enabled === true && config.showInSidebar === true;
   };
   
   // Map href to tool ID for filtering
