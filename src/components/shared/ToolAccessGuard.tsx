@@ -160,11 +160,8 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
         </div>
         
         {/* Frost overlay with sign-up prompt - positioned fixed to viewport, prevents scrolling */}
-        <div 
-          className="fixed inset-0 flex items-center justify-center p-4 z-50 pointer-events-none"
-          style={{ backdropFilter: 'blur(2px)', background: 'rgba(0,0,0,0.1)' }}
-        >
-          <div className="backdrop-blur-md bg-white/90 border border-white/20 rounded-2xl shadow-2xl p-6 max-w-md w-full relative pointer-events-auto">
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50 pointer-events-none bg-black/20">
+          <div className="bg-white/95 border border-white/30 rounded-2xl shadow-2xl p-6 max-w-md w-full relative pointer-events-auto">
             <button
               onClick={() => setDismissed(true)}
               className="absolute top-4 right-4 p-1 hover:bg-muted rounded-full transition-colors z-10"
