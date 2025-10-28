@@ -13,18 +13,8 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [authTimeout, setAuthTimeout] = useState(false);
   const router = useRouter();
   const { isSignedIn, isLoaded } = useUser();
-
-  // Set timeout to prevent infinite spinner
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAuthTimeout(true);
-    }, 3000); // 3 second timeout
-
-    return () => clearTimeout(timer);
-  }, []);
 
   // Redirect to dashboard if signed in
   useEffect(() => {
@@ -33,9 +23,10 @@ export default function PublicLayout({
     }
   }, [isLoaded, isSignedIn, router]);
 
-  // Don't render layout content while checking auth or if signed in
-  // Show content after timeout to prevent infinite loading
-  if ((!isLoaded || isSignedIn) && !authTimeout) {
+  // Show loading spinner ONLY if Clerk is actively loading (not indefinitely)
+  // If Clerk doesn't load, we still show the content to users
+  if (isLoaded && isSignedIn) {
+    // User is signed in - show spinner while redirecting
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>

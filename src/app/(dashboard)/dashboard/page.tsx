@@ -477,8 +477,7 @@ export default function DashboardPage() {
   );
 
   // Get tool configs to filter disabled tools
-  // Add error handling to prevent infinite spinner
-  const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic, {}, {});
+  const toolConfigs = useQuery(api.adminTools.getToolConfigsPublic);
   
   // Create a map of enabled/disabled status
   const toolStatusMap = new Map<string, boolean>();
