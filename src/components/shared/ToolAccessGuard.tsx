@@ -99,21 +99,18 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
     return <>{children}</>;
   }
   
-  // TEMPORARY: Force show overlay for testing (remove this later)
-  const forceShowOverlay = true; // Set to true to always show overlay
-  
-  if ((!isSignedIn || forceShowOverlay) && !dismissed) {
-    console.log(`🎨 Showing frost overlay for ${forceShowOverlay ? 'TEST MODE' : 'anonymous user'} on tool: ${toolId}`);
+  if (!isSignedIn && !dismissed) {
+    console.log(`Showing frost overlay for anonymous user on tool: ${toolId}`);
     return (
-      <div className="relative">
-        {/* Tool content (blurred behind overlay) */}
+      <>
+        {/* Tool content (blurred, scrollable) */}
         <div className="blur-sm pointer-events-none select-none opacity-60">
           {children}
         </div>
         
-        {/* Frost overlay with sign-up prompt - blocks all interactions */}
-        <div className="absolute inset-0 flex items-center justify-center p-4 z-50">
-          <div className="backdrop-blur-md bg-white/90 border border-white/20 rounded-2xl shadow-2xl p-6 max-w-md w-full relative">
+        {/* Frost overlay with sign-up prompt - positioned fixed to viewport */}
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50 pointer-events-none">
+          <div className="backdrop-blur-md bg-white/90 border border-white/20 rounded-2xl shadow-2xl p-6 max-w-md w-full relative pointer-events-auto">
             <button
               onClick={() => setDismissed(true)}
               className="absolute top-4 right-4 p-1 hover:bg-muted rounded-full transition-colors z-10"
@@ -156,7 +153,7 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
             </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
   
