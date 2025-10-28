@@ -776,7 +776,7 @@ export const updateToolConfig = mutation({
     try {
       if (existing) {
         // Only update fields that were explicitly provided
-        const updates: Record<string, any> = {
+        const updates: any = {
           updatedAt: now,
         };
         
@@ -797,7 +797,7 @@ export const updateToolConfig = mutation({
         await ctx.db.patch(existing._id, updates);
       } else {
         // Create new record with provided fields
-        const newConfig: Record<string, any> = {
+        const newConfig: any = {
           toolId: args.toolId,
           enabled: args.enabled ?? true,
           createdAt: now,
