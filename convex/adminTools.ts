@@ -752,15 +752,16 @@ export const toggleToolStatus = mutation({
 
 /**
  * Update tool configuration (all fields)
+ * Note: All fields are optional - only provided fields will be updated
  */
 export const updateToolConfig = mutation({
   args: {
     token: v.string(),
     toolId: v.string(),
-    enabled: v.optional(v.boolean()),
-    anonymous: v.optional(v.boolean()),
-    free: v.optional(v.boolean()),
-    paid: v.optional(v.boolean()),
+    enabled: v.optional(v.union(v.boolean(), v.null())),
+    anonymous: v.optional(v.union(v.boolean(), v.null())),
+    free: v.optional(v.union(v.boolean(), v.null())),
+    paid: v.optional(v.union(v.boolean(), v.null())),
   },
   handler: async (ctx, args) => {
     await verifyAdmin(ctx, args.token);
