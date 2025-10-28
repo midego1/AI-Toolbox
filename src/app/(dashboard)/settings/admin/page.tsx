@@ -16,7 +16,8 @@ import {
   Shield, Users, Activity, CreditCard, Database, 
   Settings, TrendingUp, AlertTriangle, RefreshCw,
   Search, Plus, Check, X, BarChart3,
-  Zap, DollarSign, ToggleLeft, ToggleRight, Edit
+  Zap, DollarSign, ToggleLeft, ToggleRight, Edit,
+  ChevronRight, ChevronDown
 } from "lucide-react";
 import { Id } from "../../../../../convex/_generated/dataModel";
 
@@ -1030,11 +1031,10 @@ function HealthTab({ systemHealth, cleanupSessions, resetStuckJobs, token }: any
 
 function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
   const [loading, setLoading] = useState<string | null>(null);
-  const [editingTool, setEditingTool] = useState<string | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [expandedTool, setExpandedTool] = useState<string | null>(null);
   const updateToolConfig = useMutation(api.adminTools.updateToolConfig);
   const getToolMetadata = useQuery(api.adminTools.getToolMetadata, 
-    editingTool && token ? { token, toolId: editingTool } : "skip"
+    expandedTool && token ? { token, toolId: expandedTool } : "skip"
   );
   
   // Get the current tool info from the allTools list
@@ -1343,104 +1343,190 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                           );
                         };
                         
+                        // Render row with expandable content
                         return (
-                          <div
-                            key={tool.id}
-                            className={`grid grid-cols-[2fr_50px_80px_80px_80px_80px_80px_60px] gap-2 p-2 items-center border-b last:border-b-0 ${
-                              config.enabled ? "bg-green-50/50 hover:bg-green-50" : "bg-red-50/50 opacity-60"
-                            }`}
-                          >
-                            {/* Tool Info */}
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center space-x-2">
-                                <h4 className="text-sm font-medium truncate">{tool.name}</h4>
-                                {config.enabled ? (
-                                  <Badge variant="default" className="h-4 px-1.5 text-[10px]">ON</Badge>
-                                ) : (
-                                  <Badge variant="destructive" className="h-4 px-1.5 text-[10px]">OFF</Badge>
-                                )}
+                          <>
+                            <div
+                              key={tool.id}
+                              className={`grid grid-cols-[2fr_50px_80px_80px_80px_80px_80px_60px] gap-2 p-2 items-center border-b last:border-b-0 ${
+                                config.enabled ? "bg-green-50/50 hover:bg-green-50" : "bg-red-50/50 opacity-60"
+                              }`}
+                            >
+                              {/* Tool Info */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center space-x-2">
+                                  <h4 className="text-sm font-medium truncate">{tool.name}</h4>
+                                  {config.enabled ? (
+                                    <Badge variant="default" className="h-4 px-1.5 text-[10px]">ON</Badge>
+                                  ) : (
+                                    <Badge variant="destructive" className="h-4 px-1.5 text-[10px]">OFF</Badge>
+                                  )}
+                                </div>
+                                <p className="text-xs text-muted-foreground truncate">{tool.description}</p>
                               </div>
-                              <p className="text-xs text-muted-foreground truncate">{tool.description}</p>
+                              
+                              {/* Enable/Disable Toggle */}
+                              <div className="flex items-center justify-center">
+                                <button
+                                  onClick={() => !isLoading && handleToggle(tool.id, config.enabled)}
+                                  disabled={isLoading}
+                                  className={`w-10 h-8 flex items-center justify-center rounded transition-colors ${
+                                    config.enabled
+                                      ? "bg-green-500 hover:bg-green-600 text-white"
+                                      : "bg-gray-300 hover:bg-gray-400"
+                                  } disabled:opacity-50`}
+                                  title={config.enabled ? "Disable" : "Enable"}
+                                >
+                                  {isLoading ? (
+                                    <RefreshCw className="h-3 w-3 animate-spin" />
+                                  ) : config.enabled ? (
+                                    <Check className="h-4 w-4" />
+                                  ) : (
+                                    <X className="h-4 w-4" />
+                                  )}
+                                </button>
+                              </div>
+                              
+                              {/* Sidebar Toggle */}
+                              <div className="flex items-center justify-center">
+                                <CompactToggle 
+                                  field="showInSidebar"
+                                  Icon={() => <div className="text-base">📋</div>}
+                                  isActive={config.showInSidebar === true}
+                                />
+                              </div>
+                              
+                              {/* Anonymous Toggle */}
+                              <div className="flex items-center justify-center">
+                                <CompactToggle 
+                                  field="anonymous"
+                                  Icon={() => <div className="text-base">🔓</div>}
+                                  isActive={config.anonymous === true}
+                                />
+                              </div>
+                              
+                              {/* Free Toggle */}
+                              <div className="flex items-center justify-center">
+                                <CompactToggle 
+                                  field="free"
+                                  Icon={() => <div className="text-base">🔑</div>}
+                                  isActive={config.free === true}
+                                />
+                              </div>
+                              
+                              {/* Paid Toggle */}
+                              <div className="flex items-center justify-center">
+                                <CompactToggle 
+                                  field="paid"
+                                  Icon={() => <div className="text-base">💎</div>}
+                                  isActive={config.paid === true}
+                                />
+                              </div>
+                              
+                              {/* Credits */}
+                              <div className="text-xs text-muted-foreground text-center">
+                                {tool.credits}
+                              </div>
+                              
+                              {/* Expand/Collapse Button */}
+                              <div className="flex items-center justify-center">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0"
+                                  onClick={() => setExpandedTool(expandedTool === tool.id ? null : tool.id)}
+                                >
+                                  {expandedTool === tool.id ? (
+                                    <ChevronDown className="h-4 w-4" />
+                                  ) : (
+                                    <ChevronRight className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </div>
                             </div>
                             
-                            {/* Enable/Disable Toggle */}
-                            <div className="flex items-center justify-center">
-                              <button
-                                onClick={() => !isLoading && handleToggle(tool.id, config.enabled)}
-                                disabled={isLoading}
-                                className={`w-10 h-8 flex items-center justify-center rounded transition-colors ${
-                                  config.enabled
-                                    ? "bg-green-500 hover:bg-green-600 text-white"
-                                    : "bg-gray-300 hover:bg-gray-400"
-                                } disabled:opacity-50`}
-                                title={config.enabled ? "Disable" : "Enable"}
-                              >
-                                {isLoading ? (
-                                  <RefreshCw className="h-3 w-3 animate-spin" />
-                                ) : config.enabled ? (
-                                  <Check className="h-4 w-4" />
-                                ) : (
-                                  <X className="h-4 w-4" />
-                                )}
-                              </button>
-                            </div>
-                            
-                            {/* Sidebar Toggle */}
-                            <div className="flex items-center justify-center">
-                              <CompactToggle 
-                                field="showInSidebar"
-                                Icon={() => <div className="text-base">📋</div>}
-                                isActive={config.showInSidebar === true}
-                              />
-                            </div>
-                            
-                            {/* Anonymous Toggle */}
-                            <div className="flex items-center justify-center">
-                              <CompactToggle 
-                                field="anonymous"
-                                Icon={() => <div className="text-base">🔓</div>}
-                                isActive={config.anonymous === true}
-                              />
-                            </div>
-                            
-                            {/* Free Toggle */}
-                            <div className="flex items-center justify-center">
-                              <CompactToggle 
-                                field="free"
-                                Icon={() => <div className="text-base">🔑</div>}
-                                isActive={config.free === true}
-                              />
-                            </div>
-                            
-                            {/* Paid Toggle */}
-                            <div className="flex items-center justify-center">
-                              <CompactToggle 
-                                field="paid"
-                                Icon={() => <div className="text-base">💎</div>}
-                                isActive={config.paid === true}
-                              />
-                            </div>
-                            
-                            {/* Credits */}
-                            <div className="text-xs text-muted-foreground text-center">
-                              {tool.credits}
-                            </div>
-                            
-                            {/* Edit Button */}
-                            <div className="flex items-center justify-center">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0"
-                                onClick={() => {
-                                  setEditingTool(tool.id);
-                                  setIsDialogOpen(true);
-                                }}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
+                            {/* Expanded Content - Inline Editing */}
+                            {expandedTool === tool.id && (
+                              <div className="border-l-2 border-primary bg-muted/20 p-4 space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div>
+                                    <Label>Tool Name</Label>
+                                    <Input 
+                                      defaultValue={getToolMetadata?.name || getCurrentTool(tool.id)?.name || ''} 
+                                      placeholder="Enter tool name"
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label>Credits</Label>
+                                    <Input 
+                                      defaultValue={tool.credits} 
+                                      placeholder="Enter credit cost"
+                                    />
+                                  </div>
+                                </div>
+                                
+                                <div>
+                                  <Label>Description</Label>
+                                  <Textarea 
+                                    defaultValue={getToolMetadata?.description || getCurrentTool(tool.id)?.description || ''} 
+                                    rows={3}
+                                    placeholder="Enter tool description"
+                                  />
+                                </div>
+                                
+                                <div>
+                                  <Label>Default Prompt</Label>
+                                  <Textarea 
+                                    defaultValue={getToolMetadata?.defaultPrompt || ''} 
+                                    rows={5}
+                                    className="font-mono text-sm"
+                                    placeholder="Enter default prompt shown to users"
+                                  />
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    This prompt is shown to users as the default input for this tool
+                                  </p>
+                                </div>
+                                
+                                <div>
+                                  <Label>System Prompt</Label>
+                                  <Textarea 
+                                    defaultValue={getToolMetadata?.systemPrompt || ''} 
+                                    rows={8}
+                                    className="font-mono text-sm"
+                                    placeholder="Enter internal AI instructions"
+                                  />
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    Internal instructions for the AI when processing requests for this tool
+                                  </p>
+                                </div>
+                                
+                                <div>
+                                  <Label>Configuration Options (JSON)</Label>
+                                  <Textarea 
+                                    defaultValue={JSON.stringify(getToolMetadata?.configOptions || {}, null, 2)} 
+                                    rows={6}
+                                    className="font-mono text-sm"
+                                    placeholder="Enter JSON configuration"
+                                  />
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    JSON configuration for tool parameters, features, and settings
+                                  </p>
+                                </div>
+                                
+                                <div className="flex justify-end space-x-2 pt-2 border-t">
+                                  <Button variant="outline" onClick={() => setExpandedTool(null)}>
+                                    Collapse
+                                  </Button>
+                                  <Button onClick={() => {
+                                    // TODO: Implement save functionality
+                                    alert("Save functionality coming soon!");
+                                  }}>
+                                    Save Changes
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
+                          </>
                         );
                       })}
                     </div>
@@ -1451,91 +1537,6 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
           </div>
         </CardContent>
       </Card>
-      
-      {/* Edit Tool Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Edit Tool Configuration</DialogTitle>
-            <DialogDescription>
-              Configure prompts, parameters, and settings for {getCurrentTool(editingTool)?.name || editingTool || "this tool"}
-            </DialogDescription>
-          </DialogHeader>
-          
-          {(getToolMetadata !== undefined || getCurrentTool(editingTool)) ? (
-            <div className="space-y-4 mt-4">
-              <div>
-                <Label htmlFor="name">Tool Name</Label>
-                <Input id="name" defaultValue={getToolMetadata?.name || getCurrentTool(editingTool)?.name || ''} />
-              </div>
-              
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea 
-                  id="description" 
-                  defaultValue={getToolMetadata?.description || getCurrentTool(editingTool)?.description || ''} 
-                  rows={3}
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="defaultPrompt">Default Prompt</Label>
-                <Textarea 
-                  id="defaultPrompt" 
-                  defaultValue={getToolMetadata?.defaultPrompt || ''} 
-                  rows={5}
-                  className="font-mono text-sm"
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  This prompt is shown to users as the default input for this tool
-                </p>
-              </div>
-              
-              <div>
-                <Label htmlFor="systemPrompt">System Prompt</Label>
-                <Textarea 
-                  id="systemPrompt" 
-                  defaultValue={getToolMetadata?.systemPrompt || ''} 
-                  rows={8}
-                  className="font-mono text-sm"
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Internal instructions for the AI when processing requests for this tool
-                </p>
-              </div>
-              
-              <div>
-                <Label htmlFor="configOptions">Configuration Options</Label>
-                <Textarea 
-                  id="configOptions" 
-                  defaultValue={JSON.stringify(getToolMetadata?.configOptions || {}, null, 2)} 
-                  rows={6}
-                  className="font-mono text-sm"
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  JSON configuration for tool parameters, features, and settings
-                </p>
-              </div>
-              
-              <div className="flex justify-end space-x-2 pt-4 border-t">
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={() => {
-                  // TODO: Implement save functionality
-                  alert("Save functionality coming soon!");
-                }}>
-                  Save Changes
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-32">
-              <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
       
       <Card>
         <CardHeader>
