@@ -271,7 +271,8 @@ export function Sidebar() {
         {/* Primary Navigation Items */}
         {filteredNavigation.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          // Check if the pathname starts with or matches the href
+          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href + '/'));
           return (
             <Link
               key={item.name}
@@ -333,7 +334,8 @@ export function Sidebar() {
               <CollapsibleContent className="pl-4 mt-1 space-y-1">
                 {group.children.map((child: any) => {
                   const Icon = child.icon;
-                  const isActive = pathname === child.href;
+                  // Check if the pathname starts with or matches the href
+                  const isActive = pathname === child.href || pathname.startsWith(child.href + '/');
                   return (
                     <Link
                       key={child.name}
@@ -364,7 +366,8 @@ export function Sidebar() {
         {/* Account Navigation */}
         {filteredAccountNav.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          // Check if the pathname starts with or matches the href
+          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link
               key={item.name}

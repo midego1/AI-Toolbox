@@ -175,7 +175,8 @@ export function SidebarPublic() {
                 </div>
                 {item.children.map((child: any) => {
                   const Icon = child.icon;
-                  const isActive = pathname === child.href;
+                  // Check if the pathname starts with or matches the href
+                  const isActive = pathname === child.href || pathname.startsWith(child.href + '/');
                   // Use the actual href - let the dashboard layout handle preview mode
                   const href = child.href;
                   return (
@@ -201,7 +202,8 @@ export function SidebarPublic() {
           }
 
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          // Check if the pathname starts with or matches the href
+          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href + '/'));
           return (
             <Link
               key={item.name}
