@@ -881,6 +881,70 @@ export const getToolMetadata = query({
 });
 
 /**
+ * Initialize tool metadata - creates or updates multiple tools at once
+ */
+export const initializeToolsMetadata = mutation({
+  args: {
+    token: v.string(),
+    tools: v.array(v.object({
+      toolId: v.string(),
+      name: v.string(),
+      description: v.string(),
+      category: v.string(),
+      credits: v.string(),
+      defaultPrompt: v.optional(v.string()),
+      systemPrompt: v.optional(v.string()),
+      configOptions: v.optional(v.any()),
+    })),
+  },
+  handler: async (ctx, args) => {
+    await verifyAdmin(ctx, args.token);
+    
+    const now = Date.now();
+    const results = [];
+    
+    for (const tool of args.tools) {
+      const existing = await ctx.db
+        .query("aiTools")
+        .withIndex("by_tool_id", (q) => q.eq("toolId", tool.toolId))
+        .first();
+      
+      if (existing) {
+        // Update existing
+        await ctx.db.patch(existing._id, {
+          name: tool.name,
+          description: tool.description,
+          category: tool.category,
+          credits: tool.credits,
+          defaultPrompt: tool.defaultPrompt,
+          systemPrompt: tool.systemPrompt,
+          configOptions: tool.configOptions,
+          updatedAt: now,
+        });
+        results.push({ toolId: tool.toolId, action: "updated" });
+      } else {
+        // Create new
+        await ctx.db.insert("aiTools", {
+          toolId: tool.toolId,
+          name: tool.name,
+          description: tool.description,
+          category: tool.category,
+          credits: tool.credits,
+          defaultPrompt: tool.defaultPrompt,
+          systemPrompt: tool.systemPrompt,
+          configOptions: tool.configOptions,
+          createdAt: now,
+          updatedAt: now,
+        });
+        results.push({ toolId: tool.toolId, action: "created" });
+      }
+    }
+    
+    return { success: true, results };
+  },
+});
+
+/**
  * Update tool metadata (name, description, prompts, etc.)
  */
 export const updateToolMetadata = mutation({
