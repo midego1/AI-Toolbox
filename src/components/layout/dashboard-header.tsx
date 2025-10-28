@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Menu, Gem, Bell, LogOut, User, Settings } from "lucide-react";
+import { Menu, Gem, Bell, LogOut, User, Settings, Home } from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import {
