@@ -377,6 +377,7 @@ export default function LinkedInContentPage() {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 

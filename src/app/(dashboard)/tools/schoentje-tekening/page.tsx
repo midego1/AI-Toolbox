@@ -163,6 +163,7 @@ export default function SchoentjeTekeningPage() {
         <SchoentjeHistory />
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 
@@ -171,6 +172,7 @@ function SchoentjeHistory() {
   const history = useQuery(
     api.aiJobs.getHistoryByType,
     token ? { token, typeFilter: "schoentje_tekening", limit: 10, offset: 0 } : "skip"
+    </ToolAccessGuard>
   );
 
   if (!token || !history || history.items.length === 0) {
@@ -191,6 +193,7 @@ function SchoentjeHistory() {
         </div>
       </CardContent>
     </Card>
+    </ToolAccessGuard>
   );
 }
 
@@ -198,6 +201,7 @@ function SchoentjeHistoryItem({ job, token }: { job: any; token: string }) {
   const fileUrl = useQuery(
     api.files.getFileUrl,
     job.outputFileId ? { token, storageId: job.outputFileId } : "skip"
+    </ToolAccessGuard>
   );
 
   let treats = "Sinterklaas lekkernijen";
@@ -237,5 +241,6 @@ function SchoentjeHistoryItem({ job, token }: { job: any; token: string }) {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }

@@ -205,6 +205,7 @@ export default function FamilieMomentPage() {
         <FamilieMomentHistory />
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 
@@ -213,6 +214,7 @@ function FamilieMomentHistory() {
   const history = useQuery(
     api.aiJobs.getHistoryByType,
     token ? { token, typeFilter: "familie_moment", limit: 10, offset: 0 } : "skip"
+    </ToolAccessGuard>
   );
 
   if (!token || !history || history.items.length === 0) {
@@ -233,6 +235,7 @@ function FamilieMomentHistory() {
         </div>
       </CardContent>
     </Card>
+    </ToolAccessGuard>
   );
 }
 
@@ -240,6 +243,7 @@ function FamilieMomentHistoryItem({ job, token }: { job: any; token: string }) {
   const fileUrl = useQuery(
     api.files.getFileUrl,
     job.outputFileId ? { token, storageId: job.outputFileId } : "skip"
+    </ToolAccessGuard>
   );
 
   let description = "Familie moment";
@@ -280,5 +284,6 @@ function FamilieMomentHistoryItem({ job, token }: { job: any; token: string }) {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }

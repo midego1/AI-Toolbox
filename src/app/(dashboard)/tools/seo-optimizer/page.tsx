@@ -372,6 +372,7 @@ export default function SEOOptimizerPage() {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 

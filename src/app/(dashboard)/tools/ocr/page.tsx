@@ -400,5 +400,6 @@ export default function OCRPage() {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }

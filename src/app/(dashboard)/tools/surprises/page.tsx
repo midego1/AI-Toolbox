@@ -257,6 +257,7 @@ export default function SurprisesPage() {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 

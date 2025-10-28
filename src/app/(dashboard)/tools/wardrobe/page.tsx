@@ -354,6 +354,7 @@ export default function WardrobePage() {
         <WardrobeHistory />
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 

@@ -262,6 +262,7 @@ export default function LootjestrekkenPage() {
         <LootjestrekkenHistory />
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 
@@ -271,6 +272,7 @@ function LootjestrekkenHistory() {
   const history = useQuery(
     api.aiJobs.getHistoryByType,
     token ? { token, typeFilter: "lootjestrekken", limit: 10, offset: 0 } : "skip"
+    </ToolAccessGuard>
   );
 
   // Debug logging
@@ -363,6 +365,7 @@ function LootjestrekkenHistory() {
         </div>
       </CardContent>
     </Card>
+    </ToolAccessGuard>
   );
 }
 
@@ -406,5 +409,6 @@ function LootjestrekkenHistoryItem({ job, assignments, participants, budget }: a
         {new Date(job.createdAt).toLocaleDateString('nl-NL')} • {job.creditsUsed} credits
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }

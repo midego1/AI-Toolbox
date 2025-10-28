@@ -351,6 +351,7 @@ export default function RewriterPage() {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 

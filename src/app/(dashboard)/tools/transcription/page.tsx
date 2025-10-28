@@ -434,6 +434,7 @@ export default function TranscriptionPage() {
         </div>
       </div>
     </div>
+    </ToolAccessGuard>
   );
 }
 
