@@ -99,8 +99,11 @@ export function ToolAccessGuard({ toolId, children }: ToolAccessGuardProps) {
     return <>{children}</>;
   }
   
-  if (!isSignedIn && !dismissed) {
-    console.log(`Showing frost overlay for anonymous user on tool: ${toolId}`);
+  // TEMPORARY: Force show overlay for testing (remove this later)
+  const forceShowOverlay = true; // Set to true to always show overlay
+  
+  if ((!isSignedIn || forceShowOverlay) && !dismissed) {
+    console.log(`🎨 Showing frost overlay for ${forceShowOverlay ? 'TEST MODE' : 'anonymous user'} on tool: ${toolId}`);
     return (
       <div className="relative">
         {/* Tool content (blurred behind overlay) */}
