@@ -6,13 +6,9 @@ import { api } from "../../../../../convex/_generated/api";
 import { useAuthToken } from "@/hooks/useAuthToken";
 import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Button } from "@/components/ui/button";
-import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Input } from "@/components/ui/input";
-import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Label } from "@/components/ui/label";
-import { ToolAccessGuard } from "@/components/shared/ToolAccessGuard";
 import { Download } from "lucide-react";
 
 export default function SchoentjeTekeningPage() {
