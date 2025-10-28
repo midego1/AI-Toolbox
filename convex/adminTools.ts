@@ -777,15 +777,20 @@ export const updateToolConfig = mutation({
         updatedAt: now,
       };
       
-      // Only update fields that are provided
-      if (args.enabled !== undefined) updates.enabled = args.enabled;
-      if (args.anonymous !== undefined) updates.anonymous = args.anonymous;
-      if (args.free !== undefined) updates.free = args.free;
-      if (args.paid !== undefined) updates.paid = args.paid;
+      // Only update fields that are explicitly provided
+      // Note: We explicitly check for boolean values (including false) to handle toggles
+      if (args.enabled !== undefined && typeof args.enabled === 'boolean') updates.enabled = args.enabled;
+      if (args.anonymous !== undefined && typeof args.anonymous === 'boolean') updates.anonymous = args.anonymous;
+      if (args.free !== undefined && typeof args.free === 'boolean') updates.free = args.free;
+      if (args.paid !== undefined && typeof args.paid === 'boolean') updates.paid = args.paid;
       
-      await ctx.db.patch(existing._id, updates);
+      // Only patch if we have actual field updates (beyond just updatedAt)
+      const hasUpdates = Object.keys(updates).filter(k => k !== 'updatedAt').length > 0;
+      if (hasUpdates) {
+        await ctx.db.patch(existing._id, updates);
+      }
     } else {
-      // For new records, only include fields that were provided
+      // For new records, create with all required fields and optional ones that were provided
       const newConfig: any = {
         toolId: args.toolId,
         enabled: args.enabled !== undefined ? args.enabled : true,
@@ -793,6 +798,7 @@ export const updateToolConfig = mutation({
         updatedAt: now,
       };
       
+      // Add optional fields if provided
       if (args.anonymous !== undefined) newConfig.anonymous = args.anonymous;
       if (args.free !== undefined) newConfig.free = args.free;
       if (args.paid !== undefined) newConfig.paid = args.paid;
