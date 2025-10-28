@@ -1462,23 +1462,23 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
                                 />
                               </div>
                               
-                              {/* Anonymous Toggle */}
-                              <div className="flex items-center justify-center">
-                                <CompactToggle 
-                                  field="anonymous"
-                                  Icon={() => <div className="text-base">🔓</div>}
-                                  isActive={config.anonymous === true}
-                                />
-                              </div>
-                              
-                              {/* Free Toggle */}
-                              <div className="flex items-center justify-center">
-                                <CompactToggle 
-                                  field="free"
-                                  Icon={() => <div className="text-base">🔑</div>}
-                                  isActive={config.free === true}
-                                />
-                              </div>
+                            {/* Anonymous Toggle */}
+                            <div className="flex items-center justify-center">
+                              <CompactToggle 
+                                field="anonymous"
+                                Icon={() => <div className="text-base">👤</div>}
+                                isActive={config.anonymous === true}
+                              />
+                            </div>
+                            
+                            {/* Free Toggle */}
+                            <div className="flex items-center justify-center">
+                              <CompactToggle 
+                                field="free"
+                                Icon={() => <div className="text-base">✓</div>}
+                                isActive={config.free === true}
+                              />
+                            </div>
                               
                               {/* Paid Toggle */}
                               <div className="flex items-center justify-center">
