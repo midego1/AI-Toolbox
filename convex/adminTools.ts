@@ -771,28 +771,33 @@ export const updateToolConfig = mutation({
       .first();
     
     const now = Date.now();
-    const updates: any = {
-      updatedAt: now,
-    };
-    
-    // Only update fields that are provided
-    if (args.enabled !== undefined) updates.enabled = args.enabled;
-    if (args.anonymous !== undefined) updates.anonymous = args.anonymous;
-    if (args.free !== undefined) updates.free = args.free;
-    if (args.paid !== undefined) updates.paid = args.paid;
     
     if (existing) {
+      const updates: any = {
+        updatedAt: now,
+      };
+      
+      // Only update fields that are provided
+      if (args.enabled !== undefined) updates.enabled = args.enabled;
+      if (args.anonymous !== undefined) updates.anonymous = args.anonymous;
+      if (args.free !== undefined) updates.free = args.free;
+      if (args.paid !== undefined) updates.paid = args.paid;
+      
       await ctx.db.patch(existing._id, updates);
     } else {
-      await ctx.db.insert("aiToolConfigs", {
+      // For new records, only include fields that were provided
+      const newConfig: any = {
         toolId: args.toolId,
-        enabled: args.enabled ?? true,
-        anonymous: args.anonymous,
-        free: args.free,
-        paid: args.paid,
+        enabled: args.enabled !== undefined ? args.enabled : true,
         createdAt: now,
         updatedAt: now,
-      });
+      };
+      
+      if (args.anonymous !== undefined) newConfig.anonymous = args.anonymous;
+      if (args.free !== undefined) newConfig.free = args.free;
+      if (args.paid !== undefined) newConfig.paid = args.paid;
+      
+      await ctx.db.insert("aiToolConfigs", newConfig);
     }
     
     return { success: true };

@@ -1205,9 +1205,21 @@ function AIToolsTab({ toolConfigs, toggleToolStatus, token }: any) {
     if (!token) return;
     setLoading(toolId);
     try {
-      const updates: any = {};
-      updates[field] = value;
-      await updateToolConfig({ token, toolId, ...updates });
+      // Build the update object with the specific field
+      const updateParams: any = { token, toolId };
+      
+      // Set the specific field based on which one is being updated
+      if (field === 'anonymous') {
+        updateParams.anonymous = value;
+      } else if (field === 'free') {
+        updateParams.free = value;
+      } else if (field === 'paid') {
+        updateParams.paid = value;
+      } else if (field === 'enabled') {
+        updateParams.enabled = value;
+      }
+      
+      await updateToolConfig(updateParams);
     } catch (error) {
       console.error("Failed to update tool config:", error);
     } finally {
