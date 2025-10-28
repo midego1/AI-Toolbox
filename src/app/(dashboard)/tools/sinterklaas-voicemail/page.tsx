@@ -685,6 +685,7 @@ function VoicemailHistory() {
 
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [audioRefs, setAudioRefs] = useState<Map<string, HTMLAudioElement>>(new Map());
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const handlePlayPause = (jobId: string, audioUrl: string | null) => {
     if (!audioUrl) return;
@@ -729,7 +730,6 @@ function VoicemailHistory() {
     }
   };
 
-
   const handleDownload = async (audioUrl: string | null, childName: string) => {
     if (!audioUrl) return;
     
@@ -755,6 +755,18 @@ function VoicemailHistory() {
     }
   };
 
+  const toggleExpand = (jobId: string) => {
+    setExpandedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(jobId)) {
+        newSet.delete(jobId);
+      } else {
+        newSet.add(jobId);
+      }
+      return newSet;
+    });
+  };
+
   if (!token || !history || history.items.length === 0) {
     return null;
   }
@@ -773,19 +785,29 @@ function VoicemailHistory() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="space-y-2">
           {history.items.map((job: any) => {
             let childName = "Onbekend";
             let audioUrl: string | null = null;
+            let script: string | null = null;
+            let tone = "";
+            let isRhyming = false;
+            let isExplicit = false;
             
             try {
               const input = typeof job.inputData === 'string' ? JSON.parse(job.inputData) : job.inputData;
               childName = input.child_name || input.name || "Onbekend";
+              tone = input.tone || "";
+              isRhyming = input.rhyming || false;
+              isExplicit = input.explicit || false;
               
-              // Get audio URL from outputFileId or outputData
+              // Get audio URL and script from outputData
               const output = typeof job.outputData === 'string' ? JSON.parse(job.outputData) : job.outputData;
               if (output?.audioUrl) {
                 audioUrl = output.audioUrl;
+              }
+              if (output?.script) {
+                script = output.script;
               }
             } catch {
               childName = "Voicemail";
@@ -793,49 +815,111 @@ function VoicemailHistory() {
 
             const hasAudio = !!audioUrl;
             const isPlaying = playingId === job._id;
+            const isExpanded = expandedIds.has(job._id);
+            const hasScript = !!script;
 
             return (
               <div 
                 key={job._id} 
-                className="border rounded-lg p-4 bg-white hover:bg-red-50 hover:border-red-300 transition-all cursor-pointer group"
+                className="border rounded-lg bg-white hover:border-red-300 transition-all overflow-hidden"
               >
-                <div className="flex items-start gap-3">
-                  <div className="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center group-hover:bg-red-200 transition-colors flex-shrink-0">
-                    <Phone className="h-5 w-5 text-red-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm truncate">🎵 {childName}</div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {new Date(job.createdAt).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-7 text-xs px-2"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (hasAudio) {
-                            handlePlayPause(job._id, audioUrl);
-                          }
-                        }}
-                      >
-                        {isPlaying && playingId === job._id ? '⏸️' : '▶️'}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-7 text-xs px-2"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDownload(audioUrl, childName);
-                        }}
-                      >
-                        ⬇️
-                      </Button>
+                <div className="p-3">
+                  <div className="flex items-center gap-3">
+                    {/* Icon */}
+                    <div className="h-9 w-9 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
+                      <Phone className="h-5 w-5 text-red-600" />
                     </div>
+                    
+                    {/* Child name and date */}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-sm">{childName}</div>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(job.createdAt).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })} • {job.creditsUsed} credits
+                      </p>
+                    </div>
+
+                    {/* Badges */}
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      {isRhyming && <span className="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">🎵</span>}
+                      {isExplicit && <span className="text-[10px] bg-red-100 text-red-800 px-2 py-0.5 rounded-full font-bold">18+</span>}
+                    </div>
+
+                    {/* Play/Pause Button */}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 w-8 p-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (hasAudio) {
+                          handlePlayPause(job._id, audioUrl);
+                        }
+                      }}
+                    >
+                      {isPlaying ? (
+                        <Pause className="h-4 w-4" />
+                      ) : (
+                        <Play className="h-4 w-4" />
+                      )}
+                    </Button>
+
+                    {/* Download Button */}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 w-8 p-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDownload(audioUrl, childName);
+                      }}
+                      disabled={!hasAudio}
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+
+                    {/* Expand Button */}
+                    {hasScript && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0"
+                        onClick={() => toggleExpand(job._id)}
+                      >
+                        {isExpanded ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </div>
+
+                {/* Expanded Script */}
+                {isExpanded && hasScript && (
+                  <div className="border-t bg-gray-50 p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <Label className="text-xs font-semibold flex items-center gap-2">
+                        📝 AI Script
+                      </Label>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 text-xs"
+                        onClick={() => {
+                          navigator.clipboard.writeText(script || '');
+                          alert("Script gekopieerd!");
+                        }}
+                      >
+                        <Copy className="h-3 w-3 mr-1" />
+                        Kopieer
+                      </Button>
+                    </div>
+                    <div className="text-sm text-muted-foreground whitespace-pre-wrap max-h-[300px] overflow-y-auto bg-white p-3 rounded border">
+                      {script}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
